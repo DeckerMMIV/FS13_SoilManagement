@@ -11,11 +11,11 @@ A mod for Farming Simulator 2013 which attempts to add;
 # What?! Why?
 
 There has always been some small things in FS13, and the previous versions, which annoyed me a bit.
-Like how come it is possible to fertilize right in front of the working harvester and get double the yield, and unrealistic things like that.
+Like how come it is possible to fertilize right in front of the working harvester and get double the yield, and other unrealistic things like that.
 
 What I'm attempting with this mod, are several things:
 
-- Control of growth, so it is the in-game scaled time that determines when growth should happen, and not some value in the foliage-sub-layer.
+- Control of growth, so it is the in-game scaled time that determines when growth should happen, and not some value in the map.i3d's foliage-sub-layer.
 - Manure has to be ploughed or cultivated into the ground to take effect. Else it will slowly dissipate, and you would not get the expected result in yield when harvesting.
 - Different kinds of fertilizer; organic and synthetic. Manure and slurry are organic fertilizers, where the other(s) are synthetic and not as effective.
 - Swaths/windrows when left alone will also slowly dissipate. The reason for this, is to "clean up" the fields over time.
@@ -27,7 +27,8 @@ What I'm attempting with this mod, are several things:
 
 # Details
 
-_Growth control_
+**Growth control**
+
 Why is it, that the map-maker decides how long it takes for a crop to grow? And why is the growth interval bound to real-time instead of the in-game scaled time?
 
 Using this mod, it will completely ignore the map-makers settings, and instead use a "growth cycle" that occurs at midnight in-game time. This means that at every in-game day,
@@ -35,7 +36,8 @@ when the clock passes midnight, all crops will grow one step. Other things also 
 
 Players could probably use this as a kind of "seasons", as it is more obvious now *when* the growth happens.
 
-_Manure & slurry (organic fertilizer)_
+**Manure & slurry (organic fertilizer)**
+
 When spreading solid manure there will be visible "lumps of poo" on the ground, just as it is known from the 'manure mod'. However this will not fertilize the ground,
 and when left untouched the manure will dissipate during 3 days.
 
@@ -45,18 +47,22 @@ where cultivating the manure will only add organic nutrition for one extra harve
 Spreading slurry acts a bit similar to manure. However if left untouched, it will automatically settle into the ground, and give organic nutrition for at least one harvest.
 Ploughing or cultivating slurry will increase the organic nutrition by one extra.
 
-There is a limit to how much organic nutrition the ground can hold. In this version of the mod, it is a maximum of 3 levels.
+There is a limit to how much organic nutrition the ground can hold. In this version of the mod, it is set to a maximum of 3 levels.
 So it will be futile to apply more, if the ground is already at max.
 
-_Fertilizer (synthetic)_
+**Fertilizer (synthetic)**
+
 The synthetic fertilizer is not as good as the organic. Also synthetic fertilizer can only be effectively sprayed when the crop is visibly growing.
 If sprayed earlier or later, it has no effect on the crops.
 
 In the "advanced version" of this mod there are three types of synthetic fertilizers, and each crop will only give extra yield when the correct fertilizer is used.
 For the "simplistic version" there will only be one synthetic fertilizer type, as known from the default game.
 
-_Lime & soil pH_
-Introduction of lime (kalk) to the game was a new fresh idea. However lime is not a fertilizer as such, as it is normally used to increase soil pH value when too acid.
+**Lime & soil pH**
+
+Introduction of lime (kalk) to the game was an interesting fresh idea. However I do not see lime as a fertilizer, as it is normally used to increase soil pH value when too acid.
+So this mod adds a new thing to the map's terrain; 'soil pH'. 
+
 It is not possible to visibily "see" the soil's pH value, so a plugin to PDA MOD has been made, that can show this value within an area of 10x10 sqm centered around the
 player's current location.
 
@@ -68,5 +74,6 @@ The "simplistic version" is more generous, whereas as long the soil has a pH val
 
 Note that soil pH will decrease with each harvest.
 
-_Weeds & herbicide_
+**Weeds & herbicide**
+
 (t.b.d.)
