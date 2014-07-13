@@ -1,0 +1,5 @@
+Herbicide	- KaosKnight
+Fertilizer	- JacobT (http://www.modhoster.com/mods/filltypeoverlays)
+LiquidManure	- JacobT (http://www.modhoster.com/mods/filltypeoverlays)
+Manure		- JacobT (http://www.modhoster.com/mods/filltypeoverlays)
+Kalk		- ?

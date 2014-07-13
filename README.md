@@ -76,4 +76,10 @@ Note that soil pH will decrease with each harvest.
 
 **Weeds & herbicide**
 
-(t.b.d.)
+Patches of weeds will appear in fields, as their seeds are spread with the wind. With cultivator or spraying herbicide it is possible to get rid of it.
+
+Using the herbicide spray the weeds do not wither instantly. Only when the "growth cycle" starts, the herbicide will take effect on the weeds.
+However since weeds are quite resilient, another patch could soon appear again, after the herbicide has dissipated.
+
+In the "advanced version" there are three possible types of herbicide to spray. They will all kill the weeds, but be aware that growing crops may be affected too if the wrong herbicide is used.
+For the "simplistic version" there will be only one type of herbicide, and growing crops will not be affected.

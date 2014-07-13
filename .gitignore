@@ -1,6 +1,11 @@
 #
 *.zip
+*.rar
+*.BBCode
 .teaser_images
+.assets
+.docs
+.hg
 
 
 

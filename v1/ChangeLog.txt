@@ -1,0 +1,84 @@
+SoilMod - Change log
+
+============================
+Version 1.0.0
+
+- Initial public version on FS-UK.COM
+
+
+============================
+Version 0.6.1
+
+- REQUIRED change in SampleModMap.LUA, where call to fmcSoilMod.postInit_loadMapFinished() is moved downwards.
+
+- Bug fixes and tweaks for growth control.
+
+
+============================
+Version 0.6.0
+
+- REQUIRED changes in your map's SampleModMap.LUA script.
+
+  Increased to 5 places where to add calls to fmcSoilMod. Look in the supplied script
+  'SampleModMap - Additions.LUA' for what to copy and where.
+  
+  This was needed, to make sure that the SoilManagement.ZIP mod won't affect any other
+  maps which have no support for it.
+
+- Misc. minor changes in the scripts.
+
+- Replaced the lime (kalk) HUD icon, with something differently.
+
+- Updated foliage_weed_diffuse_atlasSize_2.dds.
+
+
+============================
+Version 0.5.x
+
+- Renamed foliage-sub-layers due to avoiding clashing with potential 
+  existing foliage-sub-layers in a mod-map. 
+
+  IMPORTANT!
+
+    If you have a map made with v0.4.x, you MUST DO the following in your 
+    map.i3d file: Rename the following foliage-sub-layer names for SoilMod, 
+    so they are prefixed with "fmc_". 
+    
+    Example:
+                          \/                --rename to-->                     \\//
+    <FoliageSubLayer name="manure"                -->   <FoliageSubLayer name="fmc_manure"
+    <FoliageSubLayer name="slurry"                -->   <FoliageSubLayer name="fmc_slurry"
+    <FoliageSubLayer name="lime"                  -->   <FoliageSubLayer name="fmc_lime"
+    <FoliageSubLayer name="weed"                  -->   <FoliageSubLayer name="fmc_weed"
+    <FoliageSubLayer name="fertilizerOrganic"     -->   <FoliageSubLayer name="fmc_fertilizerOrganic"
+    <FoliageSubLayer name="fertilizerSynthetic"   -->   <FoliageSubLayer name="fmc_fertilizerSynthetic"
+    <FoliageSubLayer name="herbicide"             -->   <FoliageSubLayer name="fmc_herbicide"
+    <FoliageSubLayer name="soil_pH"               -->   <FoliageSubLayer name="fmc_soil_pH"
+
+- Changed requirements in SampleModMap.LUA, so there are now only 3 
+  places which needs to be added. 
+
+- Added possibility to set custom fruit-type's correlation for 
+  'fertilizer' and 'herbicide' when using SoilMod in "Advanced Mode". 
+
+  This must be set up in the SampleModMap.LUA, as illustrated in the 
+  sample script. 
+  
+  Example:
+      fmcSoilMod.setFruit_FertilizerBoost_HerbicideAffected("tomato"       , "fertilizer2"    , "herbicide3")
+                                                         -- <Name of fruit>, <fertilizer-type>, <herbicide-type>
+
+- Fixed when a fruit-type does not have a corresponding foliage-sub-
+  layer, an error would occur calling getDensityMapFileName() 
+
+- Fixed attempt at loading savegame0/careerSavegame.xml, when only
+  being client. 
+
+- Fixed problematic MP event in fmcGrowthControl.LUA being sent/-
+  received before client began to run its update() function. 
+
+  
+============================
+Version 0.4.x
+
+- Initial closed beta test.

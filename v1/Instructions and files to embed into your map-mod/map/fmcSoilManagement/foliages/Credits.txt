@@ -1,0 +1,5 @@
+kalkSolid	- ?
+manureLiquid	- Decker_MMIV
+manureSolid	- Decker_MMIV
+weed 1		- ?
+weed 2		- ?
