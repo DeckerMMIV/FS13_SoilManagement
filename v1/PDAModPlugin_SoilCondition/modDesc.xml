@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<modDesc descVersion="12">
+    <author>Freelance Modding Crew</author>
+    <version>1.0.0</version>
+
+    <title>
+        <en>PDA Mod Plugin - Soil Condition</en>
+        <de>PDA Mod Plugin - Soil Condition</de>
+    </title>
+    <description>
+        <en>
+<![CDATA[Requires 'PDA MOD' - This plugin adds an extra screen for the 
+Soil Management and Growth Control mod (SoilMod).
+
+Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
+        </en>
+        <de>
+<![CDATA[Requires 'PDA MOD' - This plugin adds an extra screen for the 
+Soil Management and Growth Control mod (SoilMod).
+
+Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
+        </de>
+    </description>
+
+    <iconFilename>store_SoilCondition.dds</iconFilename>
+
+    <multiplayer supported="true"/>
+
+    <l10n>
+        <text name="SoilCondition">                 <en>Soil Condition           </en><de>Soil Condition           </de> </text>
+        
+        <text name="SoilpH">                        <en>Soil pH: %s              </en><de>Soil pH: %s              </de> </text>
+        <text name="FertilizerOrganic">             <en>Fertilizer(organic): %s  </en><de>Fertilizer(organic): %s  </de> </text>
+        <text name="FertilizerSynthetic">           <en>Fertilizer(synthetic): %s</en><de>Fertilizer(synthetic): %s</de> </text>
+        <text name="Herbicide">                     <en>Herbicide: %s            </en><de>Herbicide: %s            </de> </text>
+        <text name="WeedInfestation">               <en>Weed infestation: %s     </en><de>Weed infestation: %s     </de> </text>
+                                                                                                                   
+        <text name="SoilpH_value_denomination">     <en>%.1f (%s)                </en><de>%.1f (%s)                </de> </text>
+                                                                                                                   
+        <text name="FertilizerOrganic_Level">       <en>%.1f level(s)            </en><de>%.1f level(s)            </de> </text>
+                                                                                                                   
+        <text name="FertilizerSynthetic_TypeA_pct"> <en>type A, %d%%             </en><de>type A, %d%%             </de> </text>
+        <text name="FertilizerSynthetic_TypeB_pct"> <en>type B, %d%%             </en><de>type B, %d%%             </de> </text>
+        <text name="FertilizerSynthetic_TypeC_pct"> <en>type C, %d%%             </en><de>type C, %d%%             </de> </text>
+                                                                                                                   
+        <text name="Herbicide_TypeA_pct">           <en>type A, %d%%             </en><de>type A, %d%%             </de> </text>
+        <text name="Herbicide_TypeB_pct">           <en>type B, %d%%             </en><de>type B, %d%%             </de> </text>
+        <text name="Herbicide_TypeC_pct">           <en>type C, %d%%             </en><de>type C, %d%%             </de> </text>
+                                                                                                                   
+        <text name="WeedInfestation_pct">           <en>%d%%                     </en><de>%d%%                     </de> </text>
+                                                                                                                   
+        <text name="None">                          <en>none                     </en><de>none                     </de> </text>
+        <text name="NotAvailable">                  <en>(not available)          </en><de>(not available)          </de> </text>
+        <text name="NoCalculation">                 <en>no calculation           </en><de>no calculation           </de> </text>
+        
+        <text name="FruitEffects">                  <en>Fruit Effects            </en><de>Fruit Effects            </de> </text>
+        <text name="FertilizerBoost">               <en>Fertilizer boost         </en><de>Fertilizer boost         </de> </text>
+        <text name="HerbicideAffected">             <en>Herbicide affected       </en><de>Herbicide affected       </de> </text>
+        <text name="FertilizerType">                <en>Fertilizer-%s            </en><de>Fertilizer-%s            </de> </text>
+        <text name="HerbicideType">                 <en>Herbicide-%s             </en><de>Herbicide-%s             </de> </text>
+    </l10n>
+
+    <extraSourceFiles>
+        <sourceFile filename="PdaPlugin_SoilCondition.lua" />
+    </extraSourceFiles>
+</modDesc>
