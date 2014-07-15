@@ -18,6 +18,8 @@
 --      v0.3.0  - Extra subpage added, to show how fruits gains boost effect fro type of fertilizer(synthetic) 
 --                and are affected by type of herbicide.
 --      v1.0.0  - Initial public version.
+--      ------
+--  Revision history is now kept in GitHub repository.
 --
 
 PdaPlugin_SoilCondition = {}
@@ -114,7 +116,7 @@ function PdaPlugin_SoilCondition.buildFieldCondition(specs)
                         phValue         = fmcSoilMod.density_to_pH(sumPixels1, numPixels1, 3)
                         phDenomination  = fmcSoilMod.pH_to_Denomination(phValue)
                         if g_i18n:hasText(phDenomination) then
-                            phDenomination = g_i18n:getText(phDenomination):lower()
+                            phDenomination = g_i18n:getText(phDenomination)
                         end
                     end
                     txt = (g_i18n:getText("SoilpH_value_denomination")):format(phValue, phDenomination)

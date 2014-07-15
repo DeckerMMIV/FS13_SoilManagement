@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="12">
     <author>Freelance Modding Crew</author>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <title>
         <en>Soil Management and Growth Control</en>
@@ -14,10 +14,10 @@ use manure, slurry, synthetic fertilizer, lime and herbicide. Features such as '
 '3 different types of fertilizer/herbicide' and 'delayed effects' have been added.
 Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         </en>
-        <de> <!-- http://translate.google.com -->
-<![CDATA['SoilMod' adds custom growth control of crops and some new aspects of how and when to
-use manure, slurry, synthetic fertilizer, lime and herbicide. Features such as 'soil pH',
-'3 different types of fertilizer/herbicide' and 'delayed effects' have been added.
+        <de>
+<![CDATA[Der 'SoilMod' fügt eine eigene Wachstumskontrolle des Getreides, und ein paar neue Aspekte für die
+Benutzung von Mist, Gülle, synthetischem Dünger, Kalk und Herbiziden. Zusätzlich wurde der Boden-
+pH-Wert, drei verschiedene Arten von Dünger/Herbizid sowie zeitlich verzögerte Auswirkungen hinzugefügt.
 Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         </de>
     </description>
@@ -27,27 +27,27 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
     <multiplayer supported="true"/>
 
     <l10n>
-        <text name="SOILMOD_GROWNOW"     ><en>SoilMod:Grow NOW!</en> <de>SoilMod:Grow NOW!</de> </text>
-        <text name="GrowthPct"           ><en>Growth %d%%      </en> <de>Growth %d%%      </de> </text>
-        <text name="SelectSprayType"     ><en>Select spray-type</en> <de>Select spray-type</de> </text>
-        
-        <text name="kalk"                ><en>Lime        </en><de>Kalk        </de></text>
-        <text name="herbicide"           ><en>Herbicide-A </en><de>Herbicide-A </de></text>
-        <text name="herbicide2"          ><en>Herbicide-B </en><de>Herbicide-B </de></text>
-        <text name="herbicide3"          ><en>Herbicide-C </en><de>Herbicide-C </de></text>
-        <text name="fertilizer"          ><en>Fertilizer-A</en><de>Fertilizer-A</de></text>
-        <text name="fertilizer2"         ><en>Fertilizer-B</en><de>Fertilizer-B</de></text>
-        <text name="fertilizer3"         ><en>Fertilizer-C</en><de>Fertilizer-C</de></text>
-        
-        <text name="phNeutral"           ><en>Neutral             </en><de>Neutral             </de> </text>
-        <text name="phExtremeAcidity"    ><en>Extreme acidity     </en><de>Extreme acidity     </de> </text>
-        <text name="phStrongAcidity"     ><en>Strong acidity      </en><de>Strong acidity      </de> </text>
-        <text name="phModerateAcidity"   ><en>Moderate acidity    </en><de>Moderate acidity    </de> </text>
-        <text name="phSlightAcidity"     ><en>Slight acidity      </en><de>Slight acidity      </de> </text>
-        <text name="phExtremeAlkalinity" ><en>Extreme alkalinity  </en><de>Extreme alkalinity  </de> </text>
-        <text name="phStrongAlkalinity"  ><en>Strong alkalinity   </en><de>Strong alkalinity   </de> </text>
-        <text name="phModerateAlkalinity"><en>Moderate alkalinity </en><de>Moderate alkalinity </de> </text>
-        <text name="phSlightAlkalinity"  ><en>Slight alkalinity   </en><de>Slight alkalinity   </de> </text>
+        <text name="SOILMOD_GROWNOW"     > <en>SoilMod:Grow NOW!   </en> <de>SoilMod: JETZT wachsen!</de> </text>
+        <text name="GrowthPct"           > <en>Growth %d%%         </en> <de>Wachstum %d%%          </de> </text>
+        <text name="SelectSprayType"     > <en>Select spray-type   </en> <de>Düngertyp auswählen    </de> </text>
+
+        <text name="kalk"                > <en>Lime                </en> <de>Kalk                   </de> </text>
+        <text name="herbicide"           > <en>Herbicide A         </en> <de>Herbizid A             </de> </text>
+        <text name="herbicide2"          > <en>Herbicide B         </en> <de>Herbizid B             </de> </text>
+        <text name="herbicide3"          > <en>Herbicide C         </en> <de>Herbizid C             </de> </text>
+        <text name="fertilizer"          > <en>Fertilizer A        </en> <de>Dünger A               </de> </text>
+        <text name="fertilizer2"         > <en>Fertilizer B        </en> <de>Dünger B               </de> </text>
+        <text name="fertilizer3"         > <en>Fertilizer C        </en> <de>Dünger C               </de> </text>
+
+        <text name="phNeutral"           > <en>Neutral             </en> <de>Neutral                </de> </text>
+        <text name="phExtremeAcidity"    > <en>Extreme acidity     </en> <de>Extremer Säuregehalt   </de> </text> <!-- DE: or: "Extrem sauer" -->
+        <text name="phStrongAcidity"     > <en>Strong acidity      </en> <de>Starker Säuregehalt    </de> </text>
+        <text name="phModerateAcidity"   > <en>Moderate acidity    </en> <de>Mittlerer Säuregehalt  </de> </text>
+        <text name="phSlightAcidity"     > <en>Slight acidity      </en> <de>Leichter Säuregehalt   </de> </text>
+        <text name="phExtremeAlkalinity" > <en>Extreme alkalinity  </en> <de>Extrem basisch         </de> </text> <!-- DE: or: "alkalisch" -->
+        <text name="phStrongAlkalinity"  > <en>Strong alkalinity   </en> <de>Stark basisch          </de> </text>
+        <text name="phModerateAlkalinity"> <en>Moderate alkalinity </en> <de>Mittel-basisch         </de> </text>
+        <text name="phSlightAlkalinity"  > <en>Slight alkalinity   </en> <de>Leicht basisch         </de> </text>
     </l10n>
 
     <extraSourceFiles>
