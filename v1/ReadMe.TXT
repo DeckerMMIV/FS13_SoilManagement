@@ -154,4 +154,4 @@ Keep the original download link!
 
 Credits:
 Script: Decker_MMIV.
-Graphics: KaosKnite, JacobT, GIANTS, Decker_MMIV and others.
+Graphics: KaosKnite, JakobT, GIANTS, Decker_MMIV and others.
