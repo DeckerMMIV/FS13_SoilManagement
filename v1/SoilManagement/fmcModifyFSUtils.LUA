@@ -8,6 +8,8 @@
 --  2014-July
 --      0.5.3   - Tweaked soil pH effect on harvest yield.
 --      0.5.4   - Fix for calling getDensityMapFileName() with an 'unknown entity id: 0'
+--      ------
+--  Revision history is now kept in GitHub repository.
 --
 
 fmcModifyFSUtils = {}
@@ -290,6 +292,8 @@ Utils.fmcUpdateFmcFoliage = function(isForced, implementType, x,z, widthX,widthZ
         
         -- Set "moisture" where there's manure - we're cultivating/plouging it into ground.
         setDensityMaskedParallelogram(g_currentMission.terrainDetailId,             x, z, widthX, widthZ, heightX, heightZ, g_currentMission.sprayChannel, 1, g_currentMission.fmcFoliageManure, 0, 2, 1);
+        -- Set "moisture" where there's slurry - we're cultivating/plouging it into ground.
+        setDensityMaskedParallelogram(g_currentMission.terrainDetailId,             x, z, widthX, widthZ, heightX, heightZ, g_currentMission.sprayChannel, 1, g_currentMission.fmcFoliageSlurry, 0, 1, 1);
         
         -- Increase soil pH where there's lime, by 3 - we're cultivating/plouging it into ground.
         setDensityMaskParams(         g_currentMission.fmcFoliageSoil_pH, "greater", 0)

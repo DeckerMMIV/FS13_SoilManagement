@@ -7,6 +7,8 @@
 -- @history
 --  2014-July
 --      0.5.3   - Function for setting a fruit's fertilizer-boost and herbicide-affected.
+--      ------
+--  Revision history is now kept in GitHub repository.
 --
 
 fmcFilltypes = {}
@@ -82,7 +84,12 @@ end
 function fmcFilltypes.updateFillTypeOverlays()
     print("Updating fill-types HUD overlay-icons")
     for _,fillTypeDesc in pairs(Fillable.fillTypeIndexToDesc) do
-        if fillTypeDesc.hudOverlayFilename ~= nil and fillTypeDesc.hudOverlayFilename ~= "" then
+        if g_currentMission.fillTypeOverlays[fillTypeDesc.index] ~= nil then
+            -- remove existing overlay icon, as the graphics may have been changed later.
+            g_currentMission.fillTypeOverlays[fillTypeDesc.index]:delete();
+            g_currentMission.fillTypeOverlays[fillTypeDesc.index] = nil;
+        end
+        if fillTypeDesc.hudOverlayFilename ~= nil and fillTypeDesc.hudOverlayFilename ~= "" then   --and fileExists(fillTypeDesc.hudOverlayFilename) then
             g_currentMission:addFillTypeOverlay(fillTypeDesc.index, fillTypeDesc.hudOverlayFilename)
         end
     end
