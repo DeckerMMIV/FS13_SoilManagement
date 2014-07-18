@@ -21,6 +21,8 @@
 --      0.5.3   - Function for setting a fruit's fertilizer-boost and herbicide-affected.
 --      0.6.0   - Added update() and draw() functions, needed to be called from SampleModMap's functions.
 --      1.0.0   - Some comment blocks added.
+--      ------
+--  Revision history is now kept in GitHub repository.
 --
 
 
@@ -52,6 +54,14 @@ function log(...)
         print(string.format("%7ums ", (g_currentMission ~= nil and g_currentMission.time or 0)) .. txt);
     end
 end;
+
+function logInfo(...)
+    local txt = "SoilMod: "
+    for idx = 1,select("#", ...) do
+        txt = txt .. tostring(select(idx, ...))
+    end
+    print(txt);
+end
 
 --
 source(g_currentModDirectory .. 'fmcFilltypes.lua')
@@ -122,7 +132,7 @@ function fmcSoilMod.setFruit_FertilizerBoost_HerbicideAffected(fruitName, fertil
     --
     local fruitDesc = FruitUtil.fruitTypes[fruitName]
     if fruitDesc == nil then
-        print("ERROR! Fruit '"..tostring(fruitName).."' is not registered as a fruit-type.")
+        logInfo("ERROR! Fruit '"..tostring(fruitName).."' is not registered as a fruit-type.")
         return
     end
     --
@@ -132,7 +142,7 @@ function fmcSoilMod.setFruit_FertilizerBoost_HerbicideAffected(fruitName, fertil
         local fillTypeFertilizer  = "FILLTYPE_"  .. tostring(fertilizerName):upper()
         local sprayTypeFertilizer = "SPRAYTYPE_" .. tostring(fertilizerName):upper()
         if Sprayer[sprayTypeFertilizer] == nil or Fillable[fillTypeFertilizer] == nil then
-            print("ERROR! Fertilizer '"..tostring(fertilizerName).."' is not registered as a spray-type or fill-type.")
+            logInfo("ERROR! Fertilizer '"..tostring(fertilizerName).."' is not registered as a spray-type or fill-type.")
         else
             fruitDesc.fmcBoostFertilizer = Fillable[fillTypeFertilizer];
             attrsSet = ((attrsSet == nil) and "" or attrsSet..", ") .. ("fertilizer-boost:'%s'"):format(fertilizerName)
@@ -143,14 +153,14 @@ function fmcSoilMod.setFruit_FertilizerBoost_HerbicideAffected(fruitName, fertil
         local fillTypeHerbicide  = "FILLTYPE_"  .. tostring(herbicideName):upper()
         local sprayTypeHerbicide = "SPRAYTYPE_" .. tostring(herbicideName):upper()
         if Sprayer[sprayTypeHerbicide] == nil or Fillable[fillTypeHerbicide] == nil then
-            print("ERROR! Herbicide '"..tostring(herbicideName).."' is not registered as a spray-type or fill-type.")
+            logInfo("ERROR! Herbicide '"..tostring(herbicideName).."' is not registered as a spray-type or fill-type.")
         else
             fruitDesc.fmcHerbicideAffected = Fillable[fillTypeHerbicide];
             attrsSet = ((attrsSet == nil) and "" or attrsSet..", ") .. ("herbicide-affected:'%s'"):format(herbicideName)
         end
     end
     --
-    print(("Fruit '%s' attributes set; %s."):format(tostring(fruitName), (attrsSet == nil and "(none)" or tostring(attrsSet))))
+    logInfo(("Fruit '%s' attributes set; %s."):format(tostring(fruitName), (attrsSet == nil and "(none)" or tostring(attrsSet))))
 end
 
 

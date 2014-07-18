@@ -39,7 +39,7 @@ end
 
 --
 function fmcFilltypes.setupFillTypes(mapFilltypeOverlaysDirectory)
-    print("Registering new spray-types and adding more overlay-icons")
+    logInfo("Registering new spray-types and adding more overlay-icons")
 
     local herbicide1Overlay = "herbicide1.dds"
     local fertilizer1Overlay = "fertilizer1.dds"
@@ -82,7 +82,7 @@ end
 
 --    
 function fmcFilltypes.updateFillTypeOverlays()
-    print("Updating fill-types HUD overlay-icons")
+    logInfo("Updating fill-types HUD overlay-icons")
     for _,fillTypeDesc in pairs(Fillable.fillTypeIndexToDesc) do
         if g_currentMission.fillTypeOverlays[fillTypeDesc.index] ~= nil then
             -- remove existing overlay icon, as the graphics may have been changed later.

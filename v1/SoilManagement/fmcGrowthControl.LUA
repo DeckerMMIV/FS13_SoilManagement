@@ -21,6 +21,8 @@
 --                changes to SampleModMap.LUA have been made.
 --                This should make it NOT conflict with other maps. 
 --      0.6.1   - Bug fixes and tweaks for growth control.
+--      ------
+--  Revision history is now kept in GitHub repository.
 --
 
 
@@ -72,11 +74,11 @@ function fmcGrowthControl.setup(simplisticMode)
         if foliageId ~= nil and foliageId ~= 0 then
             local numChannels = getTerrainDetailNumChannels(foliageId)
             if numChannels == reqChannels then
-                print(("Foliage-layer check ok: '%s', id=%s, numChnls=%s"):format(tostring(foliageName),tostring(foliageId),tostring(numChannels)))
+                logInfo(("Foliage-layer check ok: '%s', id=%s, numChnls=%s"):format(tostring(foliageName),tostring(foliageId),tostring(numChannels)))
                 return true
             end
         end;
-        print(("ERROR! Required foliage-layer '%s' either does not exist (foliageId=%s), or have wrong num-channels (%s)"):format(tostring(foliageName),tostring(foliageId),tostring(numChannels)))
+        logInfo(("ERROR! Required foliage-layer '%s' either does not exist (foliageId=%s), or have wrong num-channels (%s)"):format(tostring(foliageName),tostring(foliageId),tostring(numChannels)))
         return false
     end
 
@@ -136,7 +138,7 @@ function fmcGrowthControl.detectFruitSprayFillTypeConflicts()
             if fruitType == Fillable.FILLTYPE_CHAFF then
                 -- Ignore, as FILLTYPE_CHAFF is one from the base scripts.
             else
-                print("WARNING. Fruit-type '"..tostring(fruitDesc.name).."' has no usable foliage-layer. If this type is still needed, consider registering '"..tostring(fruitDesc.name).."' only as a Fill-type or Spray-type!")
+                logInfo("WARNING. Fruit-type '"..tostring(fruitDesc.name).."' has no usable foliage-layer. If this type is still needed, consider registering '"..tostring(fruitDesc.name).."' only as a Fill-type or Spray-type!")
             end
         end
     end

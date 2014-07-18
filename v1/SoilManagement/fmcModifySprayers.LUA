@@ -9,6 +9,8 @@
 --      0.5.3   - Minor tweaks.
 --      0.6.0   - Some other minor tweaks and code cleanup.
 --      1.0.0   - Changed a comment regarding switching spray-type.
+--      ------
+--  Revision history is now kept in GitHub repository.
 --
 
 fmcModifySprayers = {}
@@ -86,7 +88,7 @@ end;
 
 
 function fmcModifySprayers.overwriteSprayerAreaEvent()
-  print("Overwriting SprayerAreaEvent functions, to take extra argument; 'fillType'.")
+  logInfo("Overwriting SprayerAreaEvent functions, to take extra argument; 'fillType'.")
 
   SprayerAreaEvent.new = function(self, cuttingAreas
 --#### DECKER_MMIV ############################################################
@@ -194,21 +196,21 @@ function fmcModifySprayers.overwriteSprayer1()
 
     -- Due to the vanilla sprayers only spray 'fertilizer', this modification will
     -- force addition of extra fill-types to be sprayed.
-    print("Prepending to Fillable.postLoad, for adding extra fill-types")
+    logInfo("Prepending to Fillable.postLoad, for adding extra fill-types")
     Fillable.postLoad = Utils.prependedFunction(Fillable.postLoad, function(self, xmlFile)
         -- Only consider tools that can spread/spray 'fertilizer'.
         if self.fillTypes[Fillable.FILLTYPE_FERTILIZER] then
             local addFillTypes = {}
             -- Simple check, if tool has <turnedOnRotationNodes> then it is most likely a 'solid spreader'.
             if hasXMLProperty(xmlFile, "vehicle.turnedOnRotationNodes") then
-                print("Adding more filltypes (solid spreader)")
+                logInfo("Adding more filltypes (solid spreader)")
                 addFillTypes = {
                      Fillable.FILLTYPE_FERTILIZER2
                     ,Fillable.FILLTYPE_FERTILIZER3
                     ,Fillable.FILLTYPE_KALK
                 }
             else
-                print("Adding more filltypes (liquid sprayer)")
+                logInfo("Adding more filltypes (liquid sprayer)")
                 addFillTypes = {
                      Fillable.FILLTYPE_FERTILIZER2
                     ,Fillable.FILLTYPE_FERTILIZER3
@@ -226,15 +228,14 @@ function fmcModifySprayers.overwriteSprayer1()
     end);
 
     -- Set up spray usage.
-    print("Appending to Sprayer.postLoad, to set spray-usages for extra fill-types.")
+    logInfo("Appending to Sprayer.postLoad, to set spray-usages for extra fill-types.")
     Sprayer.postLoad = Utils.appendedFunction(Sprayer.postLoad, function(self)
---print("Sprayer.postLoad")
         local fertilizerUsageLPS = nil
         local herbicideUsageLPS = nil
         local limeUsageLPS = nil
         for fillType,sprayUsageLPS in pairs(self.sprayLitersPerSecond) do
             if sprayUsageLPS ~= sprayUsageLPS then
-                print("Problem with fillType: "..tostring(Fillable.fillTypeIntToName[fillType])..", sprayUsage: "..tostring(sprayUsageLPS))
+                logInfo("Problem with fillType: "..tostring(Fillable.fillTypeIntToName[fillType])..", sprayUsage: "..tostring(sprayUsageLPS))
             else
                 if fillType == Fillable.FILLTYPE_FERTILIZER then
                     fertilizerUsageLPS = sprayUsageLPS
@@ -248,9 +249,9 @@ function fmcModifySprayers.overwriteSprayer1()
         if not fertilizerUsageLPS then fertilizerUsageLPS = self.defaultSprayLitersPerSecond; end
         if not herbicideUsageLPS  then herbicideUsageLPS  = self.defaultSprayLitersPerSecond; end
         if not limeUsageLPS       then limeUsageLPS       = self.defaultSprayLitersPerSecond; end
---print("fertilizerUsageLPS="..tostring(fertilizerUsageLPS))
---print("herbicideUsageLPS ="..tostring(herbicideUsageLPS ))
---print("limeUsageLPS      ="..tostring(limeUsageLPS      ))
+--log("fertilizerUsageLPS="..tostring(fertilizerUsageLPS))
+--log("herbicideUsageLPS ="..tostring(herbicideUsageLPS ))
+--log("limeUsageLPS      ="..tostring(limeUsageLPS      ))
         --
         if Fillable.FILLTYPE_FERTILIZER  and not self.sprayLitersPerSecond[Fillable.FILLTYPE_FERTILIZER ] then self.sprayLitersPerSecond[Fillable.FILLTYPE_FERTILIZER ] = fertilizerUsageLPS; end
         if Fillable.FILLTYPE_FERTILIZER2 and not self.sprayLitersPerSecond[Fillable.FILLTYPE_FERTILIZER2] then self.sprayLitersPerSecond[Fillable.FILLTYPE_FERTILIZER2] = fertilizerUsageLPS; end
@@ -303,7 +304,7 @@ function fmcModifySprayers.overwriteSprayer1()
         end
         if action >= 0 then
             self.currentFillType = action
-            --print("Changed currentFillType to: "..tostring(Fillable.fillTypeIntToName[self.currentFillType]).."("..tostring(self.currentFillType)..")"
+            --log("Changed currentFillType to: "..tostring(Fillable.fillTypeIntToName[self.currentFillType]).."("..tostring(self.currentFillType)..")"
             --    --..", spray-usage: "..tostring(self.sprayLitersPerSecond[self.currentFillType])
             --    --..", default: "..tostring(self.defaultSprayLitersPerSecond)
             --);
@@ -312,7 +313,7 @@ function fmcModifySprayers.overwriteSprayer1()
         ChangeFillTypeEvent.sendEvent(self, action, noEventSend)
     end
     
-    print("Appending to Sprayer.update, to let player change fill-type (not very realistic though!)")
+    logInfo("Appending to Sprayer.update, to let player change fill-type (not very realistic though!)")
     Sprayer.update = Utils.appendedFunction(Sprayer.update, function(self, dt)
         if self.isClient then
             if self.allowsSpraying and self.fillTypes[Fillable.FILLTYPE_FERTILIZER] and self:getIsActiveForInput() then
@@ -323,7 +324,7 @@ function fmcModifySprayers.overwriteSprayer1()
         end;
     end);
 
-    print("Appending to Sprayer.draw, to draw current fill-type HUD icon and action in F1 help box");
+    logInfo("Appending to Sprayer.draw, to draw current fill-type HUD icon and action in F1 help box");
     Sprayer.draw = Utils.appendedFunction(Sprayer.draw, function(self)
         if self.isClient then
             if self.allowsSpraying and self.fillTypes[Fillable.FILLTYPE_FERTILIZER] and self:getIsActiveForInput(true) then
@@ -357,7 +358,7 @@ function fmcModifySprayers.overwriteSprayer2()
     funcName = "oldSprayerUpdateTick"
   end
 
-  print("Overwriting Sprayer."..funcName.." function, so fill-type is given to SprayerAreaEvent.")
+  logInfo("Overwriting Sprayer."..funcName.." function, so fill-type is given to SprayerAreaEvent.")
   Sprayer[funcName] = function(self, dt)
       if self:getIsActive() then
           local showFieldNotOwnedWarning = false;
@@ -522,7 +523,7 @@ function fmcModifySprayers.overwriteSprayer2_MR()
 -- For MoreRealistic, if it does not have set 'Sprayer.oldSprayerUpdateTick' to original/old updateTick() function,
 -- the entire updateTick() is changed here, because I need the 'fill-type' to be sent to SprayerAreaEvent.
 
-    print("Overwriting MR's Sprayer.updateTick function, with a 'patched' function for MoreRealistic, so fill-type is given to SprayerAreaEvent.")
+    logInfo("Overwriting MR's Sprayer.updateTick function, with a 'patched' function for MoreRealistic, so fill-type is given to SprayerAreaEvent.")
 
     Sprayer.updateTick = function(self, dt)
         if not self.isRealistic then

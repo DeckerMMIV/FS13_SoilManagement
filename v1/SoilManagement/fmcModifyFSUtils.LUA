@@ -23,7 +23,7 @@ function fmcModifyFSUtils.setup(simplisticMode)
     fmcModifyFSUtils.simplisticMode = simplisticMode
 
     -- Remember original functions...
-    print("Remembering original functions from 'Utils'")
+    logInfo("Remembering original functions from 'Utils'")
     fmcModifyFSUtils.origFuncs = {}
     fmcModifyFSUtils.origFuncs["cutFruitArea"]              = Utils.cutFruitArea;
     fmcModifyFSUtils.origFuncs["updateCultivatorArea"]      = Utils.updateCultivatorArea;
@@ -49,7 +49,7 @@ end
 function fmcModifyFSUtils.teardown()
     if fmcModifyFSUtils.origFuncs ~= nil then
         -- Restore functions to original...
-        print("Restoring original functions in 'Utils'")
+        logInfo("Restoring original functions in 'Utils'")
         for funcName,func in pairs(fmcModifyFSUtils.origFuncs) do
             Utils[funcName] = func;
         end
@@ -60,7 +60,7 @@ end
 --
 function fmcModifyFSUtils.overwriteCutFruitArea()
 
-  print("Overwriting Utils.cutFruitArea")
+  logInfo("Overwriting Utils.cutFruitArea")
 
   -- Array of 9 elements... must be sorted! (high, factor)
   Utils.fmcSoilpHfactors = {
@@ -314,7 +314,7 @@ end
 
 function fmcModifyFSUtils.overwriteUpdateCultivatorArea()
 
-  print("Overwriting Utils.updateCultivatorArea")
+  logInfo("Overwriting Utils.updateCultivatorArea")
 
   Utils.updateCultivatorArea = function(startWorldX, startWorldZ, widthWorldX, widthWorldZ, heightWorldX, heightWorldZ, forced, commonForced, angle)
     forced = Utils.getNoNil(forced, true);
@@ -352,7 +352,7 @@ end
 
 function fmcModifyFSUtils.overwriteUpdatePloughArea()
 
-  print("Overwriting Utils.updatePloughArea")
+  logInfo("Overwriting Utils.updatePloughArea")
 
   Utils.updatePloughArea = function(startWorldX, startWorldZ, widthWorldX, widthWorldZ, heightWorldX, heightWorldZ, forced, commonForced, angle)
     forced = Utils.getNoNil(forced, true);
@@ -390,7 +390,7 @@ end
 
 function fmcModifyFSUtils.overwriteUpdateSowingArea()
 
-  print("Overwriting Utils.updateSowingArea")
+  logInfo("Overwriting Utils.updateSowingArea")
 
   Utils.updateSowingArea = function(fruitId, startWorldX, startWorldZ, widthWorldX, widthWorldZ, heightWorldX, heightWorldZ, angle, useDirectPlanting)
 --#### DECKER_MMIV ############################################################
@@ -523,7 +523,7 @@ end
 
 function fmcModifyFSUtils.overwriteUpdateDestroyCommonArea()
 
-  print("Overwriting Utils.updateDestroyCommonArea")
+  logInfo("Overwriting Utils.updateDestroyCommonArea")
   
   Utils.updateDestroyCommonArea = function(startWorldX, startWorldZ, widthWorldX, widthWorldZ, heightWorldX, heightWorldZ, limitToField)
     local x,z, widthX,widthZ, heightX,heightZ = Utils.getXZWidthAndHeight(nil, startWorldX, startWorldZ, widthWorldX, widthWorldZ, heightWorldX, heightWorldZ);
@@ -538,7 +538,7 @@ end
 function fmcModifyFSUtils.overwriteUpdateSprayArea()
 
   -- Modified to also take extra argument: 'fillType'
-  print("Overwriting Utils.updateSprayArea")
+  logInfo("Overwriting Utils.updateSprayArea")
   
   Utils.updateSprayArea = function(startWorldX, startWorldZ, widthWorldX, widthWorldZ, heightWorldX, heightWorldZ, fillType)
 --#### DECKER_MMIV ############################################################
@@ -571,7 +571,7 @@ end
 --#### DECKER_MMIV ############################################################
 function fmcModifyFSUtils.setSpraySubFuncs()
 
-    --print("Creating custom spray-area subfunctions for fill-/spray-types");
+    --logInfo("Creating custom spray-area subfunctions for fill-/spray-types");
 
     Utils.fmcUpdateSprayAreaFillTypeFuncs = {}
     --
@@ -740,7 +740,7 @@ function fmcModifyFSUtils.setSpraySubFuncs()
         end
     end
     if msg ~= nil then
-        print("Additional updateSprayArea sub-functions added for fillTypes: "..msg)
+        logInfo("Additional updateSprayArea sub-functions added for fillTypes: "..msg)
     end
 end
 --#############################################################################
