@@ -2,7 +2,7 @@
 <modDesc descVersion="12">
     <author>Freelance Modding Crew</author>
     <contributors>JakobT, Gonimy_Vetrom</contributors>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 
     <title>
         <en>PDA Mod Plugin - Soil Condition</en>
@@ -48,9 +48,9 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         </text>
         
         <text name="CurrentLocationScanSize">
-            <en>Map coordinate: %.1f,%.1f - Scan size: %dx%d</en>
-            <de>Map coordinate: %.1f,%.1f - Scan size: %dx%d</de>  <!-- DE: missing translation! -->
-            <ru>Map coordinate: %.1f,%.1f - Scan size: %dx%d</ru>  <!-- RU: missing translation! -->
+            <en>Map coordinate: %.0f,%.0f - Scan size: %dx%d</en>
+            <de>Map coordinate: %.0f,%.0f - Scan size: %dx%d</de>  <!-- DE: missing translation! -->
+            <ru>Map coordinate: %.0f,%.0f - Scan size: %dx%d</ru>  <!-- RU: missing translation! -->
         </text>
 
         <text name="SoilpH">

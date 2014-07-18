@@ -229,13 +229,13 @@ function PdaPlugin_SoilCondition.buildFieldCondition(specs)
     
     if x ~= nil and x==x and z==z then
         local squareSize = 10
-        local widthX, widthZ, heightX, heightZ = squareSize-0.5,0, 0,squareSize-0.5
-        x = x - squareSize/2
-        z = z - squareSize/2
     
-        table.insert(specs, (g_i18n:getText("CurrentLocationScanSize")):format(x,z,squareSize,squareSize))
+        local pdaMapX, pdaMapZ = x + g_currentMission.missionPDA.worldCenterOffsetX, z + g_currentMission.missionPDA.worldCenterOffsetZ
+        table.insert(specs, (g_i18n:getText("CurrentLocationScanSize")):format(pdaMapX,pdaMapZ,squareSize,squareSize))
         table.insert(specs, "") -- Blank line
 
+        local widthX, widthZ, heightX, heightZ = squareSize-0.5,0, 0,squareSize-0.5
+        x, z = x - (squareSize/2), z - (squareSize/2)
         for _,layer in ipairs(layers2) do
             if layer.layerId ~= nil and layer.layerId ~= 0 and layer.func ~= nil then
                 table.insert(specs, layer:func(x, z, widthX, widthZ, heightX, heightZ))
