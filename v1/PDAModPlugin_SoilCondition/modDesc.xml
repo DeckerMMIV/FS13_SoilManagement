@@ -49,7 +49,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         
         <text name="CurrentLocationScanSize">
             <en>Map coordinate: %.1f,%.1f - Scan size: %dx%d</en>
-            <de>Map coordinate: %.1f,%.1f - Scan size: %dx%d</de>  <!-- DE: missing translation! -->
+            <de>Map-Koordinaten: %.1f,%.1f - Scangröße: %dx%d</de>
             <ru>Map coordinate: %.1f,%.1f - Scan size: %dx%d</ru>  <!-- RU: missing translation! -->
         </text>
 
@@ -80,7 +80,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         </text>
         <text name="CropsInArea">
             <en>Crops in area: %s</en>
-            <de>Crops in area: %s</de>  <!-- DE: missing translation! -->
+            <de>Frucht im Bereich: %s</de>
             <ru>Посеяно на площади: %s</ru>
         </text>
 
@@ -129,14 +129,14 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         </text>
         <text name="HerbicideAffected">
             <en>Herbicide affected</en>
-            <de>Herbicide affected</de>  <!-- DE: not sure of the context - does the herbicide affect sth., or is it affected? -->
+            <de>Herbizid-beeinflusst</de>  <!-- DE: TODO: refine translation once it's used -->
             <ru>Пострадало от гербицидов</ru>
         </text>
     </UNUSED>        
 
         <text name="FruitEffectsHeader">
             <en>'Crop': 'Likes', 'Dislikes'</en>
-            <de>'Crop': 'Likes', 'Dislikes'</de>  <!-- DE: missing translation! -->
+            <de>'Frucht': 'mag', 'mag nicht'</de> <!-- DE: sounds kinda weird in German, but there's no real translation other than the direct one -->
             <ru>'Crop': 'Likes', 'Dislikes'</ru>  <!-- RU: missing translation! -->
         </text>
         <text name="FruitEffectsLine">

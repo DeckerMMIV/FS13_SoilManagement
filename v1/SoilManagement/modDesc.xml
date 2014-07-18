@@ -91,7 +91,7 @@ Decker_MMIV - FS-uk.com, forum.farming-simulator.com, modhoster.com]]>
 
         <text name="phExtremeAcidity">
             <en>Extreme acidity</en>
-            <de>Extremer Säuregehalt</de> <!-- DE: or: "Extrem sauer" -->
+            <de>Extremer Säuregehalt</de>
             <ru>Повышенная кислотность</ru>
         </text>
         <text name="phStrongAcidity">
@@ -131,7 +131,7 @@ Decker_MMIV - FS-uk.com, forum.farming-simulator.com, modhoster.com]]>
         </text>
         <text name="phExtremeAlkalinity">
             <en>Extreme alkalinity</en>
-            <de>Extrem basisch</de> <!-- DE: or: "alkalisch" -->
+            <de>Extrem basisch</de>
             <ru>Повышенная щелочность</ru>
         </text>
     </l10n>
