@@ -1,11 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="12">
     <author>Freelance Modding Crew</author>
-    <version>1.0.1</version>
+    <contributors>JakobT, Gonimy_Vetrom</contributors>
+    <version>1.0.3</version>
 
     <title>
         <en>PDA Mod Plugin - Soil Condition</en>
         <de>PDA Mod Plugin - Soil Condition</de>
+        <ru>PDA Mod Plugin - Soil Condition</ru>
     </title>
     <description>
         <en>
@@ -20,6 +22,12 @@ den Soil Management und Growth Control mod (SoilMod) hinzu.
 
 Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         </de>
+        <ru>
+<![CDATA[Требуется 'PDA MOD' - Этот плагин добавляет дополнительный экран 
+для мода управления почвами и роста контроля (SoilMod).
+
+Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
+        </ru>
     </description>
 
     <iconFilename>store_SoilCondition.dds</iconFilename>
@@ -27,37 +35,127 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
     <multiplayer supported="true"/>
 
     <l10n>
-        <text name="SoilCondition">                 <en>Soil Condition            </en> <de>Bodenzustand             </de> </text>
+        <text name="SoilCondition">
+            <en>Soil Condition</en>
+            <de>Bodenzustand</de>
+            <ru>Состояние почвы</ru>
+        </text>
 
-        <text name="SoilpH">                        <en>Soil pH: %s               </en> <de>Boden-pH-Wert: %s       </de> </text>
-        <text name="FertilizerOrganic">             <en>Fertilizer (organic): %s  </en> <de>Dünger (organisch): %s  </de> </text>
-        <text name="FertilizerSynthetic">           <en>Fertilizer (synthetic): %s</en> <de>Dünger (synthetisch): %s</de> </text>
-        <text name="Herbicide">                     <en>Herbicide: %s             </en> <de>Herbizide: %s           </de> </text>
-        <text name="WeedInfestation">               <en>Weed infestation: %s      </en> <de>Unkrautbefall: %s       </de> </text>
+        <text name="ScrollDivider">
+            <en>----- ----- ----- ----- -----</en>
+            <de>----- ----- ----- ----- -----</de>
+            <ru>----- ----- ----- ----- -----</ru>
+        </text>
+        
+        <text name="CurrentLocationScanSize">
+            <en>Map coordinate: %.1f,%.1f - Scan size: %dx%d</en>
+            <de>Map coordinate: %.1f,%.1f - Scan size: %dx%d</de>  <!-- DE: missing translation! -->
+            <ru>Map coordinate: %.1f,%.1f - Scan size: %dx%d</ru>  <!-- RU: missing translation! -->
+        </text>
 
-        <text name="SoilpH_value_denomination">     <en>%.1f (%s)                 </en> <de>%.1f (%s)               </de> </text>
+        <text name="SoilpH">
+            <en>Soil pH: %s</en>
+            <de>Boden-pH-Wert: %s</de>
+            <ru>Уровень pH: %s</ru>
+        </text>
+        <text name="FertilizerOrganic">
+            <en>Fertilizer (organic): %s</en>
+            <de>Dünger (organisch): %s</de>
+            <ru>Удобрения органические: %s</ru>
+        </text>
+        <text name="FertilizerSynthetic">
+            <en>Fertilizer (synthetic): %s</en>
+            <de>Dünger (synthetisch): %s</de>
+            <ru>Удобрения синтетические: %s</ru>
+        </text>
+        <text name="Herbicide">
+            <en>Herbicide: %s</en>
+            <de>Herbizide: %s</de>
+            <ru>Гербициды: %s</ru>
+        </text>
+        <text name="WeedInfestation">
+            <en>Weed infestation: %s</en>
+            <de>Unkrautbefall: %s</de>
+            <ru>Засоренность: %s</ru>
+        </text>
+        <text name="CropsInArea">
+            <en>Crops in area: %s</en>
+            <de>Crops in area: %s</de>  <!-- DE: missing translation! -->
+            <ru>Посеяно на площади: %s</ru>
+        </text>
 
-        <text name="FertilizerOrganic_Level">       <en>%.1f level(s)             </en> <de>%.1f Level(s)           </de> </text>
+        <text name="SoilpH_value_denomination">
+            <en>%.1f (%s)</en>
+            <de>%.1f (%s)</de>
+            <ru>%.1f (%s)</ru>
+        </text>
+        <text name="NoCalculation">
+            <en>no calculation</en>
+            <de>Keine Berechnung</de>
+            <ru>не расчитано</ru>
+        </text>
+        <text name="FertilizerOrganic_Level">
+            <en>%.1f level(s)</en>
+            <de>%.1f Level(s)</de>
+            <ru>%.1f уровень(s)</ru>
+        </text>
+        <text name="FertilizerSynthetic_Type_pct">
+            <en>type %s, %d%%</en>
+            <de>Typ %s, %d%%</de>
+            <ru>тип %s, %d%%</ru>
+        </text>
+        <text name="Herbicide_Type_pct">
+            <en>type %s, %d%%</en>
+            <de>Typ %s, %d%%</de>
+            <ru>тип %s, %d%%</ru>
+        </text>
+        <text name="WeedInfestation_pct">
+            <en>%d%%</en>
+            <de>%d%%</de>
+            <ru>%d%%</ru>
+        </text>
 
-        <text name="FertilizerSynthetic_TypeA_pct"> <en>type A, %d%%              </en> <de>Typ A, %d%%             </de> </text>
-        <text name="FertilizerSynthetic_TypeB_pct"> <en>type B, %d%%              </en> <de>Typ B, %d%%             </de> </text>
-        <text name="FertilizerSynthetic_TypeC_pct"> <en>type C, %d%%              </en> <de>Typ C, %d%%             </de> </text>
+        <text name="FruitEffects">
+            <en>Fruit Effects</en>
+            <de>Fruchtauswirkungen</de>
+            <ru>Таблица воздействий</ru>
+        </text>
+        
+    <UNUSED>        
+        <text name="FertilizerBoost">
+            <en>Fertilizer boost</en>
+            <de>Düngerverstärkung</de>
+            <ru>Переизбыток удобрений</ru>
+        </text>
+        <text name="HerbicideAffected">
+            <en>Herbicide affected</en>
+            <de>Herbicide affected</de>  <!-- DE: not sure of the context - does the herbicide affect sth., or is it affected? -->
+            <ru>Пострадало от гербицидов</ru>
+        </text>
+    </UNUSED>        
 
-        <text name="Herbicide_TypeA_pct">           <en>type A, %d%%              </en> <de>Typ A, %d%%             </de> </text>
-        <text name="Herbicide_TypeB_pct">           <en>type B, %d%%              </en> <de>Typ B, %d%%             </de> </text>
-        <text name="Herbicide_TypeC_pct">           <en>type C, %d%%              </en> <de>Typ C, %d%%             </de> </text>
+        <text name="FruitEffectsHeader">
+            <en>'Crop': 'Likes', 'Dislikes'</en>
+            <de>'Crop': 'Likes', 'Dislikes'</de>  <!-- DE: missing translation! -->
+            <ru>'Crop': 'Likes', 'Dislikes'</ru>  <!-- RU: missing translation! -->
+        </text>
+        <text name="FruitEffectsLine">
+            <en>%s: %s, %s</en>
+            <de>%s: %s, %s</de>
+            <ru>%s: %s, %s</ru>
+        </text>
 
-        <text name="WeedInfestation_pct">           <en>%d%%                      </en> <de>%d%%                    </de> </text>
+        <text name="FertilizerType">
+            <en>Fertilizer %s</en>
+            <de>Dünger %s</de>
+            <ru>Удобрение %s</ru>
+        </text>
+        <text name="HerbicideType">
+            <en>Herbicide %s</en>
+            <de>Herbizid %s</de>
+            <ru>Гербицид %s</ru>
+        </text>
 
-        <text name="None">                          <en>none                      </en> <de>keine/r                 </de> </text> <!-- DE: context? none ... what? (due to German male vs. female vs. neuter) -->
-        <text name="NotAvailable">                  <en>(not available)           </en> <de>(nicht verfügbar)       </de> </text>
-        <text name="NoCalculation">                 <en>no calculation            </en> <de>Keine Berechnung        </de> </text>
-
-        <text name="FruitEffects">                  <en>Fruit Effects             </en> <de>Fruchtauswirkungen      </de> </text>
-        <text name="FertilizerBoost">               <en>Fertilizer boost          </en> <de>Düngerverstärkung       </de> </text>
-        <text name="HerbicideAffected">             <en>Herbicide affected        </en> <de>Herbicide affected      </de> </text> <!-- DE: not sure of the context - does the herbicide affect sth., or is it affected? -->
-        <text name="FertilizerType">                <en>Fertilizer %s             </en> <de>Dünger %s               </de> </text>
-        <text name="HerbicideType">                 <en>Herbicide %s              </en> <de>Herbizid %s             </de> </text>
     </l10n>
 
     <extraSourceFiles>

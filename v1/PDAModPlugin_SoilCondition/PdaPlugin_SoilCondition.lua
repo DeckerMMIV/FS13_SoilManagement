@@ -71,7 +71,7 @@ function PdaPlugin_SoilCondition.subPageDraw(self, parm, origMissionPdaDrawFunc)
         PdaPlugin_SoilCondition.timeout = g_currentMission.time + 1000
         local specs = {}
         PdaPlugin_SoilCondition.buildFieldCondition(specs)
-        PdaPlugin_SoilCondition.scrollTxts,_ = PdaPlugin_SoilCondition.makeScrollText(specs, self.pdaFontSize, self.pdaWidth)
+        PdaPlugin_SoilCondition.scrollTxts = PdaPlugin_SoilCondition.makeScrollText(specs, self.pdaFontSize, self.pdaWidth)
     end
     
     setTextAlignment(RenderText.ALIGN_LEFT);
@@ -79,8 +79,10 @@ function PdaPlugin_SoilCondition.subPageDraw(self, parm, origMissionPdaDrawFunc)
     setTextBold(false);
     --
     if PdaPlugin_SoilCondition.scrollTxts ~= nil then
-        --local row = (g_currentMission.time - PdaPlugin_SoilCondition.scrollLine)
         local row = 0
+        --if PdaPlugin_SoilCondition.scrollLine ~= nil then
+        --    row = (g_currentMission.time - PdaPlugin_SoilCondition.scrollLine)
+        --end
         local posY = self.pdaHeadRow - (0 * self.pdaFontSize) + ((row % 1000) / 1000 * self.pdaFontSize)
         
         row = math.floor(row / 1000)
@@ -108,7 +110,7 @@ function PdaPlugin_SoilCondition.buildFieldCondition(specs)
             func = function(self, x, z, widthX, widthZ, heightX, heightZ)
                 local sumPixels1,numPixels1 = getDensityParallelogram(self.layerId, x, z, widthX, widthZ, heightX, heightZ, 0, 3)
 
-                local txt = ""
+                local txt = "-"
                 if numPixels1>0 then
                     local phValue = 0;
                     local phDenomination = g_i18n:getText("NoCalculation")
@@ -120,8 +122,6 @@ function PdaPlugin_SoilCondition.buildFieldCondition(specs)
                         end
                     end
                     txt = (g_i18n:getText("SoilpH_value_denomination")):format(phValue, phDenomination)
-                else
-                    txt = g_i18n:getText("NotAvailable")
                 end
                 return (g_i18n:getText("SoilpH")):format(txt)
             end,
@@ -131,11 +131,9 @@ function PdaPlugin_SoilCondition.buildFieldCondition(specs)
             func = function(self, x, z, widthX, widthZ, heightX, heightZ)
                 local sumPixels1,numPixels1 = getDensityParallelogram(self.layerId, x, z, widthX, widthZ, heightX, heightZ, 0, 2)
 
-                local txt = ""
+                local txt = "-"
                 if sumPixels1>0 then
                     txt = (g_i18n:getText("FertilizerOrganic_Level")):format(sumPixels1/numPixels1)
-                else
-                    txt = g_i18n:getText("None")
                 end
                 return (g_i18n:getText("FertilizerOrganic")):format(txt)
             end,
@@ -146,15 +144,13 @@ function PdaPlugin_SoilCondition.buildFieldCondition(specs)
                 local sumPixels1,numPixels1 = getDensityParallelogram(self.layerId, x, z, widthX, widthZ, heightX, heightZ, 0, 1)
                 local sumPixels2,numPixels2 = getDensityParallelogram(self.layerId, x, z, widthX, widthZ, heightX, heightZ, 1, 1)
 
-                local txt = ""
+                local txt = "-"
                 if sumPixels1>0 and sumPixels2>0 then
-                    txt = (g_i18n:getText("FertilizerSynthetic_TypeC_pct")):format(100 * (sumPixels1/numPixels1+sumPixels2/numPixels2)/2)
+                    txt = (g_i18n:getText("FertilizerSynthetic_Type_pct")):format("C", 100 * (sumPixels1/numPixels1+sumPixels2/numPixels2)/2)
                 elseif sumPixels1>0 then
-                    txt = (g_i18n:getText("FertilizerSynthetic_TypeA_pct")):format(100 * sumPixels1/numPixels1)
+                    txt = (g_i18n:getText("FertilizerSynthetic_Type_pct")):format("A", 100 * sumPixels1/numPixels1)
                 elseif sumPixels2>0 then
-                    txt = (g_i18n:getText("FertilizerSynthetic_TypeB_pct")):format(100 * sumPixels2/numPixels2)
-                else
-                    txt = g_i18n:getText("None")
+                    txt = (g_i18n:getText("FertilizerSynthetic_Type_pct")):format("B", 100 * sumPixels2/numPixels2)
                 end
                 return (g_i18n:getText("FertilizerSynthetic")):format(txt)
             end,
@@ -165,15 +161,13 @@ function PdaPlugin_SoilCondition.buildFieldCondition(specs)
                 local sumPixels1,numPixels1 = getDensityParallelogram(self.layerId, x, z, widthX, widthZ, heightX, heightZ, 0, 1)
                 local sumPixels2,numPixels2 = getDensityParallelogram(self.layerId, x, z, widthX, widthZ, heightX, heightZ, 1, 1)
                 
-                local txt = ""
+                local txt = "-"
                 if sumPixels1>0 and sumPixels2>0 then
-                    txt = (g_i18n:getText("Herbicide_TypeC_pct")):format(100 * (sumPixels1/numPixels1+sumPixels2/numPixels2)/2)
+                    txt = (g_i18n:getText("Herbicide_Type_pct")):format("C", 100 * (sumPixels1/numPixels1+sumPixels2/numPixels2)/2)
                 elseif sumPixels1>0 then
-                    txt = (g_i18n:getText("Herbicide_TypeA_pct")):format(100 * sumPixels1/numPixels1)
+                    txt = (g_i18n:getText("Herbicide_Type_pct")):format("A", 100 * sumPixels1/numPixels1)
                 elseif sumPixels2>0 then
-                    txt = (g_i18n:getText("Herbicide_TypeB_pct")):format(100 * sumPixels2/numPixels2)
-                else
-                    txt = g_i18n:getText("None")
+                    txt = (g_i18n:getText("Herbicide_Type_pct")):format("B", 100 * sumPixels2/numPixels2)
                 end
                 return (g_i18n:getText("Herbicide")):format(txt)
             end,
@@ -184,13 +178,11 @@ function PdaPlugin_SoilCondition.buildFieldCondition(specs)
                 local sumPixels1,numPixels1 = getDensityParallelogram(self.layerId, x, z, widthX, widthZ, heightX, heightZ, 0, 2)
                 --local sumPixels2,numPixels2 = getDensityParallelogram(self.layerId, x, z, widthX, widthZ, heightX, heightZ, 2, 1)
                 
-                local txt = ""
+                local txt = "-"
                 if numPixels1>0 --[[ and numPixels2>0 ]] then
                     local weedPct = (sumPixels1/(3*numPixels1))
                     --local alivePct = sumPixels2/numPixels2
                     txt = (g_i18n:getText("WeedInfestation_pct")):format(weedPct*100)
-                else
-                    txt = g_i18n:getText("NotAvailable")
                 end
                 return (g_i18n:getText("WeedInfestation")):format(txt)
             end,
@@ -223,7 +215,7 @@ function PdaPlugin_SoilCondition.buildFieldCondition(specs)
                         end
                     end
                 end
-                return ("Crops in area: %s"):format(foundFruits or "(none)")
+                return (g_i18n:getText("CropsInArea")):format(foundFruits or "-")
             end,
         },
     }
@@ -241,8 +233,8 @@ function PdaPlugin_SoilCondition.buildFieldCondition(specs)
         x = x - squareSize/2
         z = z - squareSize/2
     
-        table.insert(specs, ("PlayerLoc=%.1f,%.1f,%.1f - Area=%dx%d"):format(x,y,z,squareSize,squareSize))
-        table.insert(specs, "")
+        table.insert(specs, (g_i18n:getText("CurrentLocationScanSize")):format(x,z,squareSize,squareSize))
+        table.insert(specs, "") -- Blank line
 
         for _,layer in ipairs(layers2) do
             if layer.layerId ~= nil and layer.layerId ~= 0 and layer.func ~= nil then
@@ -262,7 +254,7 @@ function PdaPlugin_SoilCondition.subPage2Draw(self, parm, origMissionPdaDrawFunc
     if PdaPlugin_SoilCondition.fruitEffects == nil then
         local specs = {}
         PdaPlugin_SoilCondition.buildFruitEffects(specs)
-        PdaPlugin_SoilCondition.fruitEffects = PdaPlugin_SoilCondition.makeScrollText(specs, self.pdaFontSize, self.pdaWidth)
+        PdaPlugin_SoilCondition.fruitEffects, PdaPlugin_SoilCondition.scrollLine = PdaPlugin_SoilCondition.makeScrollText(specs, self.pdaFontSize, self.pdaWidth)
     end
     
     setTextAlignment(RenderText.ALIGN_LEFT);
@@ -270,8 +262,10 @@ function PdaPlugin_SoilCondition.subPage2Draw(self, parm, origMissionPdaDrawFunc
     setTextBold(false);
     --
     if PdaPlugin_SoilCondition.fruitEffects ~= nil then
-        --local row = (g_currentMission.time - PdaPlugin_SoilCondition.scrollLine)
         local row = 0
+        if PdaPlugin_SoilCondition.scrollLine ~= nil then
+            row = (g_currentMission.time - PdaPlugin_SoilCondition.scrollLine)
+        end
         local posY = self.pdaHeadRow - (0 * self.pdaFontSize) + ((row % 1000) / 1000 * self.pdaFontSize)
         
         row = math.floor(row / 1000)
@@ -292,6 +286,9 @@ end
 
 --
 function PdaPlugin_SoilCondition.buildFruitEffects(specs)
+    table.insert(specs, g_i18n:getText("FruitEffectsHeader"));
+    table.insert(specs, ""); -- Blank line
+    
     for i = 1, FruitUtil.NUM_FRUITTYPES do
         local fruitDesc = FruitUtil.fruitIndexToDesc[i]
         local fruitLayer = g_currentMission.fruits[fruitDesc.index];
@@ -315,10 +312,11 @@ function PdaPlugin_SoilCondition.buildFruitEffects(specs)
             
             if fertilizerBoost ~= nil or herbicideAffected ~= nil then
                 local fruitName = g_i18n:hasText(fruitDesc.name) and g_i18n:getText(fruitDesc.name) or fruitDesc.name;
-                fertilizerBoost   = (fertilizerBoost == nil and "-" or (g_i18n:getText("FertilizerType")):format(fertilizerBoost))
+                fertilizerBoost   = (fertilizerBoost   == nil and "-" or (g_i18n:getText("FertilizerType")):format(fertilizerBoost))
                 herbicideAffected = (herbicideAffected == nil and "-" or (g_i18n:getText("HerbicideType")):format(herbicideAffected))
-                
-                local txt = ("%s: %s, %s"):format(fruitName, fertilizerBoost, herbicideAffected)
+
+                -- TODO: Make this show in columns...
+                local txt = (g_i18n:getText("FruitEffectsLine")):format(fruitName, fertilizerBoost, herbicideAffected)
                 table.insert(specs, txt);
             end
         end
@@ -330,7 +328,6 @@ end
 function PdaPlugin_SoilCondition.makeScrollText(specs, fontSize, maxTextWidth)
     -- Convert to scrollable text-area
     local scrollTxts = {}
-    -- scrollLine = g_currentMission.time
     for _,spec in pairs(specs) do
         local line = nil
         local words = Utils.splitString(" ",spec)
@@ -355,11 +352,11 @@ function PdaPlugin_SoilCondition.makeScrollText(specs, fontSize, maxTextWidth)
         --
     end
     table.insert(scrollTxts, "")
-    table.insert(scrollTxts, "----- -----")
+    table.insert(scrollTxts, g_i18n:getText("ScrollDivider"))
     table.insert(scrollTxts, "")
-    while table.getn(scrollTxts) < 15 do
-        table.insert(scrollTxts, "")
-    end
+    --while table.getn(scrollTxts) < 15 do
+    --    table.insert(scrollTxts, "")
+    --end
     
     return scrollTxts, g_currentMission.time
 end

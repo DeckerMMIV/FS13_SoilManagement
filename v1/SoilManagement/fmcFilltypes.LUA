@@ -89,7 +89,7 @@ function fmcFilltypes.updateFillTypeOverlays()
             g_currentMission.fillTypeOverlays[fillTypeDesc.index]:delete();
             g_currentMission.fillTypeOverlays[fillTypeDesc.index] = nil;
         end
-        if fillTypeDesc.hudOverlayFilename ~= nil and fillTypeDesc.hudOverlayFilename ~= "" then   --and fileExists(fillTypeDesc.hudOverlayFilename) then
+        if fillTypeDesc.hudOverlayFilename ~= nil and fillTypeDesc.hudOverlayFilename ~= "" then
             g_currentMission:addFillTypeOverlay(fillTypeDesc.index, fillTypeDesc.hudOverlayFilename)
         end
     end
