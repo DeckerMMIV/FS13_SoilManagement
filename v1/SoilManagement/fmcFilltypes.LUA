@@ -29,7 +29,8 @@ function fmcFilltypes.setup(mapFilltypeOverlaysDirectory, simplisticMode)
     if not Utils.endsWith(mapFilltypeOverlaysDirectory, "/") then
         mapFilltypeOverlaysDirectory = mapFilltypeOverlaysDirectory .. "/"
     end
-    --
+    fmcFilltypes.mapFilltypeOverlaysDirectory = mapFilltypeOverlaysDirectory
+
     fmcFilltypes.setupFillTypes(mapFilltypeOverlaysDirectory)
 end
 
@@ -38,8 +39,8 @@ function fmcFilltypes.teardown()
 end
 
 --
-function fmcFilltypes.setupFillTypes(mapFilltypeOverlaysDirectory)
-    logInfo("Registering new spray-types and adding more overlay-icons")
+function fmcFilltypes.setupFillTypes()
+    logInfo("Registering new spray-types")
 
     local herbicide1Overlay = "herbicide1.dds"
     local fertilizer1Overlay = "fertilizer1.dds"
@@ -49,20 +50,44 @@ function fmcFilltypes.setupFillTypes(mapFilltypeOverlaysDirectory)
     end
 
     -- Register some new spray types
-    -- TODO - Provide some better usage-per-sqm and price-per-liter 
-    Sprayer.registerSprayType("kalk",        g_i18n:getText("kalk"),         0.3,  3, true, Utils.getFilename("kalk.dds",        mapFilltypeOverlaysDirectory));
-    Sprayer.registerSprayType("herbicide",   g_i18n:getText("herbicide"),    0.3,  5, true, Utils.getFilename(herbicide1Overlay, mapFilltypeOverlaysDirectory));
+    -- TODO - Provide some better usage-per-sqm and price-per-liter
+    Sprayer.registerSprayType("kalk",        g_i18n:getText("kalk"),         0.3,  3, true, Utils.getFilename("kalk.dds",        fmcFilltypes.mapFilltypeOverlaysDirectory));
+    Sprayer.registerSprayType("herbicide",   g_i18n:getText("herbicide"),    0.3,  5, true, Utils.getFilename(herbicide1Overlay, fmcFilltypes.mapFilltypeOverlaysDirectory));
     if not fmcFilltypes.simplisticMode then
-        Sprayer.registerSprayType("herbicide2",  g_i18n:getText("herbicide2"),   0.3,  5, true, Utils.getFilename("herbicide2.dds",  mapFilltypeOverlaysDirectory));
-        Sprayer.registerSprayType("herbicide3",  g_i18n:getText("herbicide3"),   0.3,  5, true, Utils.getFilename("herbicide3.dds",  mapFilltypeOverlaysDirectory));
-        Sprayer.registerSprayType("fertilizer2", g_i18n:getText("fertilizer2"),  0.3,  5, true, Utils.getFilename("fertilizer2.dds", mapFilltypeOverlaysDirectory));
-        Sprayer.registerSprayType("fertilizer3", g_i18n:getText("fertilizer3"),  0.3,  5, true, Utils.getFilename("fertilizer3.dds", mapFilltypeOverlaysDirectory));
+        Sprayer.registerSprayType("herbicide2",  g_i18n:getText("herbicide2"),   0.3,  5, true, Utils.getFilename("herbicide2.dds",  fmcFilltypes.mapFilltypeOverlaysDirectory));
+        Sprayer.registerSprayType("herbicide3",  g_i18n:getText("herbicide3"),   0.3,  5, true, Utils.getFilename("herbicide3.dds",  fmcFilltypes.mapFilltypeOverlaysDirectory));
+        Sprayer.registerSprayType("fertilizer2", g_i18n:getText("fertilizer2"),  0.3,  5, true, Utils.getFilename("fertilizer2.dds", fmcFilltypes.mapFilltypeOverlaysDirectory));
+        Sprayer.registerSprayType("fertilizer3", g_i18n:getText("fertilizer3"),  0.3,  5, true, Utils.getFilename("fertilizer3.dds", fmcFilltypes.mapFilltypeOverlaysDirectory));
+    end
+end
+
+function fmcFilltypes.addMoreFillTypeOverlayIcons()
+    logInfo("Adding overlay-icons for vanilla fill-types that has none")
+
+    local herbicide1Overlay = "herbicide1.dds"
+    local fertilizer1Overlay = "fertilizer1.dds"
+    if fmcFilltypes.simplisticMode then
+        herbicide1Overlay = "herbicide.dds"
+        fertilizer1Overlay = "fertilizer.dds"
     end
 
-    -- Set overlay icons for vanilla fill types
-    if Fillable.fillTypeIndexToDesc[Fillable.FILLTYPE_FERTILIZER  ] ~= nil then Fillable.fillTypeIndexToDesc[Fillable.FILLTYPE_FERTILIZER  ].hudOverlayFilename = Utils.getFilename(fertilizer1Overlay,  mapFilltypeOverlaysDirectory); end;
-    if Fillable.fillTypeIndexToDesc[Fillable.FILLTYPE_MANURE      ] ~= nil then Fillable.fillTypeIndexToDesc[Fillable.FILLTYPE_MANURE      ].hudOverlayFilename = Utils.getFilename("manure.dds",        mapFilltypeOverlaysDirectory); end;
-    if Fillable.fillTypeIndexToDesc[Fillable.FILLTYPE_LIQUIDMANURE] ~= nil then Fillable.fillTypeIndexToDesc[Fillable.FILLTYPE_LIQUIDMANURE].hudOverlayFilename = Utils.getFilename("liquidManure.dds",  mapFilltypeOverlaysDirectory); end;
+    -- Set overlay icons for vanilla fill types, if they do not already have one
+    local function addFillTypeHudOverlayIcon(fillType, overlayFilename, force)
+        if fillType ~= nil and Fillable.fillTypeIndexToDesc[fillType] ~= nil then
+            if force or Fillable.fillTypeIndexToDesc[fillType].hudOverlayFilename == nil then
+                Fillable.fillTypeIndexToDesc[fillType].hudOverlayFilename = overlayFilename;
+            end
+            if force and g_currentMission.fillTypeOverlays[fillType] ~= nil then
+                -- Remove filltype overlay icon, so it can be correctly updated later.
+                g_currentMission.fillTypeOverlays[fillType]:delete();
+                g_currentMission.fillTypeOverlays[fillType] = nil;
+            end
+        end
+    end
+
+    addFillTypeHudOverlayIcon(Fillable.FILLTYPE_FERTILIZER  , Utils.getFilename(fertilizer1Overlay,  fmcFilltypes.mapFilltypeOverlaysDirectory), not fmcFilltypes.simplisticMode);
+    addFillTypeHudOverlayIcon(Fillable.FILLTYPE_MANURE      , Utils.getFilename("manure.dds",        fmcFilltypes.mapFilltypeOverlaysDirectory), false);
+    addFillTypeHudOverlayIcon(Fillable.FILLTYPE_LIQUIDMANURE, Utils.getFilename("liquidManure.dds",  fmcFilltypes.mapFilltypeOverlaysDirectory), false);
 end
 
 --
@@ -80,16 +105,19 @@ function fmcFilltypes.setupFruitFertilizerBoostHerbicideAffected()
     end
 end
 
---    
+--
 function fmcFilltypes.updateFillTypeOverlays()
     logInfo("Updating fill-types HUD overlay-icons")
     for _,fillTypeDesc in pairs(Fillable.fillTypeIndexToDesc) do
-        if g_currentMission.fillTypeOverlays[fillTypeDesc.index] ~= nil then
-            -- remove existing overlay icon, as the graphics may have been changed later.
-            g_currentMission.fillTypeOverlays[fillTypeDesc.index]:delete();
-            g_currentMission.fillTypeOverlays[fillTypeDesc.index] = nil;
-        end
-        if fillTypeDesc.hudOverlayFilename ~= nil and fillTypeDesc.hudOverlayFilename ~= "" then
+-- Deleting/cleaning up the fillTypeOverlays here, conflicts with zzz_fillTypeOverlays.zip
+--[[
+--        if g_currentMission.fillTypeOverlays[fillTypeDesc.index] ~= nil then
+--            -- remove existing overlay icon, as the graphics may have been changed later.
+--            g_currentMission.fillTypeOverlays[fillTypeDesc.index]:delete();
+--            g_currentMission.fillTypeOverlays[fillTypeDesc.index] = nil;
+--        end
+--]]
+        if g_currentMission.fillTypeOverlays[fillTypeDesc.index] == nil and fillTypeDesc.hudOverlayFilename ~= nil and fillTypeDesc.hudOverlayFilename ~= "" then
             g_currentMission:addFillTypeOverlay(fillTypeDesc.index, fillTypeDesc.hudOverlayFilename)
         end
     end

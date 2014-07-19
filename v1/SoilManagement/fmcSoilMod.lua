@@ -91,6 +91,7 @@ end
 --
 function fmcSoilMod.postInit_loadMapFinished()
     log("fmcSoilMod - postInit_loadMapFinished()")
+    fmcFilltypes.addMoreFillTypeOverlayIcons()
     fmcFilltypes.setupFruitFertilizerBoostHerbicideAffected()
     if fmcGrowthControl.setup(fmcSoilMod.simplisticMode) then
         fmcModifyFSUtils.setup(fmcSoilMod.simplisticMode)
