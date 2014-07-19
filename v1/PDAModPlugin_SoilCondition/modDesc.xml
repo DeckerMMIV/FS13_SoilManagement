@@ -50,7 +50,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         <text name="CurrentLocationScanSize">
             <en>Map coordinate: %.0f,%.0f - Scan size: %dx%d</en>
             <de>Map-Koordinaten: %.0f,%.0f - Scangröße: %dx%d</de>
-            <ru>Map coordinate: %.0f,%.0f - Scan size: %dx%d</ru>  <!-- RU: missing translation! -->
+            <ru>Мое положение: %.0f,%.0f - Площадь: %dx%d</ru>  <!-- RU: missing translation! -->
         </text>
 
         <text name="SoilpH">
@@ -97,7 +97,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         <text name="FertilizerOrganic_Level">
             <en>%.1f level(s)</en>
             <de>%.1f Level(s)</de>
-            <ru>%.1f уровень(s)</ru>
+            <ru>%.1f уровень</ru>
         </text>
         <text name="FertilizerSynthetic_Type_pct">
             <en>type %s, %d%%</en>
@@ -137,7 +137,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         <text name="FruitEffectsHeader">
             <en>'Crop': 'Likes', 'Dislikes'</en>
             <de>'Frucht': 'mag', 'mag nicht'</de> <!-- DE: sounds kinda weird in German, but there's no real translation other than the direct one -->
-            <ru>'Crop': 'Likes', 'Dislikes'</ru>  <!-- RU: missing translation! -->
+            <ru>'Культура': 'Подходит', 'Не подходит'</ru>  <!-- RU: missing translation! -->
         </text>
         <text name="FruitEffectsLine">
             <en>%s: %s, %s</en>
