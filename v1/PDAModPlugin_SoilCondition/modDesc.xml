@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="12">
     <author>Freelance Modding Crew</author>
-    <contributors>JakobT, Gonimy_Vetrom</contributors>
-    <version>1.0.5</version>
+    <contributors>JakobT, Gonimy_Vetrom, VAHA</contributors>
+    <version>1.0.7</version>
 
     <title>
         <en>PDA Mod Plugin - Soil Condition</en>
@@ -42,15 +42,15 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         </text>
 
         <text name="ScrollDivider">
-            <en>----- ----- ----- ----- -----</en>
-            <de>----- ----- ----- ----- -----</de>
-            <ru>----- ----- ----- ----- -----</ru>
+            <en>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</en>
+            <de>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</de>
+            <ru>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</ru>
         </text>
         
         <text name="CurrentLocationScanSize">
             <en>Map coordinate: %.0f,%.0f - Scan size: %dx%d</en>
             <de>Map-Koordinaten: %.0f,%.0f - Scangröße: %dx%d</de>
-            <ru>Мое положение: %.0f,%.0f - Площадь: %dx%d</ru>  <!-- RU: missing translation! -->
+            <ru>Мое положение: %.0f,%.0f - Площадь: %dx%d</ru>
         </text>
 
         <text name="SoilpH">
@@ -135,14 +135,10 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
     </UNUSED>        
 
         <text name="FruitEffectsHeader">
-            <en>'Crop': 'Likes', 'Dislikes'</en>
-            <de>'Frucht': 'mag', 'mag nicht'</de> <!-- DE: sounds kinda weird in German, but there's no real translation other than the direct one -->
-            <ru>'Культура': 'Подходит', 'Не подходит'</ru>  <!-- RU: missing translation! -->
-        </text>
-        <text name="FruitEffectsLine">
-            <en>%s: %s, %s</en>
-            <de>%s: %s, %s</de>
-            <ru>%s: %s, %s</ru>
+            <!-- Text must be delimited by   |   to get 3 columns in PDA screen -->
+            <en>'Crop'|'Likes'|'Dislikes'</en>
+            <de>'Frucht'|'mag'|'mag nicht'</de> <!-- DE: sounds kinda weird in German, but there's no real translation other than the direct one -->
+            <ru>'Культура'|'Подходит'|'Не подходит'</ru>
         </text>
 
         <text name="FertilizerType">

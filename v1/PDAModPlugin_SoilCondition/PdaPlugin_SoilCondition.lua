@@ -1,4 +1,4 @@
---
+﻿--
 -- PdaPlugin_SoilCondition
 --
 -- @author  Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com
@@ -253,8 +253,8 @@ function PdaPlugin_SoilCondition.subPage2Draw(self, parm, origMissionPdaDrawFunc
     --
     if PdaPlugin_SoilCondition.fruitEffects == nil then
         local specs = {}
-        PdaPlugin_SoilCondition.buildFruitEffects(specs)
-        PdaPlugin_SoilCondition.fruitEffects, PdaPlugin_SoilCondition.scrollLine = PdaPlugin_SoilCondition.makeScrollText(specs, self.pdaFontSize, self.pdaWidth)
+        PdaPlugin_SoilCondition.buildFruitEffects(specs, self.pdaFontSize)
+        PdaPlugin_SoilCondition.fruitEffects, PdaPlugin_SoilCondition.scrollLine = PdaPlugin_SoilCondition.makeScrollText(specs, self.pdaFontSize, self.pdaWidth, 3)
     end
     
     setTextAlignment(RenderText.ALIGN_LEFT);
@@ -273,7 +273,7 @@ function PdaPlugin_SoilCondition.subPage2Draw(self, parm, origMissionPdaDrawFunc
         
         row = (row % maxRows) + 1
         while posY > self.pdaMapPosY do
-            renderText(self.pdaX, posY, self.pdaFontSize, PdaPlugin_SoilCondition.fruitEffects[row]);
+            PdaPlugin_SoilCondition.fruitEffects[row](self.pdaX, posY) -- draws the texts
             posY = posY - self.pdaFontSize
             row = (row % maxRows) + 1
         end
@@ -286,7 +286,7 @@ end
 
 --
 function PdaPlugin_SoilCondition.buildFruitEffects(specs)
-    table.insert(specs, g_i18n:getText("FruitEffectsHeader"));
+    table.insert(specs, Utils.splitString("|", g_i18n:getText("FruitEffectsHeader")))
     table.insert(specs, ""); -- Blank line
     
     for i = 1, FruitUtil.NUM_FRUITTYPES do
@@ -315,9 +315,7 @@ function PdaPlugin_SoilCondition.buildFruitEffects(specs)
                 fertilizerBoost   = (fertilizerBoost   == nil and "-" or (g_i18n:getText("FertilizerType")):format(fertilizerBoost))
                 herbicideAffected = (herbicideAffected == nil and "-" or (g_i18n:getText("HerbicideType")):format(herbicideAffected))
 
-                -- TODO: Make this show in columns...
-                local txt = (g_i18n:getText("FruitEffectsLine")):format(fruitName, fertilizerBoost, herbicideAffected)
-                table.insert(specs, txt);
+                table.insert(specs, {fruitName, fertilizerBoost, herbicideAffected});
             end
         end
     end
@@ -325,38 +323,109 @@ end
 
 
 --
-function PdaPlugin_SoilCondition.makeScrollText(specs, fontSize, maxTextWidth)
-    -- Convert to scrollable text-area
+function PdaPlugin_SoilCondition.makeScrollText(specs, fontSize, maxTextWidth, numCols)
     local scrollTxts = {}
-    for _,spec in pairs(specs) do
-        local line = nil
-        local words = Utils.splitString(" ",spec)
-        local j = table.getn(words)
-        if j > 0 then
-            local i = 1
-            line = words[i]
-            i=i+1
-            while i <= j do
-                if getTextWidth(fontSize, line.." "..words[i]) > maxTextWidth then
-                    table.insert(scrollTxts, line)
-                    line = words[i]
-                else
-                    line = line .. " " .. words[i]
+    local colMaxWidth = {}
+    
+    -- Is text going into columns?
+    if numCols ~= nil then
+        -- Find max column widths
+        local colPadding = getTextWidth(fontSize, "  ")
+        local col1MaxChar = 0 
+        local col1MaxTxt = ""
+        for _,spec in pairs(specs) do
+            if type(spec) == type({}) then
+                local specCount = table.getn(spec)
+                for idx,colTxt in ipairs(spec) do
+                    local txtWidth = getTextWidth(fontSize, colTxt) + (idx<specCount and colPadding or 0)
+                    colMaxWidth[idx] = (colMaxWidth[idx]~=nil and math.max(txtWidth, colMaxWidth[idx]) or txtWidth)
                 end
-                i=i+1
+                if spec[1]:len() > col1MaxChar then
+                    col1MaxChar = spec[1]:len()
+                    col1MaxTxt = spec[1]
+                end
             end
         end
-        if line ~= nil then
-            table.insert(scrollTxts, line)
+        -- Determine if first column should be truncated
+        local totalWidth = 0
+        for _,txtWidth in pairs(colMaxWidth) do
+            totalWidth = totalWidth + txtWidth;
         end
-        --
+        if totalWidth > maxTextWidth and col1MaxChar > 10 then
+            -- Find best width of first column
+            for maxChars = col1MaxChar,10,-1 do
+                local newTxtWidth = getTextWidth(fontSize, col1MaxTxt:sub(1,maxChars) .. "…") + colPadding
+                if maxChars == 10 or totalWidth - colMaxWidth[1] + newTxtWidth <= maxTextWidth then
+                    col1MaxChar = maxChars
+                    colMaxWidth[1] = newTxtWidth
+                    break
+                end
+            end
+            -- Truncate column-1 texts longer than the found max-chars.
+            for _,spec in pairs(specs) do
+                if type(spec) == type({}) then
+                    if spec[1]:len() > col1MaxChar then
+                        spec[1] = spec[1]:sub(1,col1MaxChar) .. "…"; -- 0x2026  -- "…"
+                    end
+                end
+            end
+        end
+        
+        -- Build the scrollable array, where functions are then used to render text later.
+        for _,spec in pairs(specs) do
+            if type(spec) == type({}) then
+                table.insert(scrollTxts, function(x,y)
+                        local offset = 0
+                        for idx,txt in ipairs(spec) do
+                            renderText(x+offset, y, fontSize, txt);
+                            offset = offset + colMaxWidth[idx]
+                        end
+                    end
+                )
+            elseif type(spec) == type("") and spec ~= "" then
+                table.insert(scrollTxts, function(x,y)
+                        renderText(x, y, fontSize, spec);
+                    end
+                )
+            else
+                table.insert(scrollTxts, function(x,y) end) -- blank line
+            end
+        end
+        table.insert(scrollTxts, function(x,y) end) -- blank line
+        table.insert(scrollTxts, function(x,y) renderText(x,y,fontSize, g_i18n:getText("ScrollDivider")) end)
+        table.insert(scrollTxts, function(x,y) end) -- blank line
+    else
+        -- Convert to scrollable text-area
+        for _,spec in pairs(specs) do
+            local line = nil
+            local words = Utils.splitString(" ",spec)
+            local j = table.getn(words)
+            if j > 0 then
+                local i = 1
+                line = words[i]
+                i=i+1
+                while i <= j do
+                    if getTextWidth(fontSize, line.." "..words[i]) > maxTextWidth then
+                        table.insert(scrollTxts, line)
+                        line = words[i]
+                    else
+                        line = line .. " " .. words[i]
+                    end
+                    i=i+1
+                end
+            end
+            if line ~= nil then
+                table.insert(scrollTxts, line)
+            end
+            --
+        end
+        while table.getn(scrollTxts) < 12 do
+            table.insert(scrollTxts, "")
+        end
+        --table.insert(scrollTxts, "")
+        --table.insert(scrollTxts, g_i18n:getText("ScrollDivider"))
+        --table.insert(scrollTxts, "")
     end
-    table.insert(scrollTxts, "")
-    table.insert(scrollTxts, g_i18n:getText("ScrollDivider"))
-    table.insert(scrollTxts, "")
-    --while table.getn(scrollTxts) < 15 do
-    --    table.insert(scrollTxts, "")
-    --end
     
     return scrollTxts, g_currentMission.time
 end
