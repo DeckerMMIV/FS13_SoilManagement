@@ -207,11 +207,15 @@ function PdaPlugin_SoilCondition.buildFieldCondition(specs)
                         setDensityCompareParams(fruit.id, "greater", 0)
                         --
                         if numPixels1 > 0 or numPixels2 > 0 then
-                            local fruitName = FruitUtil.fruitIndexToDesc[fruitIndex].name
-                            if g_i18n:hasText(fruitName) then
-                                fruitName = g_i18n:getText(fruitName)
+                            local fillTypeIndex = FruitUtil.fruitTypeToFillType[fruitIndex]
+                            local fillTypeName = Fillable.fillTypeIndexToDesc[fillTypeIndex].nameI18N
+                            if fillTypeName == nil then
+                                fillTypeName = Fillable.fillTypeIndexToDesc[fillTypeIndex].name
+                                if g_i18n:hasText(fillTypeName) then
+                                    fillTypeName = g_i18n:getText(fillTypeName)
+                                end
                             end
-                            foundFruits = ((foundFruits == nil) and "" or foundFruits..", ") .. fruitName
+                            foundFruits = ((foundFruits == nil) and "" or foundFruits..", ") .. fillTypeName
                         end
                     end
                 end
@@ -296,26 +300,35 @@ function PdaPlugin_SoilCondition.buildFruitEffects(specs)
             
             local fertilizerBoost = nil
             if fruitDesc.fmcBoostFertilizer ~= nil then
-                if     fruitDesc.fmcBoostFertilizer == Fillable.FILLTYPE_FERTILIZER  then fertilizerBoost = "A";
-                elseif fruitDesc.fmcBoostFertilizer == Fillable.FILLTYPE_FERTILIZER2 then fertilizerBoost = "B";
-                elseif fruitDesc.fmcBoostFertilizer == Fillable.FILLTYPE_FERTILIZER3 then fertilizerBoost = "C";
+                local fillTypeDesc = Fillable.fillTypeIndexToDesc[fruitDesc.fmcBoostFertilizer]
+                if fillTypeDesc ~= nil and fillTypeDesc.nameI18N ~= nil then
+                    fertilizerBoost = fillTypeDesc.nameI18N
+                elseif fillTypeDesc ~= nil and g_i18n:hasText(fillTypeDesc.name) then
+                    fertilizerBoost = g_i18n:getText(fillTypeDesc.name)
+                else
+                    fertilizerBoost = "("..tostring(fruitDesc.fmcBoostFertilizer)..")?"
                 end
             end
             
             local herbicideAffected = nil
             if fruitDesc.fmcHerbicideAffected ~= nil then
-                if     fruitDesc.fmcHerbicideAffected == Fillable.FILLTYPE_HERBICIDE  then herbicideAffected = "A";
-                elseif fruitDesc.fmcHerbicideAffected == Fillable.FILLTYPE_HERBICIDE2 then herbicideAffected = "B";
-                elseif fruitDesc.fmcHerbicideAffected == Fillable.FILLTYPE_HERBICIDE3 then herbicideAffected = "C";
+                local fillTypeDesc = Fillable.fillTypeIndexToDesc[fruitDesc.fmcHerbicideAffected]
+                if fillTypeDesc ~= nil and fillTypeDesc.nameI18N ~= nil then
+                    herbicideAffected = fillTypeDesc.nameI18N
+                elseif fillTypeDesc ~= nil and g_i18n:hasText(fillTypeDesc.name) then
+                    herbicideAffected = g_i18n:getText(fillTypeDesc.name)
+                else
+                    herbicideAffected = "("..tostring(fruitDesc.fmcHerbicideAffected)..")?"
                 end
             end
             
             if fertilizerBoost ~= nil or herbicideAffected ~= nil then
-                local fruitName = g_i18n:hasText(fruitDesc.name) and g_i18n:getText(fruitDesc.name) or fruitDesc.name;
-                fertilizerBoost   = (fertilizerBoost   == nil and "-" or (g_i18n:getText("FertilizerType")):format(fertilizerBoost))
-                herbicideAffected = (herbicideAffected == nil and "-" or (g_i18n:getText("HerbicideType")):format(herbicideAffected))
+                local fillTypeDesc = Fillable.fillTypeIndexToDesc[FruitUtil.fruitTypeToFillType[fruitDesc.index]]
+                local fillTypeName = fillTypeDesc.nameI18N ~= nil and fillTypeDesc.nameI18N or (g_i18n:hasText(fillTypeDesc.name) and g_i18n:getText(fillTypeDesc.name) or fillTypeDesc.name);
+                fertilizerBoost   = (fertilizerBoost   == nil and "-" or fertilizerBoost)
+                herbicideAffected = (herbicideAffected == nil and "-" or herbicideAffected)
 
-                table.insert(specs, {fruitName, fertilizerBoost, herbicideAffected});
+                table.insert(specs, {fillTypeName, fertilizerBoost, herbicideAffected});
             end
         end
     end

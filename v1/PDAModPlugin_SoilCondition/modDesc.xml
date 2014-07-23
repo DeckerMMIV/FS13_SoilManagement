@@ -2,7 +2,7 @@
 <modDesc descVersion="12">
     <author>Freelance Modding Crew</author>
     <contributors>JakobT, Gonimy_Vetrom, VAHA</contributors>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
 
     <title>
         <en>PDA Mod Plugin - Soil Condition</en>
@@ -120,38 +120,12 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <de>Fruchtauswirkungen</de>
             <ru>Таблица воздействий</ru>
         </text>
-        
-    <UNUSED>        
-        <text name="FertilizerBoost">
-            <en>Fertilizer boost</en>
-            <de>Düngerverstärkung</de>
-            <ru>Переизбыток удобрений</ru>
-        </text>
-        <text name="HerbicideAffected">
-            <en>Herbicide affected</en>
-            <de>Herbizid-beeinflusst</de>  <!-- DE: TODO: refine translation once it's used -->
-            <ru>Пострадало от гербицидов</ru>
-        </text>
-    </UNUSED>        
-
         <text name="FruitEffectsHeader">
             <!-- Text must be delimited by   |   to get 3 columns in PDA screen -->
             <en>'Crop'|'Likes'|'Dislikes'</en>
             <de>'Frucht'|'mag'|'mag nicht'</de> <!-- DE: sounds kinda weird in German, but there's no real translation other than the direct one -->
             <ru>'Культура'|'Подходит'|'Не подходит'</ru>
         </text>
-
-        <text name="FertilizerType">
-            <en>Fertilizer %s</en>
-            <de>Dünger %s</de>
-            <ru>Удобрение %s</ru>
-        </text>
-        <text name="HerbicideType">
-            <en>Herbicide %s</en>
-            <de>Herbizid %s</de>
-            <ru>Гербицид %s</ru>
-        </text>
-
     </l10n>
 
     <extraSourceFiles>

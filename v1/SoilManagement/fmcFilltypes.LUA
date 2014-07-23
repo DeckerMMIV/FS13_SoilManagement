@@ -47,6 +47,9 @@ function fmcFilltypes.setupFillTypes()
     if fmcFilltypes.simplisticMode then
         herbicide1Overlay = "herbicide.dds"
         fertilizer1Overlay = "fertilizer.dds"
+    else
+        -- Update the internationalized name for vanilla fill-type fertilizer.
+        Fillable.fillTypeIndexToDesc[Fillable.FILLTYPE_FERTILIZER].nameI18N = g_i18n:getText("fertilizer")
     end
 
     -- Register some new spray types
