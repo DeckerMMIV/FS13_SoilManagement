@@ -1,4 +1,4 @@
-SoilMod - Soil Management & Growth Control (v1.0.0)
+SoilMod - Soil Management & Growth Control (v1.1.0)
 
 
 Mod description
@@ -10,12 +10,14 @@ Mod description
 - automatic weed propagation and usage of herbicide,
 - and a few other effects.
 
-PLEASE NOTE! This initial public version may prehaps not be exactly what you expect or are thinking it is supposed to do. So please be open minded and give constructive critism and/or suggestions, for how to improve future versions of it.
+PLEASE NOTE! This mod may prehaps not be exactly what you expect or are thinking it is supposed to do. So please be open minded and give constructive critism and/or suggestions, for how to improve future versions of it.
 
 
 How to 'prepare' the map  -- REQUIRED READING! --
 
-This 'SoilManagement.ZIP' mod will NOT work on currently existing maps. There are required additions to be made in a map's .I3D and .LUA files, and these can be found in the download when you unpack it.
+(NOTE: You can skip this, if you have already done this for v1.0.0 of SoilMod.)
+
+The 'SoilManagement.ZIP' mod will ONLY work on maps that have been prepared for it. There are required additions to be made in a map's .I3D and .LUA files, and these can be found in the download when you unpack it.
 
 It is expected that you know how to use a plain-text editor, like Notepad++ ("Notepad Plus Plus") or similar editor, and are able to navigate in text-files like the .I3D and .LUA files.
 
@@ -155,3 +157,4 @@ Keep the original download link!
 Credits:
 Script: Decker_MMIV.
 Graphics: KaosKnite, JakobT, GIANTS, Decker_MMIV and others.
+Translations: JakobT, Gonimy_Vetrom, VAHA.

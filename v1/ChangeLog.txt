@@ -1,5 +1,28 @@
 SoilMod - Change log
 
+
+============================
+Version 1.1.0
+
+Fixes:
+
+- PDA screen 'Fruit Effects' now scrolls, to reveal more crops.
+- Overlay HUD icons should now display, particular for 'kalk'. Also when using the zzz_fillTypeOverlays.zip mod.
+- A few hardcoded texts moved to ModDesc.XML, so they can be localized.
+- Using the localized names for fruits in PDA screens.
+
+Enhancements:
+
+- PDA screen 'Fruit Effects' split up in columns, and should better illustrate what the crops 'likes' and 'dislikes'.
+- ModDesc.XML translations for German (by JakobT) and Russian (by Gonimy_Vetrom & VAHA).
+- Overlay HUD icons for fertilizer types A,B,C updated by JakobT.
+
+Additions:
+
+- Instructions for map & script translated to Russian, by Gonimy_Vetrom & VAHA.
+- A simple graphical illustration of what to look for in 'SampleModMap - Additions.LUA'.
+
+
 ============================
 Version 1.0.0
 
