@@ -42,7 +42,8 @@ ATTENTION! Since there exist may other mods, that modify the internal functions 
 
 So it is highly advisable to remove or disable any mods, which potentially could affect the proper operation of 'SoilMod'.
 
-Once you have prepared the map for 'SoilMod', then place the 3 mods in your MODS folder; SoilManagement.ZIP, PDAMod.ZIP (or newer) and PDAModPlugin_SoilCondition.ZIP.
+Once you have prepared the map for 'SoilMod', then place the mods in your MODS folder; SoilManagement.ZIP and PDAModPlugin_SoilCondition.ZIP.
+Also remember to get PDAMod.ZIP (or newer) if you do not already have it. - http://fs-uk.com/mods/view/34554
 
 Go into the game and start the map you have prepared for 'SoilMod'. Note that it is probably possible to continue on an existing savegame, but please experiment with it first, to see if it works for you.
 

@@ -16,6 +16,7 @@ Enhancements:
 - PDA screen 'Fruit Effects' split up in columns, and should better illustrate what the crops 'likes' and 'dislikes'.
 - ModDesc.XML translations for German (by JakobT) and Russian (by Gonimy_Vetrom & VAHA).
 - Overlay HUD icons for fertilizer types A,B,C updated by JakobT.
+- Prefixed output in LOG.TXT with "SoilMod:".
 
 Additions:
 
