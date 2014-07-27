@@ -304,10 +304,10 @@ function fmcModifySprayers.overwriteSprayer1()
         end
         if action >= 0 then
             self.currentFillType = action
-            --log("Changed currentFillType to: "..tostring(Fillable.fillTypeIntToName[self.currentFillType]).."("..tostring(self.currentFillType)..")"
-            --    --..", spray-usage: "..tostring(self.sprayLitersPerSecond[self.currentFillType])
-            --    --..", default: "..tostring(self.defaultSprayLitersPerSecond)
-            --);
+            log("Changed currentFillType to: "..tostring(Fillable.fillTypeIntToName[self.currentFillType]).."("..tostring(self.currentFillType)..")"
+                --..", spray-usage: "..tostring(self.sprayLitersPerSecond[self.currentFillType])
+                --..", default: "..tostring(self.defaultSprayLitersPerSecond)
+            );
         end
         --
         ChangeFillTypeEvent.sendEvent(self, action, noEventSend)
@@ -316,7 +316,7 @@ function fmcModifySprayers.overwriteSprayer1()
     logInfo("Appending to Sprayer.update, to let player change fill-type (not very realistic though!)")
     Sprayer.update = Utils.appendedFunction(Sprayer.update, function(self, dt)
         if self.isClient then
-            if self.allowsSpraying and self.fillTypes[Fillable.FILLTYPE_FERTILIZER] and self:getIsActiveForInput() then
+            if (self.allowsSpraying or self.isSprayerTank) and self.fillTypes[Fillable.FILLTYPE_FERTILIZER] and self:getIsActiveForInput() then
                 if InputBinding.hasEvent(InputBinding.IMPLEMENT_EXTRA3) then -- Using same input-binding as sowingMachine's "select seed"
                     Sprayer.changeFillType(self, -1) -- 'Next available fillType' = -1
                 end;
@@ -327,7 +327,7 @@ function fmcModifySprayers.overwriteSprayer1()
     logInfo("Appending to Sprayer.draw, to draw current fill-type HUD icon and action in F1 help box");
     Sprayer.draw = Utils.appendedFunction(Sprayer.draw, function(self)
         if self.isClient then
-            if self.allowsSpraying and self.fillTypes[Fillable.FILLTYPE_FERTILIZER] and self:getIsActiveForInput(true) then
+            if (self.allowsSpraying or self.isSprayerTank) and self.fillTypes[Fillable.FILLTYPE_FERTILIZER] and self:getIsActiveForInput(true) then
                 g_currentMission:addHelpButtonText(g_i18n:getText("SelectSprayType"), InputBinding.IMPLEMENT_EXTRA3); -- Using same input-binding as sowingMachine's "select seed"
             end
             -- Show the hud icon, now that a spreader/sprayer can have different fill-types.
