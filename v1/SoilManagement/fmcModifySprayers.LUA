@@ -27,6 +27,7 @@ function fmcModifySprayers.setup()
         fmcModifySprayers.overwriteSprayerAreaEvent()
         fmcModifySprayers.overwriteSprayer1()
         fmcModifySprayers.overwriteSprayer2()
+        fmcModifySprayers.overwriteSprayer3()
     end
 end
 
@@ -711,5 +712,35 @@ function fmcModifySprayers.overwriteSprayer2_MR()
 
 end
 
+function fmcModifySprayers.overwriteSprayer3()
+
+    fmcModifySprayers.getFirstEnabledFillType = function(self)
+        if self.fillLevel > 0 or self.isSprayerTank then
+            -- This sprayer (or sprayer-tank) is not empty, so do normal operation...
+            for fillType, enabled in pairs(self.fillTypes) do
+                if fillType ~= Fillable.FILLTYPE_UNKNOWN and enabled then
+                    return fillType;
+                end
+            end
+        else
+            -- Attempt to locate a sprayer-tank's current-fill-type, by looping though all possible filltypes this sprayer has enabled
+            for fillType, enabled in pairs(self.fillTypes) do
+                if fillType ~= Fillable.FILLTYPE_UNKNOWN and enabled then
+                    local sprayerTank = Sprayer.findAttachedSprayerTank(self:getRootAttacherVehicle(), fillType);
+                    if sprayerTank ~= nil then
+                        return fillType;
+                    end
+                end
+            end
+        end
+        return Fillable.FILLTYPE_UNKNOWN;
+    end
+
+    logInfo("Appending to Sprayer.postLoad, for getting fill-type from sprayer-tanks.")
+    Sprayer.postLoad = Utils.appendedFunction(Sprayer.postLoad, function(self, xmlFile)
+        self.getFirstEnabledFillType = fmcModifySprayers.getFirstEnabledFillType;
+    end);
+
+end
 
 print(string.format("Script loaded: fmcModifySprayers.lua (v%s)", fmcModifySprayers.version));
