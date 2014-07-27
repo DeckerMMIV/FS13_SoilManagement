@@ -65,7 +65,7 @@ function fmcFilltypes.setupFillTypes()
 end
 
 function fmcFilltypes.addMoreFillTypeOverlayIcons()
-    logInfo("Adding overlay-icons for vanilla fill-types that has none")
+    logInfo("Adding overlay-icons for specific fill-types that has none")
 
     local herbicide1Overlay = "herbicide1.dds"
     local fertilizer1Overlay = "fertilizer1.dds"
@@ -74,7 +74,7 @@ function fmcFilltypes.addMoreFillTypeOverlayIcons()
         fertilizer1Overlay = "fertilizer.dds"
     end
 
-    -- Set overlay icons for vanilla fill types, if they do not already have one
+    -- Set overlay icons for fill types, if they do not already have one
     local function addFillTypeHudOverlayIcon(fillType, overlayFilename, force)
         if fillType ~= nil and Fillable.fillTypeIndexToDesc[fillType] ~= nil then
             if force or Fillable.fillTypeIndexToDesc[fillType].hudOverlayFilename == nil then
@@ -91,6 +91,8 @@ function fmcFilltypes.addMoreFillTypeOverlayIcons()
     addFillTypeHudOverlayIcon(Fillable.FILLTYPE_FERTILIZER  , Utils.getFilename(fertilizer1Overlay,  fmcFilltypes.mapFilltypeOverlaysDirectory), not fmcFilltypes.simplisticMode);
     addFillTypeHudOverlayIcon(Fillable.FILLTYPE_MANURE      , Utils.getFilename("manure.dds",        fmcFilltypes.mapFilltypeOverlaysDirectory), false);
     addFillTypeHudOverlayIcon(Fillable.FILLTYPE_LIQUIDMANURE, Utils.getFilename("liquidManure.dds",  fmcFilltypes.mapFilltypeOverlaysDirectory), false);
+    --
+    addFillTypeHudOverlayIcon(Fillable.FILLTYPE_KALK        , Utils.getFilename("kalk.dds",          fmcFilltypes.mapFilltypeOverlaysDirectory), false);
 end
 
 --
@@ -112,14 +114,6 @@ end
 function fmcFilltypes.updateFillTypeOverlays()
     logInfo("Updating fill-types HUD overlay-icons")
     for _,fillTypeDesc in pairs(Fillable.fillTypeIndexToDesc) do
--- Deleting/cleaning up the fillTypeOverlays here, conflicts with zzz_fillTypeOverlays.zip
---[[
---        if g_currentMission.fillTypeOverlays[fillTypeDesc.index] ~= nil then
---            -- remove existing overlay icon, as the graphics may have been changed later.
---            g_currentMission.fillTypeOverlays[fillTypeDesc.index]:delete();
---            g_currentMission.fillTypeOverlays[fillTypeDesc.index] = nil;
---        end
---]]
         if g_currentMission.fillTypeOverlays[fillTypeDesc.index] == nil and fillTypeDesc.hudOverlayFilename ~= nil and fillTypeDesc.hudOverlayFilename ~= "" then
             g_currentMission:addFillTypeOverlay(fillTypeDesc.index, fillTypeDesc.hudOverlayFilename)
         end
