@@ -1,5 +1,14 @@
 SoilMod - Change log
 
+============================
+Post-version 1.1.x
+
+Fixes:
+
+- Front tank for spraying can now be used to spray fertilizer and herbicide.
+- If not already set an overlay HUD icon for 'kalk', it will be set by SoilMod.
+- Possibility to overwrite the default fruit's relation to fertilizer/herbicide types.
+
 
 ============================
 Version 1.1.0

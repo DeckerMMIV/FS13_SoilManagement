@@ -74,6 +74,7 @@ function fmcSoilMod.setup_map_new(mapFilltypeOverlaysDirectory)
     log("fmcSoilMod - setup_map_new(", mapFilltypeOverlaysDirectory, ")")
     fmcSoilMod.enabled = false
     fmcFilltypes.setup(mapFilltypeOverlaysDirectory, fmcSoilMod.simplisticMode)
+    fmcFilltypes.setupFruitFertilizerBoostHerbicideAffected()
 end
 
 --
@@ -92,7 +93,6 @@ end
 function fmcSoilMod.postInit_loadMapFinished()
     log("fmcSoilMod - postInit_loadMapFinished()")
     fmcFilltypes.addMoreFillTypeOverlayIcons()
-    fmcFilltypes.setupFruitFertilizerBoostHerbicideAffected()
     if fmcGrowthControl.setup(fmcSoilMod.simplisticMode) then
         fmcModifyFSUtils.setup(fmcSoilMod.simplisticMode)
         fmcModifySprayers.setup()    
