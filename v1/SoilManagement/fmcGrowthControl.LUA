@@ -111,6 +111,22 @@ function fmcGrowthControl.setup(simplisticMode)
                 end
             end
         end
+
+        --
+        local function addFruitToFmcDynamicFoliageLayer(fruitId, layerAttribute)
+            local fruitDesc = g_currentMission.fruits[fruitId]
+            if fruitDesc ~= nil then
+                local foliageId = fruitDesc[layerAttribute];
+                if foliageId ~= nil and foliageId ~= 0 then
+                    table.insert(g_currentMission.fmcDynamicFoliageLayers, foliageId)
+                end
+            end
+        end
+
+        -- Support for "zzz_ChoppedStraw v1.1.02" by Webalizer
+        addFruitToFmcDynamicFoliageLayer(FruitUtil.FRUITTYPE_CHOPPEDSTRAW, "preparingOutputId")
+        addFruitToFmcDynamicFoliageLayer(FruitUtil.FRUITTYPE_CHOPPEDMAIZE, "preparingOutputId")
+        addFruitToFmcDynamicFoliageLayer(FruitUtil.FRUITTYPE_CHOPPEDRAPE,  "preparingOutputId")
     end
 
     fmcGrowthControl.setupFoliageGrowthLayers()
@@ -154,10 +170,14 @@ FSCareerMissionInfo.saveToXML = Utils.prependedFunction(FSCareerMissionInfo.save
             " cellSquaresMethod=", fmcGrowthControl.cellSquaresMethod,
             " weedCell=", fmcGrowthControl.weedCell
         )
-        setXMLInt(self.xmlFile, self.xmlKey..".customGrowthControl#day"    ,fmcGrowthControl.lastUpdateDay)
-        setXMLInt(self.xmlFile, self.xmlKey..".customGrowthControl#cell"   ,fmcGrowthControl.cellSquareToUpdate)
-        setXMLInt(self.xmlFile, self.xmlKey..".customGrowthControl#method" ,fmcGrowthControl.cellSquaresMethod)
-        setXMLInt(self.xmlFile, self.xmlKey..".customGrowthControl#cell2"  ,fmcGrowthControl.weedCell)
+        setXMLInt( self.xmlFile, self.xmlKey..".customGrowthControl#day"                 ,fmcGrowthControl.lastUpdateDay)
+        setXMLInt( self.xmlFile, self.xmlKey..".customGrowthControl#cell"                ,fmcGrowthControl.cellSquareToUpdate)
+        setXMLInt( self.xmlFile, self.xmlKey..".customGrowthControl#method"              ,fmcGrowthControl.cellSquaresMethod)
+        setXMLInt( self.xmlFile, self.xmlKey..".customGrowthControl#cell2"               ,fmcGrowthControl.weedCell)
+        setXMLInt( self.xmlFile, self.xmlKey..".customGrowthControl#updateDelayMs"       ,fmcGrowthControl.updateDelayMs)
+        setXMLBool(self.xmlFile, self.xmlKey..".customGrowthControl#reduceWindrows"      ,fmcGrowthControl.reduceWindrows)
+        setXMLBool(self.xmlFile, self.xmlKey..".customGrowthControl#removeSprayMoisture" ,fmcGrowthControl.removeSprayMoisture)
+        setXMLBool(self.xmlFile, self.xmlKey..".customGrowthControl#disableWithering"    ,fmcGrowthControl.disableWithering)
     end
 end);
 
@@ -249,20 +269,29 @@ function fmcGrowthControl:update(dt)
 
         local xmlFile = loadXMLFile("xml", fileName);
         if xmlFile ~= nil then
-            fmcGrowthControl.lastUpdateDay       = Utils.getNoNil(getXMLInt(xmlFile, "careerSavegame.customGrowthControl#day")    ,0)
-            fmcGrowthControl.cellSquareToUpdate  = Utils.getNoNil(getXMLInt(xmlFile, "careerSavegame.customGrowthControl#cell")   ,0)
-            fmcGrowthControl.cellSquaresMethod   = Utils.getNoNil(getXMLInt(xmlFile, "careerSavegame.customGrowthControl#method") ,0)
-            fmcGrowthControl.weedCell            = Utils.getNoNil(getXMLInt(xmlFile, "careerSavegame.customGrowthControl#cell2")  ,0)
+            fmcGrowthControl.lastUpdateDay       = Utils.getNoNil(getXMLInt( xmlFile, "careerSavegame.customGrowthControl#day")                 ,0)
+            fmcGrowthControl.cellSquareToUpdate  = Utils.getNoNil(getXMLInt( xmlFile, "careerSavegame.customGrowthControl#cell")                ,0)
+            fmcGrowthControl.cellSquaresMethod   = Utils.getNoNil(getXMLInt( xmlFile, "careerSavegame.customGrowthControl#method")              ,0)
+            fmcGrowthControl.weedCell            = Utils.getNoNil(getXMLInt( xmlFile, "careerSavegame.customGrowthControl#cell2")               ,0)
+            fmcGrowthControl.updateDelayMs       = Utils.getNoNil(getXMLInt( xmlFile, "careerSavegame.customGrowthControl#updateDelayMs")       ,fmcGrowthControl.updateDelayMs)
+            fmcGrowthControl.reduceWindrows      = Utils.getNoNil(getXMLBool(xmlFile, "careerSavegame.customGrowthControl#reduceWindrows")      ,fmcGrowthControl.reduceWindrows)
+            fmcGrowthControl.removeSprayMoisture = Utils.getNoNil(getXMLBool(xmlFile, "careerSavegame.customGrowthControl#removeSprayMoisture") ,fmcGrowthControl.removeSprayMoisture)
+            fmcGrowthControl.disableWithering    = Utils.getNoNil(getXMLBool(xmlFile, "careerSavegame.customGrowthControl#disableWithering")    ,fmcGrowthControl.disableWithering)
+
             delete(xmlFile);
 
             fmcGrowthControl.active = fmcGrowthControl.cellSquareToUpdate > 0
 
             log("fmcGrowthControl -",
-                " lastUpdateDay=", fmcGrowthControl.lastUpdateDay,
-                ", cellSquareToUpdate=", fmcGrowthControl.cellSquareToUpdate,
-                ", cellSquaresMethod=", fmcGrowthControl.cellSquaresMethod,
-                ", weedCell=", fmcGrowthControl.weedCell,
-                ", active=", fmcGrowthControl.active
+                " lastUpdateDay=",          fmcGrowthControl.lastUpdateDay,
+                ", cellSquareToUpdate=",    fmcGrowthControl.cellSquareToUpdate,
+                ", cellSquaresMethod=",     fmcGrowthControl.cellSquaresMethod,
+                ", weedCell=",              fmcGrowthControl.weedCell,
+                ", active=",                fmcGrowthControl.active,
+                ", updateDelayMs=",         fmcGrowthControl.updateDelayMs,
+                ", reduceWindrows=",        fmcGrowthControl.reduceWindrows,
+                ", removeSprayMoisture=",   fmcGrowthControl.removeSprayMoisture,
+                ", disableWithering=",      fmcGrowthControl.disableWithering
             )
         end
 
