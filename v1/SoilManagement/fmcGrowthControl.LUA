@@ -108,6 +108,7 @@ function fmcGrowthControl.setup(simplisticMode)
                     -- ignore
                 else
                     table.insert(g_currentMission.fmcDynamicFoliageLayers, foliageId)
+                    logInfo(("Included foliage-layer for \"destruction\" by plough/cultivator/seeder: '%s', id=%s, numChnls=%s"):format(getName(foliageId), foliageId, getTerrainDetailNumChannels(foliageId)))
                 end
             end
         end
@@ -119,6 +120,7 @@ function fmcGrowthControl.setup(simplisticMode)
                 local foliageId = fruitDesc[layerAttribute];
                 if foliageId ~= nil and foliageId ~= 0 then
                     table.insert(g_currentMission.fmcDynamicFoliageLayers, foliageId)
+                    logInfo(("Included foliage-layer for \"destruction\" by plough/cultivator/seeder: '%s', id=%s, numChnls=%s"):format(getName(foliageId), foliageId, getTerrainDetailNumChannels(foliageId)))
                 end
             end
         end
