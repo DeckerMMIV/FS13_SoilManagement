@@ -19,7 +19,7 @@
 --      0.5.4   - MP events can be sent to clients, before clients have begun running update().
 --      0.6.0   - Removed addModEventListener() to make sure this mod is ONLY run when the correct
 --                changes to SampleModMap.LUA have been made.
---                This should make it NOT conflict with other maps. 
+--                This should make it NOT conflict with other maps.
 --      0.6.1   - Bug fixes and tweaks for growth control.
 --      ------
 --  Revision history is now kept in GitHub repository.
@@ -36,6 +36,7 @@ fmcGrowthControl.reduceWindrows         = true;
 fmcGrowthControl.removeSprayMoisture    = true;
 fmcGrowthControl.disableWithering       = false;
 fmcGrowthControl.updateDelayMs          = 1000 / 16; -- Maximum number of cells that may be updated per second. Consider network-latency/-updates
+fmcGrowthControl.delayGrowthCycleDays   = 0
 
 --
 fmcGrowthControl.hudFontSize = 0.025
@@ -166,8 +167,8 @@ end
 --
 FSCareerMissionInfo.saveToXML = Utils.prependedFunction(FSCareerMissionInfo.saveToXML, function(self)
     if self.isValid and self.xmlKey ~= nil then
-        log("fmcGrowthControl saving -", 
-            " lastUpdateDay=", fmcGrowthControl.lastUpdateDay, 
+        log("fmcGrowthControl saving -",
+            " lastUpdateDay=", fmcGrowthControl.lastUpdateDay,
             " cellSquareToUpdate=", fmcGrowthControl.cellSquareToUpdate,
             " cellSquaresMethod=", fmcGrowthControl.cellSquaresMethod,
             " weedCell=", fmcGrowthControl.weedCell
@@ -176,10 +177,25 @@ FSCareerMissionInfo.saveToXML = Utils.prependedFunction(FSCareerMissionInfo.save
         setXMLInt( self.xmlFile, self.xmlKey..".customGrowthControl#cell"                ,fmcGrowthControl.cellSquareToUpdate)
         setXMLInt( self.xmlFile, self.xmlKey..".customGrowthControl#method"              ,fmcGrowthControl.cellSquaresMethod)
         setXMLInt( self.xmlFile, self.xmlKey..".customGrowthControl#cell2"               ,fmcGrowthControl.weedCell)
-        setXMLInt( self.xmlFile, self.xmlKey..".customGrowthControl#updateDelayMs"       ,fmcGrowthControl.updateDelayMs)
-        setXMLBool(self.xmlFile, self.xmlKey..".customGrowthControl#reduceWindrows"      ,fmcGrowthControl.reduceWindrows)
-        setXMLBool(self.xmlFile, self.xmlKey..".customGrowthControl#removeSprayMoisture" ,fmcGrowthControl.removeSprayMoisture)
-        setXMLBool(self.xmlFile, self.xmlKey..".customGrowthControl#disableWithering"    ,fmcGrowthControl.disableWithering)
+
+        --
+        setXMLInt( self.xmlFile, self.xmlKey..".modSoilManagement.delayGrowthCycle#days"     ,fmcGrowthControl.delayGrowthCycleDays)
+        setXMLInt( self.xmlFile, self.xmlKey..".modSoilManagement.updateDelayMs#value"       ,fmcGrowthControl.updateDelayMs)
+        setXMLBool(self.xmlFile, self.xmlKey..".modSoilManagement.reduceWindrows#value"      ,fmcGrowthControl.reduceWindrows)
+        setXMLBool(self.xmlFile, self.xmlKey..".modSoilManagement.removeSprayMoisture#value" ,fmcGrowthControl.removeSprayMoisture)
+        setXMLBool(self.xmlFile, self.xmlKey..".modSoilManagement.disableWithering#value"    ,fmcGrowthControl.disableWithering)
+
+        setXMLString(self.xmlFile, self.xmlKey..".modSoilManagement.delayGrowthCycle#description"    ,"integer, how many in-game days to skip before activating growth-cycle again (default=0)")
+        setXMLString(self.xmlFile, self.xmlKey..".modSoilManagement.updateDelayMs#description"       ,"milliseconds, delay between update-of-squares during growth-cycle. Lower values=quicker but cause more lag in multiplayer (default=62)")
+        setXMLString(self.xmlFile, self.xmlKey..".modSoilManagement.reduceWindrows#description"      ,"boolean, if windrows/swath/straw should be reduced by 1 during growth-cycle (default=true)")
+        setXMLString(self.xmlFile, self.xmlKey..".modSoilManagement.removeSprayMoisture#description" ,"boolean, if spray-moisture should be removed (vaporised) during growth-cycle (default=true)")
+        setXMLString(self.xmlFile, self.xmlKey..".modSoilManagement.disableWithering#description"    ,"boolean, if crop withering should be disabled (default=false)")
+
+        --
+        setXMLInt(self.xmlFile, self.xmlKey..".modSoilManagement.fertilizerSynthetic#firstGrowthState" ,fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState)
+        setXMLInt(self.xmlFile, self.xmlKey..".modSoilManagement.fertilizerSynthetic#lastGrowthState"  ,fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
+
+        setXMLString(self.xmlFile, self.xmlKey..".modSoilManagement.fertilizerSynthetic#description"   ,"integer, Growth state range is 0-4 (defaults first=2, last=4)")
     end
 end);
 
@@ -202,7 +218,7 @@ function fmcGrowthControl.setupFoliageGrowthLayers()
           minMatureValue  = (fruitDesc.minPreparingGrowthState>=0 and fruitDesc.minPreparingGrowthState or fruitDesc.minHarvestingGrowthState) + 1,
           maxMatureValue  = (fruitDesc.maxPreparingGrowthState>=0 and fruitDesc.maxPreparingGrowthState or fruitDesc.maxHarvestingGrowthState) + 1,
         }
-        
+
         ---- Can be withered?
         --local witheredState = (fruitDesc.maxPreparingGrowthState>=0 and fruitDesc.maxPreparingGrowthState or fruitDesc.maxHarvestingGrowthState) + 1
         --if witheredState ~= fruitDesc.cutState and witheredState ~= fruitDesc.preparedGrowthState and witheredState ~= fruitDesc.minPreparingGrowthState then
@@ -210,7 +226,7 @@ function fmcGrowthControl.setupFoliageGrowthLayers()
         --        entry.witheredValue = witheredState + 1
         --    end
         --end
-        
+
         -- Needs preparing?
         if fruitDesc.maxPreparingGrowthState >= 0 then
           -- ...and can be withered?
@@ -231,8 +247,8 @@ function fmcGrowthControl.setupFoliageGrowthLayers()
           elseif fruitDesc.fmcHerbicideAffected == Fillable.FILLTYPE_HERBICIDE3 then entry.herbicideAvoidance = 3
           end
         end
-        
-        log(fruitDesc.name,"=", i, 
+
+        log(fruitDesc.name,"=", i,
             ",id=", entry.fruitId,
             ",windrowId=", entry.windrowId,
             ",minSeededValue=", entry.minSeededValue,
@@ -242,7 +258,7 @@ function fmcGrowthControl.setupFoliageGrowthLayers()
             ",witheredValue=", entry.witheredValue,
             ",herbicideAvoidance=", entry.herbicideAvoidance
         )
-        
+
         table.insert(g_currentMission.fmcFoliageGrowthLayers, entry);
       end
     end
@@ -259,7 +275,7 @@ function fmcGrowthControl.setupFoliageGrowthLayers()
         ", terrainDetailMapSize=",  g_currentMission.terrainDetailMapSize,
         ", fruitMapSize=",          g_currentMission.fruitMapSize
     )
-        
+
 end
 
 function fmcGrowthControl:update(dt)
@@ -271,29 +287,51 @@ function fmcGrowthControl:update(dt)
 
         local xmlFile = loadXMLFile("xml", fileName);
         if xmlFile ~= nil then
-            fmcGrowthControl.lastUpdateDay       = Utils.getNoNil(getXMLInt( xmlFile, "careerSavegame.customGrowthControl#day")                 ,0)
-            fmcGrowthControl.cellSquareToUpdate  = Utils.getNoNil(getXMLInt( xmlFile, "careerSavegame.customGrowthControl#cell")                ,0)
-            fmcGrowthControl.cellSquaresMethod   = Utils.getNoNil(getXMLInt( xmlFile, "careerSavegame.customGrowthControl#method")              ,0)
-            fmcGrowthControl.weedCell            = Utils.getNoNil(getXMLInt( xmlFile, "careerSavegame.customGrowthControl#cell2")               ,0)
-            fmcGrowthControl.updateDelayMs       = Utils.getNoNil(getXMLInt( xmlFile, "careerSavegame.customGrowthControl#updateDelayMs")       ,fmcGrowthControl.updateDelayMs)
-            fmcGrowthControl.reduceWindrows      = Utils.getNoNil(getXMLBool(xmlFile, "careerSavegame.customGrowthControl#reduceWindrows")      ,fmcGrowthControl.reduceWindrows)
-            fmcGrowthControl.removeSprayMoisture = Utils.getNoNil(getXMLBool(xmlFile, "careerSavegame.customGrowthControl#removeSprayMoisture") ,fmcGrowthControl.removeSprayMoisture)
-            fmcGrowthControl.disableWithering    = Utils.getNoNil(getXMLBool(xmlFile, "careerSavegame.customGrowthControl#disableWithering")    ,fmcGrowthControl.disableWithering)
+            local xmlKey = "careerSavegame"
+            fmcGrowthControl.lastUpdateDay        = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".customGrowthControl#day")    ,0)
+            fmcGrowthControl.cellSquareToUpdate   = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".customGrowthControl#cell")   ,0)
+            fmcGrowthControl.cellSquaresMethod    = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".customGrowthControl#method") ,0)
+            fmcGrowthControl.weedCell             = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".customGrowthControl#cell2")  ,0)
+
+            fmcGrowthControl.delayGrowthCycleDays = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".modSoilManagement.delayGrowthCycle#days")     ,fmcGrowthControl.delayGrowthCycleDays)
+            fmcGrowthControl.updateDelayMs        = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".modSoilManagement.updateDelayMs#value")       ,fmcGrowthControl.updateDelayMs)
+            fmcGrowthControl.reduceWindrows       = Utils.getNoNil(getXMLBool(xmlFile, xmlKey..".modSoilManagement.reduceWindrows#value")      ,fmcGrowthControl.reduceWindrows)
+            fmcGrowthControl.removeSprayMoisture  = Utils.getNoNil(getXMLBool(xmlFile, xmlKey..".modSoilManagement.removeSprayMoisture#value") ,fmcGrowthControl.removeSprayMoisture)
+            fmcGrowthControl.disableWithering     = Utils.getNoNil(getXMLBool(xmlFile, xmlKey..".modSoilManagement.disableWithering#value")    ,fmcGrowthControl.disableWithering)
+
+            fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".modSoilManagement.fertilizerSynthetic#firstGrowthState")   ,fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState)
+            fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".modSoilManagement.fertilizerSynthetic#lastGrowthState")    ,fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
 
             delete(xmlFile);
 
+            -- 'Growth cycle' is active, if cell-square-to-update is not zero.
             fmcGrowthControl.active = fmcGrowthControl.cellSquareToUpdate > 0
+
+            -- Minimums...
+            fmcGrowthControl.updateDelayMs        = math.max(10, fmcGrowthControl.updateDelayMs)
+            fmcGrowthControl.delayGrowthCycleDays = math.max(0,  fmcGrowthControl.delayGrowthCycleDays)
+
+            -- Growth state ranges allowed: 0-4 (0=nothing, 1=seeded, 4=third growth state)
+            fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = math.max(0, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
+            fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = math.max(0, fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState)
+            fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = math.min(fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState,  4)
+            fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = math.min(fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
 
             log("fmcGrowthControl -",
                 " lastUpdateDay=",          fmcGrowthControl.lastUpdateDay,
                 ", cellSquareToUpdate=",    fmcGrowthControl.cellSquareToUpdate,
                 ", cellSquaresMethod=",     fmcGrowthControl.cellSquaresMethod,
                 ", weedCell=",              fmcGrowthControl.weedCell,
-                ", active=",                fmcGrowthControl.active,
-                ", updateDelayMs=",         fmcGrowthControl.updateDelayMs,
+                ", active=",                fmcGrowthControl.active
+            )
+            log("fmcGrowthControl -",
+                " updateDelayMs=",          fmcGrowthControl.updateDelayMs,
                 ", reduceWindrows=",        fmcGrowthControl.reduceWindrows,
                 ", removeSprayMoisture=",   fmcGrowthControl.removeSprayMoisture,
-                ", disableWithering=",      fmcGrowthControl.disableWithering
+                ", disableWithering=",      fmcGrowthControl.disableWithering,
+                ", delayGrowthCycleDays=",  fmcGrowthControl.delayGrowthCycleDays,
+                ", fertSyntFirst=",  fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState,
+                ", fertSyntLast=",   fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState
             )
         end
 
@@ -365,7 +403,7 @@ function fmcGrowthControl:hourChanged()
     if  not fmcGrowthControl.active -- Must not already be running
     and g_currentMission.environment.currentHour == 0 -- midnight hour
     and (g_currentMission.environment.currentDay + 1) ~= fmcGrowthControl.lastUpdateDay -- another day (apparently 'currentDay' is NOT incremented _before_ calling the hourChanged() callbacks)
-    --and (g_currentMission.environment.currentDay + 1) > (fmcGrowthControl.lastUpdateDay + 3)
+    and (g_currentMission.environment.currentDay + 1) > (fmcGrowthControl.lastUpdateDay + fmcGrowthControl.delayGrowthCycleDays)
     then
         fmcGrowthControl.canActivate = true
     end
@@ -442,12 +480,12 @@ end
 function fmcGrowthControl:updateFoliageCellXZWH(x,z, wh, pctCompleted, noEventSend)
     fmcGrowthControl.pctCompleted = pctCompleted
     fmcGrowthControlEvent.sendEvent(x,z, wh, pctCompleted, noEventSend)
-    
+
     -- Test for "magic number" indicating finished.
     if wh <= 0 then
         return
     end
-    
+
 --[[
 Growth states
 
