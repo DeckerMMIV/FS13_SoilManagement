@@ -43,7 +43,7 @@ fmcSoilMod.logEnabled     = false
 -- For debugging
 function log(...)
     if fmcSoilMod.logEnabled 
---[[
+--
        or true
 --]]
     then

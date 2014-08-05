@@ -133,6 +133,7 @@ function fmcGrowthControl.setup(simplisticMode)
     end
 
     fmcGrowthControl.setupFoliageGrowthLayers()
+    fmcGrowthControl.setupInternalPlugins()
     fmcGrowthControl.initialized = false;
 
     return allOK
@@ -477,6 +478,313 @@ function fmcGrowthControl:updateFoliageCell(cellSquareToUpdate, pctCompleted, no
     fmcGrowthControl:updateFoliageCellXZWH(sx,sy, fmcGrowthControl.cellWH, pctCompleted, noEventSend)
 end
 
+
+fmcGrowthControl.pluginsGrowthCycleFruits = {}
+fmcGrowthControl.pluginsGrowthCycle = {}
+
+function addPluginGrowthCycleFruits(description,priority,callBackFunc)
+    logInfo("Adding growth-cycle-fruits plugin: (", priority, ") ", description)
+    
+    -- TODO - Insert based on priority...
+    table.insert(fmcGrowthControl.pluginsGrowthCycleFruits,
+        callBackFunc
+    )
+end
+
+function addPluginGrowthCycle(description,priority,callBackFunc)
+    logInfo("Adding growth-cycle plugin: (", priority, ") ", description)
+    
+    -- TODO - Insert based on priority...
+    table.insert(fmcGrowthControl.pluginsGrowthCycle,
+        callBackFunc
+    )
+end
+
+function fmcGrowthControl.setupInternalPlugins()
+    fmcGrowthControl.pluginsGrowthCycleFruits = {}
+    fmcGrowthControl.pluginsGrowthCycle = {}
+
+    ---
+    ---
+    
+    addPluginGrowthCycleFruits(
+        "Increase crop growth",
+        10, 
+        function(sx,sz,wx,wz,hx,hz,fruitEntry)
+            -- Increase growth by 1
+            setDensityMaskParams(fruitEntry.fruitId, "between", fruitEntry.minSeededValue, fruitEntry.maxMatureValue - ((fmcGrowthControl.disableWithering or fruitEntry.witheredValue == nil) and 1 or 0))
+            addDensityMaskedParallelogram(
+              fruitEntry.fruitId,
+              sx,sz,wx,wz,hx,hz,
+              0, g_currentMission.numFruitStateChannels,
+              fruitEntry.fruitId, 0, g_currentMission.numFruitStateChannels, -- mask
+              1 -- add one
+            )
+            setDensityMaskParams(fruitEntry.fruitId, "greater", 0)
+        end
+    )
+
+    if g_currentMission.fmcFoliageHerbicide ~= nil then
+        addPluginGrowthCycleFruits(
+            "Herbicide affect crop",
+            20, 
+            function(sx,sz,wx,wz,hx,hz,fruitEntry)
+                -- Herbicide may affect growth or cause withering...
+                if fruitEntry.herbicideAvoidance ~= nil and fruitEntry.herbicideAvoidance >= 1 and fruitEntry.herbicideAvoidance <= 3 then
+                  -- Herbicide affected fruit
+                  setDensityMaskParams(fruitEntry.fruitId, "equals", fruitEntry.herbicideAvoidance)
+                  -- When growing and affected by wrong herbicide, pause one growth-step
+                  setDensityCompareParams(fruitEntry.fruitId, "between", fruitEntry.minSeededValue+1, fruitEntry.minMatureValue)
+                  addDensityMaskedParallelogram(
+                    fruitEntry.fruitId,
+                    sx,sz,wx,wz,hx,hz,
+                    0, g_currentMission.numFruitStateChannels,
+                    g_currentMission.fmcFoliageHerbicide, 0, 2, -- mask
+                    -1 -- subtract one
+                  )
+                  -- When mature and affected by wrong herbicide, change to withered if possible.
+                  if fruitEntry.witheredValue ~= nil then
+                    setDensityMaskParams(fruitEntry.fruitId, "equals", fruitEntry.herbicideAvoidance)
+                    setDensityCompareParams(fruitEntry.fruitId, "between", fruitEntry.minMatureValue, fruitEntry.maxMatureValue)
+                    setDensityMaskedParallelogram(
+                        fruitEntry.fruitId,
+                        sx,sz,wx,wz,hx,hz,
+                        0, g_currentMission.numFruitStateChannels,
+                        g_currentMission.fmcFoliageHerbicide, 0, 2, -- mask
+                        fruitEntry.witheredValue  -- value
+                    )
+                  end
+                  --
+                  setDensityCompareParams(fruitEntry.fruitId, "greater", -1)
+                  setDensityMaskParams(fruitEntry.fruitId, "greater", 0)
+                end
+            end
+        )
+    end
+
+    if fmcGrowthControl.reduceWindrows then
+        addPluginGrowthCycleFruits(
+            "Reduce crop windrows/swath",
+            30, 
+            function(sx,sz,wx,wz,hx,hz,fruitEntry)
+                -- Reduce windrow (gone with the wind)
+                if fruitEntry.windrowId ~= nil and fruitEntry.windrowId ~= 0 then
+                    setDensityMaskParams(fruitEntry.windrowId, "greater", 0)
+                    addDensityMaskedParallelogram(
+                        fruitEntry.windrowId,
+                        sx,sz,wx,wz,hx,hz,
+                        0, g_currentMission.numWindrowChannels,
+                        fruitEntry.windrowId, 0, g_currentMission.numWindrowChannels,  -- mask
+                        -1  -- subtract one
+                    );
+                    setDensityMaskParams(fruitEntry.windrowId, "greater", -1)
+                end
+            end
+        )
+    end
+
+    ---
+    ---
+
+    -- Spray moisture
+    if fmcGrowthControl.removeSprayMoisture then
+        addPluginGrowthCycle(
+            "Remove spray moisture",
+            10, 
+            function(sx,sz,wx,wz,hx,hz)
+                -- Remove moistness (spray)
+                setDensityParallelogram(
+                    g_currentMission.terrainDetailId,
+                    sx,sz,wx,wz,hx,hz,
+                    g_currentMission.sprayChannel, 1,
+                    0  -- value
+                );
+            end
+        )
+    end
+
+    --Lime/Kalk and soil pH
+    if g_currentMission.fmcFoliageLime ~= nil then
+        if g_currentMission.fmcFoliageSoil_pH ~= nil then
+            addPluginGrowthCycle(
+                "Increase soil pH where there is lime",
+                20 - 1, 
+                function(sx,sz,wx,wz,hx,hz)
+                    -- Increase soil-pH, where lime is
+                    setDensityMaskParams(g_currentMission.fmcFoliageSoil_pH, "greater", 0);
+                    addDensityMaskedParallelogram(
+                        g_currentMission.fmcFoliageSoil_pH,
+                        sx,sz,wx,wz,hx,hz,
+                        0, 3,
+                        g_currentMission.fmcFoliageLime, 0, 1,
+                        2  -- increase
+                    );
+                    setDensityMaskParams(g_currentMission.fmcFoliageSoil_pH, "greater", -1);
+                end
+            )
+        end
+
+        addPluginGrowthCycle(
+            "Remove lime",
+            20, 
+            function(sx,sz,wx,wz,hx,hz)
+                -- Remove lime
+                setDensityParallelogram(
+                    g_currentMission.fmcFoliageLime,
+                    sx,sz,wx,wz,hx,hz,
+                    0, 1,
+                    0  -- value
+                );
+            end
+        )
+    end
+
+    -- Manure
+    if g_currentMission.fmcFoliageManure ~= nil then
+        addPluginGrowthCycle(
+            "Reduce manure",
+            30, 
+            function(sx,sz,wx,wz,hx,hz)
+                -- Decrease solid manure
+                addDensityParallelogram(
+                    g_currentMission.fmcFoliageManure,
+                    sx,sz,wx,wz,hx,hz,
+                    0, 2,
+                    -1  -- subtract one
+                );
+            end
+        )
+    end
+
+    -- Slurry/LiquidManure
+    if g_currentMission.fmcFoliageSlurry ~= nil then
+        if g_currentMission.fmcFoliageFertilizerOrganic ~= nil then
+            addPluginGrowthCycle(
+                "Set fertilizer(organic) where there is slurry",
+                40 - 1, 
+                function(sx,sz,wx,wz,hx,hz)
+                    -- Set fertilizer(organic) at level-1 only.
+                    setDensityMaskParams(g_currentMission.fmcFoliageFertilizerOrganic, "greater", 0);
+                    setDensityMaskedParallelogram(
+                        g_currentMission.fmcFoliageFertilizerOrganic,
+                        sx,sz,wx,wz,hx,hz,
+                        0, 1,
+                        g_currentMission.fmcFoliageSlurry, 0, 1,  -- mask
+                        1 -- value
+                    );
+                    setDensityMaskParams(g_currentMission.fmcFoliageFertilizerOrganic, "greater", -1);
+                end
+            )
+        end
+        
+        addPluginGrowthCycle(
+            "Remove slurry",
+            40, 
+            function(sx,sz,wx,wz,hx,hz)
+                -- Remove liquid manure
+                setDensityParallelogram(
+                    g_currentMission.fmcFoliageSlurry,
+                    sx,sz,wx,wz,hx,hz,
+                    0, 1,
+                    0
+                );
+            end
+        )
+    end
+
+    -- Weed and herbicide
+    if g_currentMission.fmcFoliageWeed ~= nil then
+        addPluginGrowthCycle(
+            "Reduce withered weed",
+            50 - 2, 
+            function(sx,sz,wx,wz,hx,hz)
+                -- Decrease "dead" weed
+                setDensityCompareParams(g_currentMission.fmcFoliageWeed, "between", 1, 3)
+                addDensityParallelogram(
+                    g_currentMission.fmcFoliageWeed,
+                    sx,sz,wx,wz,hx,hz,
+                    0, 3,
+                    -1  -- subtract
+                );
+            end
+        )
+
+        --
+        if g_currentMission.fmcFoliageHerbicide ~= nil then
+            addPluginGrowthCycle(
+                "Change weed to withered where there is herbicide",
+                50 - 1, 
+                function(sx,sz,wx,wz,hx,hz)
+                    -- Change to "dead" weed
+                    setDensityCompareParams(g_currentMission.fmcFoliageWeed, "greater", 0)
+                    setDensityMaskParams(g_currentMission.fmcFoliageWeed, "greater", 0)
+                    setDensityMaskedParallelogram(
+                        g_currentMission.fmcFoliageWeed,
+                        sx,sz,wx,wz,hx,hz,
+                        2, 1, -- affect only Most-Significant-Bit
+                        g_currentMission.fmcFoliageHerbicide, 0, 2, -- mask
+                        0 -- reset bit
+                    )
+                    setDensityMaskParams(g_currentMission.fmcFoliageWeed, "greater", -1)
+                end
+            )
+        end
+
+        addPluginGrowthCycle(
+            "Increase weed growth",
+            50, 
+            function(sx,sz,wx,wz,hx,hz)
+                -- Increase "alive" weed
+                setDensityCompareParams(g_currentMission.fmcFoliageWeed, "between", 4, 6)
+                addDensityParallelogram(
+                    g_currentMission.fmcFoliageWeed,
+                    sx,sz,wx,wz,hx,hz,
+                    0, 3,
+                    1  -- increase
+                );
+                setDensityCompareParams(g_currentMission.fmcFoliageWeed, "greater", -1)
+            end
+        )
+    end
+
+    -- Herbicide and soil pH
+    if g_currentMission.fmcFoliageHerbicide ~= nil then
+        if g_currentMission.fmcFoliageSoil_pH ~= nil then
+            addPluginGrowthCycle(
+                "Reduce soil pH where there is herbicide",
+                60 - 1, 
+                function(sx,sz,wx,wz,hx,hz)
+                    -- Decrease soil-pH, where herbicide is
+                    setDensityMaskParams(g_currentMission.fmcFoliageSoil_pH, "greater", 0)
+                    addDensityMaskedParallelogram(
+                        g_currentMission.fmcFoliageSoil_pH,
+                        sx,sz,wx,wz,hx,hz,
+                        0, 3,
+                        g_currentMission.fmcFoliageHerbicide, 0, 2, -- mask
+                        -1  -- decrease
+                    );
+                    setDensityMaskParams(g_currentMission.fmcFoliageSoil_pH, "greater", -1)
+                end
+            )
+        end
+
+        addPluginGrowthCycle(
+            "Remove herbicide",
+            60, 
+            function(sx,sz,wx,wz,hx,hz)
+                -- Remove herbicide
+                setDensityParallelogram(
+                    g_currentMission.fmcFoliageHerbicide,
+                    sx,sz,wx,wz,hx,hz,
+                    0, 2,
+                    0  -- value
+                );
+            end
+        )
+    end
+    
+end
+
 function fmcGrowthControl:updateFoliageCellXZWH(x,z, wh, pctCompleted, noEventSend)
     fmcGrowthControl.pctCompleted = pctCompleted
     fmcGrowthControlEvent.sendEvent(x,z, wh, pctCompleted, noEventSend)
@@ -510,198 +818,18 @@ Growth states
   15 14  <unused>
 --]]
 
-    local sx,sy, wx,wy, hx,hy = x,z,  wh-0.5,0,  0,wh-0.5
+    local sx,sz,wx,wz,hx,hz = x,z,  wh-0.5,0,  0,wh-0.5
 
-    -- increase growth
-    for _,v in pairs(g_currentMission.fmcFoliageGrowthLayers) do
-      setDensityMaskParams(v.fruitId, "between", v.minSeededValue, v.maxMatureValue - ((fmcGrowthControl.disableWithering or v.witheredValue == nil) and 1 or 0))
-      addDensityMaskedParallelogram(
-        v.fruitId,
-        sx,sy,wx,wy,hx,hy,
-        0, g_currentMission.numFruitStateChannels,
-        v.fruitId, 0, g_currentMission.numFruitStateChannels, -- mask
-        1 -- add one
-      )
-
-      -- Herbicide may affect growth or cause withering...
-      if g_currentMission.fmcFoliageHerbicide ~= nil then
-        if v.herbicideAvoidance ~= nil and v.herbicideAvoidance >= 1 and v.herbicideAvoidance <= 3 then
-          -- Herbicide affected fruit
-          setDensityMaskParams(v.fruitId, "equals", v.herbicideAvoidance)
-          -- When growing and affected by wrong herbicide, pause one growth-step
-          setDensityCompareParams(v.fruitId, "between", v.minSeededValue+1, v.minMatureValue)
-          addDensityMaskedParallelogram(
-            v.fruitId,
-            sx,sy,wx,wy,hx,hy,
-            0, g_currentMission.numFruitStateChannels,
-            g_currentMission.fmcFoliageHerbicide, 0, 2, -- mask
-            -1 -- subtract one
-          )
-          -- When mature and affected by wrong herbicide, change to withered if possible.
-          if v.witheredValue ~= nil then
-            setDensityMaskParams(v.fruitId, "equals", v.herbicideAvoidance)
-            setDensityCompareParams(v.fruitId, "between", v.minMatureValue, v.maxMatureValue)
-            setDensityMaskedParallelogram(
-                v.fruitId,
-                sx,sy,wx,wy,hx,hy,
-                0, g_currentMission.numFruitStateChannels,
-                g_currentMission.fmcFoliageHerbicide, 0, 2, -- mask
-                v.witheredValue  -- value
-            )
-          end
-          --
-          setDensityCompareParams(v.fruitId, "greater", -1)
+    -- For each fruit foliage-layer (increase growth)
+    for _,fruitEntry in pairs(g_currentMission.fmcFoliageGrowthLayers) do
+        for _,callFunc in pairs(fmcGrowthControl.pluginsGrowthCycleFruits) do
+            callFunc(sx,sz,wx,wz,hx,hz,fruitEntry)
         end
-      end
-      --
-      setDensityMaskParams(v.fruitId, "greater", 0)
-
-      if fmcGrowthControl.reduceWindrows then
-        -- Reduce windrow (gone with the wind)
-        if v.windrowId ~= nil and v.windrowId ~= 0 then
-            setDensityMaskParams(v.windrowId, "greater", 0)
-            addDensityMaskedParallelogram(
-                v.windrowId,
-                sx,sy,wx,wy,hx,hy,
-                0, g_currentMission.numWindrowChannels,
-                v.windrowId, 0, g_currentMission.numWindrowChannels,  -- mask
-                -1  -- subtract one
-            );
-            setDensityMaskParams(v.windrowId, "greater", -1)
-        end
-      end
     end
 
-    --
-    if fmcGrowthControl.removeSprayMoisture then
-        -- Remove moistness (spray)
-        setDensityParallelogram(
-            g_currentMission.terrainDetailId,
-            sx,sy,wx,wy,hx,hy,
-            g_currentMission.sprayChannel, 1,
-            0  -- value
-        );
-    end
-
-    --Lime/Kalk and soil pH
-    if g_currentMission.fmcFoliageLime ~= nil then
-        if g_currentMission.fmcFoliageSoil_pH ~= nil then
-            -- Increase soil-pH, where lime is
-            setDensityMaskParams(g_currentMission.fmcFoliageSoil_pH, "greater", 0);
-            addDensityMaskedParallelogram(
-                g_currentMission.fmcFoliageSoil_pH,
-                sx,sy,wx,wy,hx,hy,
-                0, 3,
-                g_currentMission.fmcFoliageLime, 0, 1,
-                2  -- increase
-            );
-            setDensityMaskParams(g_currentMission.fmcFoliageSoil_pH, "greater", -1);
-        end
-
-        -- Remove lime
-        setDensityParallelogram(
-            g_currentMission.fmcFoliageLime,
-            sx,sy,wx,wy,hx,hy,
-            0, 1,
-            0  -- value
-        );
-    end
-
-    -- Manure
-    if g_currentMission.fmcFoliageManure ~= nil then
-        -- Decrease solid manure
-        addDensityParallelogram(
-            g_currentMission.fmcFoliageManure,
-            sx,sy,wx,wy,hx,hy,
-            0, 2,
-            -1  -- subtract one
-        );
-    end
-
-    -- Slurry/LiquidManure
-    if g_currentMission.fmcFoliageSlurry ~= nil then
-        if g_currentMission.fmcFoliageFertilizerOrganic ~= nil then
-            -- Set fertilizer(organic) at level-1 only.
-            setDensityMaskParams(g_currentMission.fmcFoliageFertilizerOrganic, "greater", 0);
-            setDensityMaskedParallelogram(
-                g_currentMission.fmcFoliageFertilizerOrganic,
-                sx,sy,wx,wy,hx,hy,
-                0, 1,
-                g_currentMission.fmcFoliageSlurry, 0, 1,  -- mask
-                1 -- value
-            );
-            setDensityMaskParams(g_currentMission.fmcFoliageFertilizerOrganic, "greater", -1);
-        end
-        -- Remove liquid manure
-        setDensityParallelogram(
-            g_currentMission.fmcFoliageSlurry,
-            sx,sy,wx,wy,hx,hy,
-            0, 1,
-            0
-        );
-    end
-
-    -- Weed and herbicide
-    if g_currentMission.fmcFoliageWeed ~= nil then
-        -- Decrease "dead" weed
-        setDensityCompareParams(g_currentMission.fmcFoliageWeed, "between", 1, 3)
-        addDensityParallelogram(
-            g_currentMission.fmcFoliageWeed,
-            sx,sy,wx,wy,hx,hy,
-            0, 3,
-            -1  -- subtract
-        );
-
-        --
-        if g_currentMission.fmcFoliageHerbicide ~= nil then
-            -- Change to "dead" weed
-            setDensityCompareParams(g_currentMission.fmcFoliageWeed, "greater", 0)
-            setDensityMaskParams(g_currentMission.fmcFoliageWeed, "greater", 0)
-            setDensityMaskedParallelogram(
-                g_currentMission.fmcFoliageWeed,
-                sx,sy,wx,wy,hx,hy,
-                2, 1, -- affect only Most-Significant-Bit
-                g_currentMission.fmcFoliageHerbicide, 0, 2, -- mask
-                0 -- reset bit
-            )
-            setDensityMaskParams(g_currentMission.fmcFoliageWeed, "greater", -1)
-        end
-
-        -- Increase "alive" weed
-        setDensityCompareParams(g_currentMission.fmcFoliageWeed, "between", 4, 6)
-        addDensityParallelogram(
-            g_currentMission.fmcFoliageWeed,
-            sx,sy,wx,wy,hx,hy,
-            0, 3,
-            1  -- increase
-        );
-
-        --
-        setDensityCompareParams(g_currentMission.fmcFoliageWeed, "greater", -1)
-    end
-
-    -- Herbicide and soil pH
-    if g_currentMission.fmcFoliageHerbicide ~= nil then
-        if g_currentMission.fmcFoliageSoil_pH ~= nil then
-            -- Decrease soil-pH, where herbicide is
-            setDensityMaskParams(g_currentMission.fmcFoliageSoil_pH, "greater", 0)
-            addDensityMaskedParallelogram(
-                g_currentMission.fmcFoliageSoil_pH,
-                sx,sy,wx,wy,hx,hy,
-                0, 3,
-                g_currentMission.fmcFoliageHerbicide, 0, 2, -- mask
-                -1  -- decrease
-            );
-            setDensityMaskParams(g_currentMission.fmcFoliageSoil_pH, "greater", -1)
-        end
-
-        -- Remove herbicide
-        setDensityParallelogram(
-            g_currentMission.fmcFoliageHerbicide,
-            sx,sy,wx,wy,hx,hy,
-            0, 2,
-            0  -- value
-        );
+    -- For other foliage-layers
+    for _,callFunc in pairs(fmcGrowthControl.pluginsGrowthCycle) do
+        callFunc(sx,sz,wx,wz,hx,hz)
     end
 end
 
