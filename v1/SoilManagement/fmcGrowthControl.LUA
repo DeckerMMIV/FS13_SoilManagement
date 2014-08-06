@@ -27,6 +27,11 @@
 
 
 fmcGrowthControl = {}
+
+-- Register as plugin for SoilMod
+getfenv(0)["modSoilModPlugins"] = getfenv(0)["modSoilModPlugins"] or {}
+table.insert(getfenv(0)["modSoilModPlugins"], fmcGrowthControl)
+
 --
 local modItem = ModsUtil.findModItemByModName(g_currentModName);
 fmcGrowthControl.version = (modItem and modItem.version) and modItem.version or "?.?.?";

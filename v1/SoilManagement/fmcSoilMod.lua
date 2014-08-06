@@ -31,6 +31,9 @@ fmcSoilMod = {}
 -- "Register" this object in global environment, so other mods can "see" it.
 getfenv(0)["fmcSoilMod"] = fmcSoilMod 
 
+-- Plugin support. Array for plugins to add themself to, so SoilMod can later "call them back".
+getfenv(0)["modSoilModPlugins"] = getfenv(0)["modSoilModPlugins"] or {}
+
 --
 local modItem = ModsUtil.findModItemByModName(g_currentModName);
 fmcSoilMod.version = (modItem and modItem.version) and modItem.version or "?.?.?";

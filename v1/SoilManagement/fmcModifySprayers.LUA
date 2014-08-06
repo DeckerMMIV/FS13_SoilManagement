@@ -89,24 +89,24 @@ end;
 
 
 function fmcModifySprayers.overwriteSprayerAreaEvent()
-  logInfo("Overwriting SprayerAreaEvent functions, to take extra argument; 'fillType'.")
+  logInfo("Overwriting SprayerAreaEvent functions, to take extra argument; 'augmentedFillType'.")
 
   SprayerAreaEvent.new = function(self, cuttingAreas
 --#### DECKER_MMIV ############################################################
-  , fillType
+  , augmentedFillType
 --#############################################################################
   )
       local self = SprayerAreaEvent:emptyNew()
       self.cuttingAreas = cuttingAreas;
 --#### DECKER_MMIV ############################################################
-      self.fillType = fillType
+      self.augmentedFillType = augmentedFillType
 --#############################################################################
       return self;
   end;
   
   SprayerAreaEvent.readStream = function(self, streamId, connection)
 --#### DECKER_MMIV ############################################################
-      local fillType = streamReadUIntN(streamId, Fillable.sendNumBits)
+      local augmentedFillType = streamReadUInt8(streamId)
 --#############################################################################
       local numAreas = streamReadUIntN(streamId, 4);
       local refX = streamReadFloat32(streamId);
@@ -122,14 +122,14 @@ function fmcModifySprayers.overwriteSprayerAreaEvent()
           local z2 = values[vi*3+3].y;
 --#### DECKER_MMIV ############################################################
           -- Utils.updateSprayArea(x, z, x1, z1, x2, z2);
-          Utils.updateSprayArea(x, z, x1, z1, x2, z2, fillType);
+          Utils.updateSprayArea(x, z, x1, z1, x2, z2, augmentedFillType);
 --#############################################################################
       end;
   end;
   
   SprayerAreaEvent.writeStream = function(self, streamId, connection)
 --#### DECKER_MMIV ############################################################
-      streamWriteUIntN(streamId, self.fillType, Fillable.sendNumBits)
+      streamWriteUInt8(streamId, self.augmentedFillType)
 --#############################################################################
       local numAreas = table.getn(self.cuttingAreas);
       streamWriteUIntN(streamId, numAreas, 4);
@@ -154,7 +154,7 @@ function fmcModifySprayers.overwriteSprayerAreaEvent()
   
   SprayerAreaEvent.runLocally = function(cuttingAreas
 --#### DECKER_MMIV ############################################################
-  , fillType
+  , augmentedFillType
 --#############################################################################
   )
       local numAreas = table.getn(cuttingAreas);
@@ -185,7 +185,7 @@ function fmcModifySprayers.overwriteSprayerAreaEvent()
           local z2 = values[vi*3+3].y;
 --#### DECKER_MMIV ############################################################
           -- Utils.updateSprayArea(x, z, x1, z1, x2, z2);
-          Utils.updateSprayArea(x, z, x1, z1, x2, z2, fillType);
+          Utils.updateSprayArea(x, z, x1, z1, x2, z2, augmentedFillType);
 --#############################################################################
       end;
   end;
