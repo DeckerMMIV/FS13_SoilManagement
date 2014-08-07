@@ -14,10 +14,6 @@
 
 fmcModifyFSUtils = {}
 
--- Register as plugin for SoilMod
-getfenv(0)["modSoilModPlugins"] = getfenv(0)["modSoilModPlugins"] or {}
-table.insert(getfenv(0)["modSoilModPlugins"], fmcModifyFSUtils)
-
 --
 local modItem = ModsUtil.findModItemByModName(g_currentModName);
 fmcModifyFSUtils.version = (modItem and modItem.version) and modItem.version or "?.?.?";
@@ -25,6 +21,22 @@ fmcModifyFSUtils.version = (modItem and modItem.version) and modItem.version or 
 -- To control in what growth-state range, that the synthetic fertilizer gets "into the ground".
 fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = 2  -- 2 = second growing state of crops.
 fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = 4  -- 4 = fourth growing state of crops.
+
+--
+function fmcModifyFSUtils.preSetup()
+    -- We need a different array of dynamic-foliage-layers, to be used in Utils.updateDestroyCommonArea()
+    g_currentMission.fmcDynamicFoliageLayers = {}
+    for _,foliageId in ipairs(g_currentMission.dynamicFoliageLayers) do
+        fmcModifyFSUtils.addDestructibleFoliageId(foliageId)
+    end
+end
+
+function fmcModifyFSUtils.addDestructibleFoliageId(foliageId)
+    if foliageId ~= nil and foliageId ~= 0 then
+        table.insert(g_currentMission.fmcDynamicFoliageLayers, foliageId)
+        logInfo(("Included foliage-layer for \"destruction\" by plough/cultivator/seeder: '%s', id=%s, numChnls=%s"):format(getName(foliageId), foliageId, getTerrainDetailNumChannels(foliageId)))
+    end
+end
 
 --
 function fmcModifyFSUtils.setup(simplisticMode)
@@ -65,327 +77,11 @@ function fmcModifyFSUtils.teardown()
     end
 end
 
-
---
-function fmcModifyFSUtils.soilModPluginCallback(soilMod)
-
-    --soilMod.addPlugin_CutFruitArea_setup(<description of plugin>,<priority>,<function>)
-    --soilMod.addPlugin_CutFruitArea_before()
-    --soilMod.addPlugin_CutFruitArea_after()
-    
-    --soilMod.addPlugin_UpdateCultivatorArea_setup()
-    --soilMod.addPlugin_UpdateCultivatorArea_before()
-    --soilMod.addPlugin_UpdateCultivatorArea_after()
-    --
-    --soilMod.addPlugin_UpdatePloughArea_setup()
-    --soilMod.addPlugin_UpdatePloughArea_before()
-    --soilMod.addPlugin_UpdatePloughArea_after()
-    --
-    --soilMod.addPlugin_UpdateSowingArea_setup()
-    --soilMod.addPlugin_UpdateSowingArea_before()
-    --soilMod.addPlugin_UpdateSowingArea_after()
-    --
-    --soilMod.addPlugin_UpdateSprayArea_setup()
-    --soilMod.addPlugin_UpdateSprayArea_before()
-    --soilMod.addPlugin_UpdateSprayArea_after()
-    --
-    --soilMod.addPlugin_GrowthCycleFruits()
-    --soilMod.addPlugin_GrowthCycle()
-    
-    soilMod.addPlugin_CutFruitArea_after(
-        "Volume affected if partial-growth-state for crop",
-        1,
-        function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            if fruitDesc.allowsPartialGrowthState then
-                dataStore.volume = dataStore.pixelsSum / fruitDesc.maxHarvestingGrowthState
-            end
-        end
-    )
-end
-
 --
 function fmcModifyFSUtils.overwriteCutFruitArea()
 
     logInfo("Overwriting Utils.cutFruitArea")
     
-    -- Array of 9 elements... must be sorted! (high, factor)
-    Utils.fmcSoilpHfactors = {
-        {h= 5.1, f=0.05},
-        {h= 5.6, f=0.50},
-        {h= 6.1, f=0.75},
-        {h= 6.6, f=0.95},
-        {h= 7.3, f=1.00},   -- neutral
-        {h= 7.9, f=0.95},
-        {h= 8.5, f=0.90},
-        {h= 9.0, f=0.80},
-        {h=99.0, f=0.70},
-    }
-  
-  
-    Utils.fmcPluginsCutFruitAreaSetup = {}
-    Utils.fmcPluginsCutFruitAreaPreFuncs = {}
-    Utils.fmcPluginsCutFruitAreaPostFuncs = {}
-
-    local function addPlugin(description,setupPriority,setupFunc, prePriority,preFunc, postPriority,postFunc)
-        logInfo("Adding cut-fruit-area plugin: ", description)
-    
-        if setupFunc ~= nil then
-            table.insert(Utils.fmcPluginsCutFruitAreaSetup,
-                setupFunc
-            )
-        end
-        if preFunc ~= nil then
-            table.insert(Utils.fmcPluginsCutFruitAreaPreFuncs,
-                preFunc
-            )
-        end
-        if postFunc ~= nil then
-            table.insert(Utils.fmcPluginsCutFruitAreaPostFuncs,
-                postFunc
-            )
-        end
-    end
-
-    addPlugin(
-        "- / Volume affected if partial-growth-state for crop",
-        nil,nil,
-        nil,nil,
-        1,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            if fruitDesc.allowsPartialGrowthState then
-                dataStore.volume = dataStore.pixelsSum / fruitDesc.maxHarvestingGrowthState
-            end
-        end
-    )
-    
-    --addPlugin(
-    --    "Remove spray where min/max-harvesting-growth-state is",
-    --    nil,nil,
-    --    10,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-    --        if dataStore.destroySpray then
-    --            setDensityMaskParams(g_currentMission.terrainDetailId, "between", dataStore.minHarvestingGrowthState, dataStore.maxHarvestingGrowthState);
-    --            dataStore.spraySum 
-    --            = setDensityMaskedParallelogram(
-    --                g_currentMission.terrainDetailId, 
-    --                sx,sz,wx,wz,hx,hz, 
-    --                g_currentMission.sprayChannel, 1, 
-    --                dataStore.fruitFoliageId, 0, g_currentMission.numFruitStateChannels, 
-    --                0 -- value
-    --            );
-    --            setDensityMaskParams(g_currentMission.terrainDetailId, "greater", 0);
-    --        end
-    --    end,
-    --    nil,nil
-    --)
-
-    addPlugin(
-        "Set sowing-channel where min/max-harvesting-growth-state is",
-        nil,nil,
-        10,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            if fruitDesc.useSeedingWidth and (dataStore.destroySeedingWidth == nil or dataStore.destroySeedingWidth) then
-                setDensityMaskParams(g_currentMission.terrainDetailId, "between", dataStore.minHarvestingGrowthState, dataStore.maxHarvestingGrowthState); 
-                setDensityMaskedParallelogram(
-                    g_currentMission.terrainDetailId, 
-                    sx,sz,wx,wz,hx,hz, 
-                    g_currentMission.terrainDetailTypeFirstChannel, g_currentMission.terrainDetailTypeNumChannels, 
-                    dataStore.fruitFoliageId, 0, g_currentMission.numFruitStateChannels, 
-                    2^g_currentMission.sowingChannel  -- value
-                );
-                setDensityMaskParams(g_currentMission.terrainDetailId, "greater", 0);
-            end
-        end,
-        nil,nil
-    )
-
-    addPlugin(
-        "Get weed density and cut weed / Volume is affected by percentage of weeds",
-        nil,nil,
-        20,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            -- Get weeds, but only the lower 2 bits (values 0-3), and then set them to zero.
-            -- This way weed gets cut, but alive weed will still grow again.
-            setDensityCompareParams(g_currentMission.fmcFoliageWeed, "greater", 0);
-            dataStore.weeds = {}
-            dataStore.weeds.oldSum, 
-            dataStore.weeds.numPixels, 
-            dataStore.weeds.newDelta 
-            = setDensityParallelogram(
-                g_currentMission.fmcFoliageWeed,
-                sx,sz,wx,wz,hx,hz,
-                0,2,
-                0 -- value
-            )
-            setDensityCompareParams(g_currentMission.fmcFoliageWeed, "greater", -1);
-        end,
-        20,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            if dataStore.weeds.numPixels > 0 then
-                local weedPct = (dataStore.weeds.oldSum / (3 * dataStore.weeds.numPixels)) * (dataStore.weeds.numPixels / dataStore.numPixels)
-                -- Remove some volume that weeds occupy.
-                dataStore.volume = math.max(0, dataStore.volume - (dataStore.volume * weedPct))
-            end
-        end
-    )
-        
-    addPlugin(
-        "Get fertilizer(organic) density and reduce / Volume is affected by fertilizer(organic)",
-        nil,nil,
-        30,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            -- Get fertilizer(organic), and reduce it by one
-            setDensityMaskParams(g_currentMission.fmcFoliageFertilizerOrganic, "between", dataStore.minHarvestingGrowthState, dataStore.maxHarvestingGrowthState);
-            dataStore.fertilizerOrganic = {}
-            dataStore.fertilizerOrganic.oldSum,
-            dataStore.fertilizerOrganic.numPixels,
-            dataStore.fertilizerOrganic.newDelta 
-            = addDensityMaskedParallelogram(
-                g_currentMission.fmcFoliageFertilizerOrganic, 
-                sx,sz,wx,wz,hx,hz,
-                0,2,
-                dataStore.fruitFoliageId,0,g_currentMission.numFruitStateChannels,
-                -1 -- subtract
-            )
-            setDensityMaskParams(g_currentMission.fmcFoliageFertilizerOrganic, "greater", -1);
-        end,
-        30,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            -- SoilManagement does not use spray for "yield".
-            dataStore.spraySum = 0
-            --
-            if dataStore.fertilizerOrganic.numPixels > 0 then
-                local nutrientLevel = dataStore.fertilizerOrganic.oldSum / dataStore.fertilizerOrganic.numPixels
-                -- If nutrition available, then increase volume by 50%-100%
-                if nutrientLevel > 0 then
-                    dataStore.volume = dataStore.volume * math.min(2, nutrientLevel+1.5)
-                end
-            end
-        end
-    )
-    
-    addPlugin(
-        "Get fertilizer(synthetic) density and remove / Volume is slightly boosted if correct fertilizer(synthetic)",
-        nil,nil,
-        40,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            -- Get fertilizer(synthetic)-A and -B types, and reduce them to zero.
-            setDensityMaskParams(g_currentMission.fmcFoliageFertilizerSynthetic, "between", dataStore.minHarvestingGrowthState, dataStore.maxHarvestingGrowthState);
-            dataStore.fertilizerSynthetic1 = {}
-            dataStore.fertilizerSynthetic1.oldSum,
-            dataStore.fertilizerSynthetic1.numPixels,
-            dataStore.fertilizerSynthetic1.newDelta 
-            = setDensityMaskedParallelogram(
-                g_currentMission.fmcFoliageFertilizerSynthetic, 
-                sx,sz,wx,wz,hx,hz,
-                0,1,
-                dataStore.fruitFoliageId,0,g_currentMission.numFruitStateChannels,
-                0 -- value
-            )
-            dataStore.fertilizerSynthetic2 = {}
-            dataStore.fertilizerSynthetic2.oldSum,
-            dataStore.fertilizerSynthetic2.numPixels,
-            dataStore.fertilizerSynthetic2.newDelta 
-            = setDensityMaskedParallelogram(
-                g_currentMission.fmcFoliageFertilizerSynthetic, 
-                sx,sz,wx,wz,hx,hz,
-                1,1,
-                dataStore.fruitFoliageId,0,g_currentMission.numFruitStateChannels,
-                0 -- value
-            )
-            setDensityMaskParams(g_currentMission.fmcFoliageFertilizerSynthetic, "greater", -1);
-        end,
-        40,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            local fertApct = (dataStore.fertilizerSynthetic1.numPixels > 0) and (dataStore.fertilizerSynthetic1.oldSum / dataStore.fertilizerSynthetic1.numPixels) or 0
-            local fertBpct = (dataStore.fertilizerSynthetic2.numPixels > 0) and (dataStore.fertilizerSynthetic2.oldSum / dataStore.fertilizerSynthetic2.numPixels) or 0
-
-            if fmcModifyFSUtils.simplisticMode then
-                -- Simplistic mode: Fruits get a boost if (any) fertilizer is applied
-                local volumeBoost = 0
-                if fertApct>0 and fertBpct>0 then
-                    volumeBoost = (dataStore.numPixels * ((fertApct + fertBpct) / 2)) 
-                elseif fertApct>0 then
-                    volumeBoost = (dataStore.numPixels * fertApct)
-                elseif fertBpct>0 then
-                    volumeBoost = (dataStore.numPixels * fertBpct)
-                end
-                dataStore.volume = dataStore.volume + volumeBoost
-            else
-                -- Advanced mode: Fruits only get a boost from a particular fertilizer
-                local volumeBoost = 0
-                if fertApct>0 and fertBpct>0 then
-                    if fruitDesc.fmcBoostFertilizer == Fillable.FILLTYPE_FERTILIZER3 then
-                        volumeBoost = (dataStore.numPixels * ((fertApct + fertBpct) / 2)) 
-                    end
-                elseif fertApct>0 then
-                    if fruitDesc.fmcBoostFertilizer == Fillable.FILLTYPE_FERTILIZER then
-                        volumeBoost = (dataStore.numPixels * fertApct)
-                    end
-                elseif fertBpct>0 then
-                    if fruitDesc.fmcBoostFertilizer == Fillable.FILLTYPE_FERTILIZER2 then
-                        volumeBoost = (dataStore.numPixels * fertBpct)
-                    end
-                end
-                dataStore.volume = dataStore.volume + volumeBoost
-            end
-        end
-    )
-            
-    addPlugin(
-        "Get soil pH density and reduce / Volume is affected by soil pH level",
-        nil,nil,
-        50,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            -- Get soil pH, and reduce by one
-            setDensityMaskParams(g_currentMission.fmcFoliageSoil_pH, "between", dataStore.minHarvestingGrowthState, dataStore.maxHarvestingGrowthState);
-            dataStore.soilpH = {}
-            dataStore.soilpH.oldSum, 
-            dataStore.soilpH.numPixels, 
-            dataStore.soilpH.newDelta 
-            = addDensityMaskedParallelogram(
-                g_currentMission.fmcFoliageSoil_pH, 
-                sx,sz,wx,wz,hx,hz,
-                0,3,
-                dataStore.fruitFoliageId,0,g_currentMission.numFruitStateChannels,
-                -1 -- subtract
-            )
-            setDensityMaskParams(g_currentMission.fmcFoliageSoil_pH, "greater", -1);
-        end,
-        50,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            local phValue = 7; -- Default pH value, if setDensity failed to match any pixels or calculation function does not exist.
-            if (fmcSoilMod and fmcSoilMod.density_to_pH) then
-                phValue = fmcSoilMod.density_to_pH(dataStore.soilpH.oldSum, dataStore.soilpH.numPixels, 3)
-            end
-            if fmcModifyFSUtils.simplisticMode then
-                -- Simplistic mode: Soil pH value affects yields, but only when highly acidid.
-                if phValue <= Utils.fmcSoilpHfactors[1].h then
-                    dataStore.volume = dataStore.volume * Utils.fmcSoilpHfactors[1].f
-                elseif phValue <= Utils.fmcSoilpHfactors[2].h then
-                    dataStore.volume = dataStore.volume * Utils.fmcSoilpHfactors[2].f
-                end
-            else
-                -- Advanced mode: Soil pH value affects yields
-                -- TODO - Binary search? Or is that too much for an array of 9 elements?
-                if     phValue <= Utils.fmcSoilpHfactors[3].h then
-                    if     phValue < Utils.fmcSoilpHfactors[1].h then
-                        dataStore.volume = dataStore.volume * Utils.fmcSoilpHfactors[1].f
-                    elseif phValue < Utils.fmcSoilpHfactors[2].h then
-                        dataStore.volume = dataStore.volume * Utils.fmcSoilpHfactors[2].f
-                    else
-                        dataStore.volume = dataStore.volume * Utils.fmcSoilpHfactors[3].f
-                    end
-                elseif phValue <= Utils.fmcSoilpHfactors[6].h then
-                    if     phValue < Utils.fmcSoilpHfactors[4].h then
-                        dataStore.volume = dataStore.volume * Utils.fmcSoilpHfactors[4].f
-                    elseif phValue < Utils.fmcSoilpHfactors[5].h then
-                        dataStore.volume = dataStore.volume * Utils.fmcSoilpHfactors[5].f
-                    else
-                        dataStore.volume = dataStore.volume * Utils.fmcSoilpHfactors[6].f
-                    end
-                else
-                    if     phValue < Utils.fmcSoilpHfactors[7].h then
-                        dataStore.volume = dataStore.volume * Utils.fmcSoilpHfactors[7].f
-                    elseif phValue < Utils.fmcSoilpHfactors[8].h then
-                        dataStore.volume = dataStore.volume * Utils.fmcSoilpHfactors[8].f
-                    else
-                        dataStore.volume = dataStore.volume * Utils.fmcSoilpHfactors[9].f
-                    end
-                end
-            end
-        end
-    )
-
     Utils.cutFruitArea = function(fruitId, startWorldX, startWorldZ, widthWorldX, widthWorldZ, heightWorldX, heightWorldZ, destroySpray, destroySeedingWidth)
         local ids = g_currentMission.fruits[fruitId];
         if ids == nil or ids.id == 0 then
@@ -435,91 +131,10 @@ function fmcModifyFSUtils.overwriteCutFruitArea()
 
 end  
 
-
-
---#### DECKER_MMIV ############################################################
-Utils.fmcTYPE_UNKNOWN    = 0
-Utils.fmcTYPE_PLOUGH     = 2^0
-Utils.fmcTYPE_CULTIVATOR = 2^1
-Utils.fmcTYPE_SEEDER     = 2^2
-
-Utils.fmcUpdateFmcFoliage = function(sx,sz,wx,wz,hx,hz, isForced, implementType)
-    if implementType ~= Utils.fmcTYPE_SEEDER then
-        -- Increase fertilizer(organic)...
-        setDensityMaskParams(         g_currentMission.fmcFoliageFertilizerOrganic, "greater", 0);
-        -- ..where there's manure, by 1(cultivator) or 3(plough)
-        addDensityMaskedParallelogram(g_currentMission.fmcFoliageFertilizerOrganic, sx,sz,wx,wz,hx,hz, 0, 2, g_currentMission.fmcFoliageManure, 0, 2, (implementType==Utils.fmcTYPE_PLOUGH and 3 or 1));
-        -- ..where there's slurry, by 1.
-        addDensityMaskedParallelogram(g_currentMission.fmcFoliageFertilizerOrganic, sx,sz,wx,wz,hx,hz, 0, 2, g_currentMission.fmcFoliageSlurry, 0, 1, 1);
-        
-        -- Set "moisture" where there's manure - we're cultivating/plouging it into ground.
-        setDensityMaskedParallelogram(g_currentMission.terrainDetailId,             sx,sz,wx,wz,hx,hz, g_currentMission.sprayChannel, 1, g_currentMission.fmcFoliageManure, 0, 2, 1);
-        -- Set "moisture" where there's slurry - we're cultivating/plouging it into ground.
-        setDensityMaskedParallelogram(g_currentMission.terrainDetailId,             sx,sz,wx,wz,hx,hz, g_currentMission.sprayChannel, 1, g_currentMission.fmcFoliageSlurry, 0, 1, 1);
-        
-        -- Increase soil pH where there's lime, by 3 - we're cultivating/plouging it into ground.
-        setDensityMaskParams(         g_currentMission.fmcFoliageSoil_pH, "greater", 0)
-        addDensityMaskedParallelogram(g_currentMission.fmcFoliageSoil_pH,           sx,sz,wx,wz,hx,hz, 0, 3, g_currentMission.fmcFoliageLime, 0, 1, 3);
-    
-        -- Remove the manure/slurry/lime we've just cultivated/ploughed into ground.
-        setDensityParallelogram(g_currentMission.fmcFoliageManure, sx,sz,wx,wz,hx,hz, 0, 2, 0)
-        setDensityParallelogram(g_currentMission.fmcFoliageSlurry, sx,sz,wx,wz,hx,hz, 0, 1, 0)
-        setDensityParallelogram(g_currentMission.fmcFoliageLime,   sx,sz,wx,wz,hx,hz, 0, 1, 0)
-    end
-        
-    -- Remove weed plants - where we're cultivating/ploughing/seeding.
-    setDensityParallelogram(      g_currentMission.fmcFoliageWeed, sx,sz,wx,wz,hx,hz, 0, 3, 0)
-end
---#############################################################################
-
-
-
+--
 function fmcModifyFSUtils.overwriteUpdateCultivatorArea()
 
-  logInfo("Overwriting Utils.updateCultivatorArea")
-
-  
-    Utils.fmcPluginsUpdateCultivatorAreaSetup = {}
-    Utils.fmcPluginsUpdateCultivatorAreaPreFuncs = {}
-    Utils.fmcPluginsUpdateCultivatorAreaPostFuncs = {}
-
-    local function addPlugin(description,setupPriority,setupFunc, prePriority,preFunc, postPriority,postFunc)
-        logInfo("Adding update-cultivator-area plugin: ", description)
-    
-        if setupFunc ~= nil then
-            table.insert(Utils.fmcPluginsUpdateCultivatorAreaSetup,
-                setupFunc
-            )
-        end
-        if preFunc ~= nil then
-            table.insert(Utils.fmcPluginsUpdateCultivatorAreaPreFuncs,
-                preFunc
-            )
-        end
-        if postFunc ~= nil then
-            table.insert(Utils.fmcPluginsUpdateCultivatorAreaPostFuncs,
-                postFunc
-            )
-        end
-    end
-  
-    addPlugin(
-        "Destroy common area",
-        nil,nil,
-        30,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            Utils.fmcUpdateDestroyCommonArea(sx,sz,wx,wz,hx,hz, not dataStore.commonForced, Utils.fmcTYPE_CULTIVATOR);
-        end,
-        nil,nil
-    )
-    
-    addPlugin(
-        "Update foliage-layer for SoilMod",
-        nil,nil,
-        40,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            Utils.fmcUpdateFmcFoliage(sx,sz,wx,wz,hx,hz, dataStore.forced, Utils.fmcTYPE_CULTIVATOR)
-        end,
-        nil,nil
-    )
+    logInfo("Overwriting Utils.updateCultivatorArea")
   
     Utils.updateCultivatorArea = function(startWorldX, startWorldZ, widthWorldX, widthWorldZ, heightWorldX, heightWorldZ, forced, commonForced, angle)
         local dataStore = {}
@@ -585,54 +200,11 @@ function fmcModifyFSUtils.overwriteUpdateCultivatorArea()
 
 end
 
-
-
+--
 function fmcModifyFSUtils.overwriteUpdatePloughArea()
 
-  logInfo("Overwriting Utils.updatePloughArea")
+    logInfo("Overwriting Utils.updatePloughArea")
 
-    Utils.fmcPluginsUpdatePloughAreaSetup = {}
-    Utils.fmcPluginsUpdatePloughAreaPreFuncs = {}
-    Utils.fmcPluginsUpdatePloughAreaPostFuncs = {}
-
-    local function addPlugin(description,setupPriority,setupFunc, prePriority,preFunc, postPriority,postFunc)
-        logInfo("Adding update-plough-area plugin: ", description)
-    
-        if setupFunc ~= nil then
-            table.insert(Utils.fmcPluginsUpdatePloughAreaSetup,
-                setupFunc
-            )
-        end
-        if preFunc ~= nil then
-            table.insert(Utils.fmcPluginsUpdatePloughAreaPreFuncs,
-                preFunc
-            )
-        end
-        if postFunc ~= nil then
-            table.insert(Utils.fmcPluginsUpdatePloughAreaPostFuncs,
-                postFunc
-            )
-        end
-    end
-  
-    addPlugin(
-        "Destroy common area",
-        nil,nil,
-        30,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            Utils.fmcUpdateDestroyCommonArea(sx,sz,wx,wz,hx,hz, not dataStore.commonForced, Utils.fmcTYPE_PLOUGH);
-        end,
-        nil,nil
-    )
-    
-    addPlugin(
-        "Update foliage-layer for SoilMod",
-        nil,nil,
-        40,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            Utils.fmcUpdateFmcFoliage(sx,sz,wx,wz,hx,hz, dataStore.forced, Utils.fmcTYPE_PLOUGH)
-        end,
-        nil,nil
-    )
-    
     Utils.updatePloughArea = function(startWorldX, startWorldZ, widthWorldX, widthWorldZ, heightWorldX, heightWorldZ, forced, commonForced, angle)
         local dataStore = {}
         dataStore.forced        = Utils.getNoNil(forced, true);
@@ -697,54 +269,10 @@ function fmcModifyFSUtils.overwriteUpdatePloughArea()
     
 end
 
-
-
+--
 function fmcModifyFSUtils.overwriteUpdateSowingArea()
 
-  logInfo("Overwriting Utils.updateSowingArea")
-
-    Utils.fmcPluginsUpdateSowingAreaSetup = {}
-    Utils.fmcPluginsUpdateSowingAreaPreFuncs = {}
-    Utils.fmcPluginsUpdateSowingAreaPostFuncs = {}
-  
-    local function addPlugin(description,setupPriority,setupFunc, prePriority,preFunc, postPriority,postFunc)
-        logInfo("Adding update-sowing-area plugin: ", description)
-    
-        if setupFunc ~= nil then
-            table.insert(Utils.fmcPluginsUpdateSowingAreaSetup,
-                setupFunc
-            )
-        end
-        if preFunc ~= nil then
-            table.insert(Utils.fmcPluginsUpdateSowingAreaPreFuncs,
-                preFunc
-            )
-        end
-        if postFunc ~= nil then
-            table.insert(Utils.fmcPluginsUpdateSowingAreaPostFuncs,
-                postFunc
-            )
-        end
-    end
-
-    addPlugin(
-        "Update foliage-layer for SoilMod",
-        nil,nil,
-        30,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            Utils.fmcUpdateFmcFoliage(sx,sz,wx,wz,hx,hz, false, Utils.fmcTYPE_SEEDER)
-        end,
-        nil,nil
-    )
-    
-    addPlugin(
-        "Destroy dynamic foliage-layers",
-        nil,nil,
-        40,function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            Utils.fmcUpdateDestroyDynamicFoliageLayers(sx,sz,wx,wz,hx,hz, true, Utils.fmcTYPE_SEEDER)
-        end,
-        nil,nil
-    )
-
+    logInfo("Overwriting Utils.updateSowingArea")
     
     Utils.updateSowingArea = function(fruitId, startWorldX, startWorldZ, widthWorldX, widthWorldZ, heightWorldX, heightWorldZ, angle, useDirectPlanting)
         local ids = g_currentMission.fruits[fruitId];
@@ -906,7 +434,7 @@ function fmcModifyFSUtils.overwriteUpdateDestroyCommonArea()
   
   Utils.updateDestroyCommonArea = function(startWorldX, startWorldZ, widthWorldX, widthWorldZ, heightWorldX, heightWorldZ, limitToField)
     local sx,sz,wx,wz,hx,hz = Utils.getXZWidthAndHeight(nil, startWorldX, startWorldZ, widthWorldX, widthWorldZ, heightWorldX, heightWorldZ);
-    Utils.fmcUpdateDestroyCommonArea(sx,sz,wx,wz,hx,hz, limitToField, Utils.fmcTYPE_UNKNOWN)
+    Utils.fmcUpdateDestroyCommonArea(sx,sz,wx,wz,hx,hz, limitToField)
   end
   
 end  
@@ -943,9 +471,13 @@ end
 --#### DECKER_MMIV ############################################################
 function fmcModifyFSUtils.setSpraySubFuncs()
 
+    local function hasFoliageLayer(foliageId)
+        return (foliageId ~= nil and foliageId ~= 0);
+    end
+
     Utils.fmcUpdateSprayAreaFillTypeFuncs = {}
-    --
-    if g_currentMission.fmcFoliageManure ~= nil and g_currentMission.fmcFoliageManure ~= 0 then
+
+    if hasFoliageLayer(g_currentMission.fmcFoliageManure) then
         if Fillable.FILLTYPE_MANURE ~= nil then
             local foliageId       = g_currentMission.fmcFoliageManure
             local numChannels     = getTerrainDetailNumChannels(foliageId)
@@ -974,8 +506,8 @@ function fmcModifyFSUtils.setSpraySubFuncs()
             end
         end
     end
-    --
-    if g_currentMission.fmcFoliageSlurry ~= nil and g_currentMission.fmcFoliageSlurry ~= 0 then
+
+    if hasFoliageLayer(g_currentMission.fmcFoliageSlurry) then
         if Fillable.FILLTYPE_LIQUIDMANURE ~= nil then
             local foliageId       = g_currentMission.fmcFoliageSlurry
             local numChannels     = getTerrainDetailNumChannels(foliageId)
@@ -995,8 +527,8 @@ function fmcModifyFSUtils.setSpraySubFuncs()
             end
         end
     end
-    --
-    if g_currentMission.fmcFoliageLime ~= nil and g_currentMission.fmcFoliageLime ~= 0 then
+
+    if hasFoliageLayer(g_currentMission.fmcFoliageLime) then
         if Fillable.FILLTYPE_LIME ~= nil then
             local foliageId       = g_currentMission.fmcFoliageLime
             local numChannels     = getTerrainDetailNumChannels(foliageId)
@@ -1016,8 +548,8 @@ function fmcModifyFSUtils.setSpraySubFuncs()
             end
         end
     end
-    --
-    if g_currentMission.fmcFoliageHerbicide ~= nil and g_currentMission.fmcFoliageHerbicide ~= 0 then
+
+    if hasFoliageLayer(g_currentMission.fmcFoliageHerbicide) then
         if Fillable.FILLTYPE_HERBICIDE ~= nil then
             local foliageId       = g_currentMission.fmcFoliageHerbicide
             local numChannels     = getTerrainDetailNumChannels(foliageId)
@@ -1046,8 +578,8 @@ function fmcModifyFSUtils.setSpraySubFuncs()
             end
         end
     end
-    --
-    if g_currentMission.fmcFoliageFertilizerSynthetic ~= nil and g_currentMission.fmcFoliageFertilizerSynthetic ~= 0 then
+
+    if hasFoliageLayer(g_currentMission.fmcFoliageFertilizerSynthetic) then
         local fruitLayer = g_currentMission.fruits[1]
         -- TODO - add support for multiple FMLs
         if fruitLayer ~= nil and fruitLayer.id ~= 0 then
@@ -1131,7 +663,7 @@ function fmcModifyFSUtils.setSpraySubFuncs()
             end
         end
     end
-    --
+
     --
     local msg = nil
     for fillType,func in pairs(Utils.fmcUpdateSprayAreaFillTypeFuncs) do

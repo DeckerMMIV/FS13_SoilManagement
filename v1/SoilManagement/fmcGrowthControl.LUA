@@ -28,10 +28,6 @@
 
 fmcGrowthControl = {}
 
--- Register as plugin for SoilMod
-getfenv(0)["modSoilModPlugins"] = getfenv(0)["modSoilModPlugins"] or {}
-table.insert(getfenv(0)["modSoilModPlugins"], fmcGrowthControl)
-
 --
 local modItem = ModsUtil.findModItemByModName(g_currentModName);
 fmcGrowthControl.version = (modItem and modItem.version) and modItem.version or "?.?.?";
@@ -56,6 +52,8 @@ fmcGrowthControl.cellSquareToUpdate  = 0
 fmcGrowthControl.pctCompleted        = 0
 fmcGrowthControl.weedCell            = 0
 
+
+
 --
 function fmcGrowthControl.setup(simplisticMode)
 
@@ -63,85 +61,10 @@ function fmcGrowthControl.setup(simplisticMode)
 
     fmcGrowthControl.detectFruitSprayFillTypeConflicts()
 
-    -- Get foliage-layers that contains visible graphics (i.e. has material that uses shaders)
-    g_currentMission.fmcFoliageManure = g_currentMission:loadFoliageLayer("fmc_manure",     -5, -1, true, "alphaBlendStartEnd")
-    g_currentMission.fmcFoliageSlurry = g_currentMission:loadFoliageLayer("fmc_slurry",     -5, -1, true, "alphaBlendStartEnd")
-    g_currentMission.fmcFoliageWeed   = g_currentMission:loadFoliageLayer("fmc_weed",       -5, -1, true, "alphaBlendStartEnd")
-    g_currentMission.fmcFoliageLime   = g_currentMission:loadFoliageLayer("fmc_lime",       -5, -1, true, "alphaBlendStartEnd")
-
-    -- Get foliage-layers that are invisible (i.e. has viewdistance=0 and a material that is "blank")
-    g_currentMission.fmcFoliageFertilizerOrganic    = getChild(g_currentMission.terrainRootNode, "fmc_fertilizerOrganic")
-    g_currentMission.fmcFoliageFertilizerSynthetic  = getChild(g_currentMission.terrainRootNode, "fmc_fertilizerSynthetic")
-    g_currentMission.fmcFoliageHerbicide            = getChild(g_currentMission.terrainRootNode, "fmc_herbicide")
-    g_currentMission.fmcFoliageSoil_pH              = getChild(g_currentMission.terrainRootNode, "fmc_soil_pH")
-
-    --
-    local function verifyFoliage(foliageName, foliageId, reqChannels)
-        if foliageId ~= nil and foliageId ~= 0 then
-            local numChannels = getTerrainDetailNumChannels(foliageId)
-            if numChannels == reqChannels then
-                logInfo(("Foliage-layer check ok: '%s', id=%s, numChnls=%s"):format(tostring(foliageName),tostring(foliageId),tostring(numChannels)))
-                return true
-            end
-        end;
-        logInfo(("ERROR! Required foliage-layer '%s' either does not exist (foliageId=%s), or have wrong num-channels (%s)"):format(tostring(foliageName),tostring(foliageId),tostring(numChannels)))
-        return false
-    end
-
-    local allOK = true
-    allOK = verifyFoliage("fmc_manure"              ,g_currentMission.fmcFoliageManure              ,2) and allOK;
-    allOK = verifyFoliage("fmc_slurry"              ,g_currentMission.fmcFoliageSlurry              ,1) and allOK;
-    allOK = verifyFoliage("fmc_weed"                ,g_currentMission.fmcFoliageWeed                ,3) and allOK;
-    allOK = verifyFoliage("fmc_lime"                ,g_currentMission.fmcFoliageLime                ,1) and allOK;
-    allOK = verifyFoliage("fmc_fertilizerOrganic"   ,g_currentMission.fmcFoliageFertilizerOrganic   ,2) and allOK;
-    allOK = verifyFoliage("fmc_fertilizerSynthetic" ,g_currentMission.fmcFoliageFertilizerSynthetic ,2) and allOK;
-    allOK = verifyFoliage("fmc_herbicide"           ,g_currentMission.fmcFoliageHerbicide           ,2) and allOK;
-    allOK = verifyFoliage("fmc_soil_pH"             ,g_currentMission.fmcFoliageSoil_pH             ,3) and allOK;
-
-    if allOK then
-        -- We need a different array of dynamic-foliage-layers, to be used in Utils.updateDestroyCommonArea()
-        g_currentMission.fmcDynamicFoliageLayers = {}
-        for _,foliageId in ipairs(g_currentMission.dynamicFoliageLayers) do
-            if foliageId ~= 0 then
-                if (   foliageId == g_currentMission.fmcFoliageManure
-                    or foliageId == g_currentMission.fmcFoliageSlurry
-                    or foliageId == g_currentMission.fmcFoliageWeed
-                    or foliageId == g_currentMission.fmcFoliageLime
-                    or foliageId == g_currentMission.fmcFoliageFertilizerOrganic
-                    or foliageId == g_currentMission.fmcFoliageFertilizerSynthetic
-                    or foliageId == g_currentMission.fmcFoliageHerbicide
-                    or foliageId == g_currentMission.fmcFoliageSoil_pH ) then
-                    -- ignore
-                else
-                    table.insert(g_currentMission.fmcDynamicFoliageLayers, foliageId)
-                    logInfo(("Included foliage-layer for \"destruction\" by plough/cultivator/seeder: '%s', id=%s, numChnls=%s"):format(getName(foliageId), foliageId, getTerrainDetailNumChannels(foliageId)))
-                end
-            end
-        end
-
-        --
-        local function addFruitToFmcDynamicFoliageLayer(fruitId, layerAttribute)
-            local fruitDesc = g_currentMission.fruits[fruitId]
-            if fruitDesc ~= nil then
-                local foliageId = fruitDesc[layerAttribute];
-                if foliageId ~= nil and foliageId ~= 0 then
-                    table.insert(g_currentMission.fmcDynamicFoliageLayers, foliageId)
-                    logInfo(("Included foliage-layer for \"destruction\" by plough/cultivator/seeder: '%s', id=%s, numChnls=%s"):format(getName(foliageId), foliageId, getTerrainDetailNumChannels(foliageId)))
-                end
-            end
-        end
-
-        -- Support for "zzz_ChoppedStraw v1.1.02" by Webalizer
-        addFruitToFmcDynamicFoliageLayer(FruitUtil.FRUITTYPE_CHOPPEDSTRAW, "preparingOutputId")
-        addFruitToFmcDynamicFoliageLayer(FruitUtil.FRUITTYPE_CHOPPEDMAIZE, "preparingOutputId")
-        addFruitToFmcDynamicFoliageLayer(FruitUtil.FRUITTYPE_CHOPPEDRAPE,  "preparingOutputId")
-    end
-
     fmcGrowthControl.setupFoliageGrowthLayers()
-    fmcGrowthControl.setupInternalPlugins()
     fmcGrowthControl.initialized = false;
 
-    return allOK
+    --return allOK
 end
 
 --
@@ -409,9 +332,14 @@ function fmcGrowthControl:hourChanged()
     if  not fmcGrowthControl.active -- Must not already be running
     and g_currentMission.environment.currentHour == 0 -- midnight hour
     and (g_currentMission.environment.currentDay + 1) ~= fmcGrowthControl.lastUpdateDay -- another day (apparently 'currentDay' is NOT incremented _before_ calling the hourChanged() callbacks)
-    and (g_currentMission.environment.currentDay + 1) > (fmcGrowthControl.lastUpdateDay + fmcGrowthControl.delayGrowthCycleDays)
     then
-        fmcGrowthControl.canActivate = true
+        log("Current in-game day/hour: ", (g_currentMission.environment.currentDay + 1), "/", g_currentMission.environment.currentHour,
+            ". Growth-cycle activates after day: ", (fmcGrowthControl.lastUpdateDay + fmcGrowthControl.delayGrowthCycleDays),
+            " (delayGrowthCycleDays=",fmcGrowthControl.delayGrowthCycleDays,")"
+        )
+        if (g_currentMission.environment.currentDay + 1) > (fmcGrowthControl.lastUpdateDay + fmcGrowthControl.delayGrowthCycleDays) then
+            fmcGrowthControl.canActivate = true
+        end
     end
 end
 
@@ -447,7 +375,7 @@ end
 
 --
 function fmcGrowthControl:createWeedFoliage(centerX,centerZ,radius, noEventSend)
-    local sx,sy,  wx,wy,  hx,hy = centerX-radius,centerZ-radius,  radius*2,0,  0,radius*2
+    local sx,sz,  wx,wz,  hx,hz = centerX-radius,centerZ-radius,  radius*2,0,  0,radius*2
 
     local includeMask   = 2^g_currentMission.sowingChannel
                         + 2^g_currentMission.sowingWidthChannel
@@ -459,7 +387,7 @@ function fmcGrowthControl:createWeedFoliage(centerX,centerZ,radius, noEventSend)
     local oldSum,pixelsMatch,newDelta =
     setDensityMaskedParallelogram(
         g_currentMission.fmcFoliageWeed,
-        sx,sy,wx,wy,hx,hy,
+        sx,sz,wx,wz,hx,hz,
         0, 3,
         g_currentMission.terrainDetailId, g_currentMission.terrainDetailTypeFirstChannel, g_currentMission.terrainDetailTypeNumChannels, -- mask
         4 -- set
@@ -475,319 +403,13 @@ function fmcGrowthControl:createWeedFoliage(centerX,centerZ,radius, noEventSend)
     return pixelsMatch
 end
 
+--
 function fmcGrowthControl:updateFoliageCell(cellSquareToUpdate, pctCompleted, noEventSend)
     local x = math.floor(fmcGrowthControl.cellWH * math.floor(cellSquareToUpdate % fmcGrowthControl.cells))
     local z = math.floor(fmcGrowthControl.cellWH * math.floor(cellSquareToUpdate / fmcGrowthControl.cells))
-    local sx,sy = (x-(g_currentMission.terrainSize/2)),(z-(g_currentMission.terrainSize/2))
+    local sx,sz = (x-(g_currentMission.terrainSize/2)),(z-(g_currentMission.terrainSize/2))
 
-    fmcGrowthControl:updateFoliageCellXZWH(sx,sy, fmcGrowthControl.cellWH, pctCompleted, noEventSend)
-end
-
-
-fmcGrowthControl.pluginsGrowthCycleFruits = {}
-fmcGrowthControl.pluginsGrowthCycle = {}
-
-function addPluginGrowthCycleFruits(description,priority,callBackFunc)
-    logInfo("Adding growth-cycle-fruits plugin: (", priority, ") ", description)
-    
-    -- TODO - Insert based on priority...
-    table.insert(fmcGrowthControl.pluginsGrowthCycleFruits,
-        callBackFunc
-    )
-end
-
-function addPluginGrowthCycle(description,priority,callBackFunc)
-    logInfo("Adding growth-cycle plugin: (", priority, ") ", description)
-    
-    -- TODO - Insert based on priority...
-    table.insert(fmcGrowthControl.pluginsGrowthCycle,
-        callBackFunc
-    )
-end
-
-function fmcGrowthControl.setupInternalPlugins()
-    fmcGrowthControl.pluginsGrowthCycleFruits = {}
-    fmcGrowthControl.pluginsGrowthCycle = {}
-
-    ---
-    ---
-    
-    addPluginGrowthCycleFruits(
-        "Increase crop growth",
-        10, 
-        function(sx,sz,wx,wz,hx,hz,fruitEntry)
-            -- Increase growth by 1
-            setDensityMaskParams(fruitEntry.fruitId, "between", fruitEntry.minSeededValue, fruitEntry.maxMatureValue - ((fmcGrowthControl.disableWithering or fruitEntry.witheredValue == nil) and 1 or 0))
-            addDensityMaskedParallelogram(
-              fruitEntry.fruitId,
-              sx,sz,wx,wz,hx,hz,
-              0, g_currentMission.numFruitStateChannels,
-              fruitEntry.fruitId, 0, g_currentMission.numFruitStateChannels, -- mask
-              1 -- add one
-            )
-            setDensityMaskParams(fruitEntry.fruitId, "greater", 0)
-        end
-    )
-
-    if g_currentMission.fmcFoliageHerbicide ~= nil then
-        addPluginGrowthCycleFruits(
-            "Herbicide affect crop",
-            20, 
-            function(sx,sz,wx,wz,hx,hz,fruitEntry)
-                -- Herbicide may affect growth or cause withering...
-                if fruitEntry.herbicideAvoidance ~= nil and fruitEntry.herbicideAvoidance >= 1 and fruitEntry.herbicideAvoidance <= 3 then
-                  -- Herbicide affected fruit
-                  setDensityMaskParams(fruitEntry.fruitId, "equals", fruitEntry.herbicideAvoidance)
-                  -- When growing and affected by wrong herbicide, pause one growth-step
-                  setDensityCompareParams(fruitEntry.fruitId, "between", fruitEntry.minSeededValue+1, fruitEntry.minMatureValue)
-                  addDensityMaskedParallelogram(
-                    fruitEntry.fruitId,
-                    sx,sz,wx,wz,hx,hz,
-                    0, g_currentMission.numFruitStateChannels,
-                    g_currentMission.fmcFoliageHerbicide, 0, 2, -- mask
-                    -1 -- subtract one
-                  )
-                  -- When mature and affected by wrong herbicide, change to withered if possible.
-                  if fruitEntry.witheredValue ~= nil then
-                    setDensityMaskParams(fruitEntry.fruitId, "equals", fruitEntry.herbicideAvoidance)
-                    setDensityCompareParams(fruitEntry.fruitId, "between", fruitEntry.minMatureValue, fruitEntry.maxMatureValue)
-                    setDensityMaskedParallelogram(
-                        fruitEntry.fruitId,
-                        sx,sz,wx,wz,hx,hz,
-                        0, g_currentMission.numFruitStateChannels,
-                        g_currentMission.fmcFoliageHerbicide, 0, 2, -- mask
-                        fruitEntry.witheredValue  -- value
-                    )
-                  end
-                  --
-                  setDensityCompareParams(fruitEntry.fruitId, "greater", -1)
-                  setDensityMaskParams(fruitEntry.fruitId, "greater", 0)
-                end
-            end
-        )
-    end
-
-    if fmcGrowthControl.reduceWindrows then
-        addPluginGrowthCycleFruits(
-            "Reduce crop windrows/swath",
-            30, 
-            function(sx,sz,wx,wz,hx,hz,fruitEntry)
-                -- Reduce windrow (gone with the wind)
-                if fruitEntry.windrowId ~= nil and fruitEntry.windrowId ~= 0 then
-                    setDensityMaskParams(fruitEntry.windrowId, "greater", 0)
-                    addDensityMaskedParallelogram(
-                        fruitEntry.windrowId,
-                        sx,sz,wx,wz,hx,hz,
-                        0, g_currentMission.numWindrowChannels,
-                        fruitEntry.windrowId, 0, g_currentMission.numWindrowChannels,  -- mask
-                        -1  -- subtract one
-                    );
-                    setDensityMaskParams(fruitEntry.windrowId, "greater", -1)
-                end
-            end
-        )
-    end
-
-    ---
-    ---
-
-    -- Spray moisture
-    if fmcGrowthControl.removeSprayMoisture then
-        addPluginGrowthCycle(
-            "Remove spray moisture",
-            10, 
-            function(sx,sz,wx,wz,hx,hz)
-                -- Remove moistness (spray)
-                setDensityParallelogram(
-                    g_currentMission.terrainDetailId,
-                    sx,sz,wx,wz,hx,hz,
-                    g_currentMission.sprayChannel, 1,
-                    0  -- value
-                );
-            end
-        )
-    end
-
-    --Lime/Kalk and soil pH
-    if g_currentMission.fmcFoliageLime ~= nil then
-        if g_currentMission.fmcFoliageSoil_pH ~= nil then
-            addPluginGrowthCycle(
-                "Increase soil pH where there is lime",
-                20 - 1, 
-                function(sx,sz,wx,wz,hx,hz)
-                    -- Increase soil-pH, where lime is
-                    setDensityMaskParams(g_currentMission.fmcFoliageSoil_pH, "greater", 0);
-                    addDensityMaskedParallelogram(
-                        g_currentMission.fmcFoliageSoil_pH,
-                        sx,sz,wx,wz,hx,hz,
-                        0, 3,
-                        g_currentMission.fmcFoliageLime, 0, 1,
-                        2  -- increase
-                    );
-                    setDensityMaskParams(g_currentMission.fmcFoliageSoil_pH, "greater", -1);
-                end
-            )
-        end
-
-        addPluginGrowthCycle(
-            "Remove lime",
-            20, 
-            function(sx,sz,wx,wz,hx,hz)
-                -- Remove lime
-                setDensityParallelogram(
-                    g_currentMission.fmcFoliageLime,
-                    sx,sz,wx,wz,hx,hz,
-                    0, 1,
-                    0  -- value
-                );
-            end
-        )
-    end
-
-    -- Manure
-    if g_currentMission.fmcFoliageManure ~= nil then
-        addPluginGrowthCycle(
-            "Reduce manure",
-            30, 
-            function(sx,sz,wx,wz,hx,hz)
-                -- Decrease solid manure
-                addDensityParallelogram(
-                    g_currentMission.fmcFoliageManure,
-                    sx,sz,wx,wz,hx,hz,
-                    0, 2,
-                    -1  -- subtract one
-                );
-            end
-        )
-    end
-
-    -- Slurry/LiquidManure
-    if g_currentMission.fmcFoliageSlurry ~= nil then
-        if g_currentMission.fmcFoliageFertilizerOrganic ~= nil then
-            addPluginGrowthCycle(
-                "Set fertilizer(organic) where there is slurry",
-                40 - 1, 
-                function(sx,sz,wx,wz,hx,hz)
-                    -- Set fertilizer(organic) at level-1 only.
-                    setDensityMaskParams(g_currentMission.fmcFoliageFertilizerOrganic, "greater", 0);
-                    setDensityMaskedParallelogram(
-                        g_currentMission.fmcFoliageFertilizerOrganic,
-                        sx,sz,wx,wz,hx,hz,
-                        0, 1,
-                        g_currentMission.fmcFoliageSlurry, 0, 1,  -- mask
-                        1 -- value
-                    );
-                    setDensityMaskParams(g_currentMission.fmcFoliageFertilizerOrganic, "greater", -1);
-                end
-            )
-        end
-        
-        addPluginGrowthCycle(
-            "Remove slurry",
-            40, 
-            function(sx,sz,wx,wz,hx,hz)
-                -- Remove liquid manure
-                setDensityParallelogram(
-                    g_currentMission.fmcFoliageSlurry,
-                    sx,sz,wx,wz,hx,hz,
-                    0, 1,
-                    0
-                );
-            end
-        )
-    end
-
-    -- Weed and herbicide
-    if g_currentMission.fmcFoliageWeed ~= nil then
-        addPluginGrowthCycle(
-            "Reduce withered weed",
-            50 - 2, 
-            function(sx,sz,wx,wz,hx,hz)
-                -- Decrease "dead" weed
-                setDensityCompareParams(g_currentMission.fmcFoliageWeed, "between", 1, 3)
-                addDensityParallelogram(
-                    g_currentMission.fmcFoliageWeed,
-                    sx,sz,wx,wz,hx,hz,
-                    0, 3,
-                    -1  -- subtract
-                );
-            end
-        )
-
-        --
-        if g_currentMission.fmcFoliageHerbicide ~= nil then
-            addPluginGrowthCycle(
-                "Change weed to withered where there is herbicide",
-                50 - 1, 
-                function(sx,sz,wx,wz,hx,hz)
-                    -- Change to "dead" weed
-                    setDensityCompareParams(g_currentMission.fmcFoliageWeed, "greater", 0)
-                    setDensityMaskParams(g_currentMission.fmcFoliageWeed, "greater", 0)
-                    setDensityMaskedParallelogram(
-                        g_currentMission.fmcFoliageWeed,
-                        sx,sz,wx,wz,hx,hz,
-                        2, 1, -- affect only Most-Significant-Bit
-                        g_currentMission.fmcFoliageHerbicide, 0, 2, -- mask
-                        0 -- reset bit
-                    )
-                    setDensityMaskParams(g_currentMission.fmcFoliageWeed, "greater", -1)
-                end
-            )
-        end
-
-        addPluginGrowthCycle(
-            "Increase weed growth",
-            50, 
-            function(sx,sz,wx,wz,hx,hz)
-                -- Increase "alive" weed
-                setDensityCompareParams(g_currentMission.fmcFoliageWeed, "between", 4, 6)
-                addDensityParallelogram(
-                    g_currentMission.fmcFoliageWeed,
-                    sx,sz,wx,wz,hx,hz,
-                    0, 3,
-                    1  -- increase
-                );
-                setDensityCompareParams(g_currentMission.fmcFoliageWeed, "greater", -1)
-            end
-        )
-    end
-
-    -- Herbicide and soil pH
-    if g_currentMission.fmcFoliageHerbicide ~= nil then
-        if g_currentMission.fmcFoliageSoil_pH ~= nil then
-            addPluginGrowthCycle(
-                "Reduce soil pH where there is herbicide",
-                60 - 1, 
-                function(sx,sz,wx,wz,hx,hz)
-                    -- Decrease soil-pH, where herbicide is
-                    setDensityMaskParams(g_currentMission.fmcFoliageSoil_pH, "greater", 0)
-                    addDensityMaskedParallelogram(
-                        g_currentMission.fmcFoliageSoil_pH,
-                        sx,sz,wx,wz,hx,hz,
-                        0, 3,
-                        g_currentMission.fmcFoliageHerbicide, 0, 2, -- mask
-                        -1  -- decrease
-                    );
-                    setDensityMaskParams(g_currentMission.fmcFoliageSoil_pH, "greater", -1)
-                end
-            )
-        end
-
-        addPluginGrowthCycle(
-            "Remove herbicide",
-            60, 
-            function(sx,sz,wx,wz,hx,hz)
-                -- Remove herbicide
-                setDensityParallelogram(
-                    g_currentMission.fmcFoliageHerbicide,
-                    sx,sz,wx,wz,hx,hz,
-                    0, 2,
-                    0  -- value
-                );
-            end
-        )
-    end
-    
+    fmcGrowthControl:updateFoliageCellXZWH(sx,sz, fmcGrowthControl.cellWH, pctCompleted, noEventSend)
 end
 
 function fmcGrowthControl:updateFoliageCellXZWH(x,z, wh, pctCompleted, noEventSend)
@@ -798,30 +420,6 @@ function fmcGrowthControl:updateFoliageCellXZWH(x,z, wh, pctCompleted, noEventSe
     if wh <= 0 then
         return
     end
-
---[[
-Growth states
-
-   Density value (from channels/bits)
-   |  RegisterFruit value (for RegisterFruit)
-   |  |
-   0  -  nothing
-   1  0  growth-1 (just seeded)
-   2  1  growth-2
-   3  2  growth-3
-   4  3  growth-4
-   5  4  harvest-1 / prepare-1
-   6  5  harvest-2 / prepare-2
-   7  6  harvest-3 / prepare-3
-   8  7  withered
-   9  8  cutted
-  10  9  harvest (defoliaged)
-  11 10  <unused>
-  12 11  <unused>
-  13 12  <unused>
-  14 13  <unused>
-  15 14  <unused>
---]]
 
     local sx,sz,wx,wz,hx,hz = x,z,  wh-0.5,0,  0,wh-0.5
 
@@ -887,10 +485,10 @@ function fmcGrowthControlEvent:new(x,z, wh, pctCompleted)
 end;
 
 function fmcGrowthControlEvent:readStream(streamId, connection)
-    pctCompleted  = streamReadUInt8(streamId) / 100
-    x             = streamReadInt16(streamId)
-    z             = streamReadInt16(streamId)
-    wh            = streamReadInt16(streamId)
+    local pctCompleted  = streamReadUInt8(streamId) / 100
+    local x             = streamReadInt16(streamId)
+    local z             = streamReadInt16(streamId)
+    local wh            = streamReadInt16(streamId)
     fmcGrowthControl.updateFoliageCellXZWH(fmcGrowthControl, x,z, wh, pctCompleted, true);
 end;
 
@@ -933,10 +531,10 @@ function CreateWeedEvent:new(x,z,r)
 end;
 
 function CreateWeedEvent:readStream(streamId, connection)
-    self.centerX = streamReadIntN(streamId, 16)
-    self.centerZ = streamReadIntN(streamId, 16)
-    self.radius  = streamReadIntN(streamId, 4)
-    fmcGrowthControl:createWeedFoliage(self.centerX,self.centerZ,self.radius, true)
+    local centerX = streamReadIntN(streamId, 16)
+    local centerZ = streamReadIntN(streamId, 16)
+    local radius  = streamReadIntN(streamId, 4)
+    fmcGrowthControl:createWeedFoliage(centerX,centerZ,radius, true)
 end;
 
 function CreateWeedEvent:writeStream(streamId, connection)

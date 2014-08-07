@@ -71,6 +71,7 @@ source(g_currentModDirectory .. 'fmcFilltypes.lua')
 source(g_currentModDirectory .. 'fmcModifyFSUtils.lua')
 source(g_currentModDirectory .. 'fmcModifySprayers.lua')
 source(g_currentModDirectory .. 'fmcGrowthControl.lua')
+source(g_currentModDirectory .. 'fmcSoilModPlugins.lua') -- SoilMod uses its own plugin facility to add its own effects.
 
 --
 function fmcSoilMod.setup_map_new(mapFilltypeOverlaysDirectory)
@@ -96,7 +97,9 @@ end
 function fmcSoilMod.postInit_loadMapFinished()
     log("fmcSoilMod - postInit_loadMapFinished()")
     fmcFilltypes.addMoreFillTypeOverlayIcons()
-    if fmcGrowthControl.setup(fmcSoilMod.simplisticMode) then
+    fmcModifyFSUtils.preSetup()
+    if fmcSoilMod.processPlugins() then
+        fmcGrowthControl.setup(fmcSoilMod.simplisticMode)
         fmcModifyFSUtils.setup(fmcSoilMod.simplisticMode)
         fmcModifySprayers.setup()    
         fmcFilltypes.updateFillTypeOverlays()
@@ -229,6 +232,124 @@ function fmcSoilMod.copy_l10n_texts_to_global()
         end
         delete(xmlFile);
     end
+end
+
+--
+-- Plugin functionality
+--
+function fmcSoilMod.processPlugins()
+
+    --logInfo("Collecting plugins")
+
+    -- Initialize
+    Utils.fmcPluginsCutFruitAreaSetup               = {["0"]="cut-fruit-area(setup)"}
+    Utils.fmcPluginsCutFruitAreaPreFuncs            = {["0"]="cut-fruit-area(before)"}
+    Utils.fmcPluginsCutFruitAreaPostFuncs           = {["0"]="cut-fruit-area(after)"}
+
+    Utils.fmcPluginsUpdateCultivatorAreaSetup       = {["0"]="update-cultivator-area(setup)"}
+    Utils.fmcPluginsUpdateCultivatorAreaPreFuncs    = {["0"]="update-cultivator-area(before)"}
+    Utils.fmcPluginsUpdateCultivatorAreaPostFuncs   = {["0"]="update-cultivator-area(after)"}
+
+    Utils.fmcPluginsUpdatePloughAreaSetup           = {["0"]="update-plough-area(setup)"}
+    Utils.fmcPluginsUpdatePloughAreaPreFuncs        = {["0"]="update-plough-area(before)"}
+    Utils.fmcPluginsUpdatePloughAreaPostFuncs       = {["0"]="update-plough-area(after)"}
+    
+    Utils.fmcPluginsUpdateSowingAreaSetup           = {["0"]="update-sowing-area(setup)"}
+    Utils.fmcPluginsUpdateSowingAreaPreFuncs        = {["0"]="update-sowing-area(before)"}
+    Utils.fmcPluginsUpdateSowingAreaPostFuncs       = {["0"]="update-sowing-area(after)"}
+    
+    --Utils.fmcUpdateSprayAreaFillTypeFuncs           = {}
+    
+    fmcGrowthControl.pluginsGrowthCycleFruits       = {["0"]="growth-cycle(fruits)"}
+    fmcGrowthControl.pluginsGrowthCycle             = {["0"]="growth-cycle"}
+    
+    --
+    local function addPlugin(pluginArray,description,priority,pluginFunc)
+        if (pluginArray == nil or description == nil or priority == nil or pluginFunc == nil or priority < 1) then
+            return false;
+        end
+        local prioTxt = tostring(priority)
+        local subPrio = 0
+        -- Add to array based on priority, without overwriting existing ones with same priority.
+        while (pluginArray[prioTxt] ~= nil) do
+            subPrio = subPrio + 1
+            prioTxt = ("%d.%d"):format(priority,subPrio)
+        end
+        logInfo("Plugin for ", pluginArray["0"], ": (", prioTxt, ") ", description)
+        pluginArray[prioTxt] = pluginFunc;
+    end
+
+    -- Build some functions that can register for specific plugin areas
+    local soilMod = {}
+    soilMod.addPlugin_CutFruitArea_setup            = function(description,priority,pluginFunc) return addPlugin(Utils.fmcPluginsCutFruitAreaSetup              ,description,priority,pluginFunc) end;
+    soilMod.addPlugin_CutFruitArea_before           = function(description,priority,pluginFunc) return addPlugin(Utils.fmcPluginsCutFruitAreaPreFuncs           ,description,priority,pluginFunc) end;
+    soilMod.addPlugin_CutFruitArea_after            = function(description,priority,pluginFunc) return addPlugin(Utils.fmcPluginsCutFruitAreaPostFuncs          ,description,priority,pluginFunc) end;
+
+    soilMod.addPlugin_UpdateCultivatorArea_setup    = function(description,priority,pluginFunc) return addPlugin(Utils.fmcPluginsUpdateCultivatorAreaSetup      ,description,priority,pluginFunc) end;
+    soilMod.addPlugin_UpdateCultivatorArea_before   = function(description,priority,pluginFunc) return addPlugin(Utils.fmcPluginsUpdateCultivatorAreaPreFuncs   ,description,priority,pluginFunc) end;
+    soilMod.addPlugin_UpdateCultivatorArea_after    = function(description,priority,pluginFunc) return addPlugin(Utils.fmcPluginsUpdateCultivatorAreaPostFuncs  ,description,priority,pluginFunc) end;
+
+    soilMod.addPlugin_UpdatePloughArea_setup        = function(description,priority,pluginFunc) return addPlugin(Utils.fmcPluginsUpdatePloughAreaSetup          ,description,priority,pluginFunc) end;
+    soilMod.addPlugin_UpdatePloughArea_before       = function(description,priority,pluginFunc) return addPlugin(Utils.fmcPluginsUpdatePloughAreaPreFuncs       ,description,priority,pluginFunc) end;
+    soilMod.addPlugin_UpdatePloughArea_after        = function(description,priority,pluginFunc) return addPlugin(Utils.fmcPluginsUpdatePloughAreaPostFuncs      ,description,priority,pluginFunc) end;
+        
+    soilMod.addPlugin_UpdateSowingArea_setup        = function(description,priority,pluginFunc) return addPlugin(Utils.fmcPluginsUpdateSowingAreaSetup          ,description,priority,pluginFunc) end;
+    soilMod.addPlugin_UpdateSowingArea_before       = function(description,priority,pluginFunc) return addPlugin(Utils.fmcPluginsUpdateSowingAreaPreFuncs       ,description,priority,pluginFunc) end;
+    soilMod.addPlugin_UpdateSowingArea_after        = function(description,priority,pluginFunc) return addPlugin(Utils.fmcPluginsUpdateSowingAreaPostFuncs      ,description,priority,pluginFunc) end;
+    
+    --soilMod.addPlugin_SpraySubFunc_fillType
+    
+    soilMod.addPlugin_GrowthCycleFruits             = function(description,priority,pluginFunc) return addPlugin(fmcGrowthControl.pluginsGrowthCycleFruits      ,description,priority,pluginFunc) end;
+    soilMod.addPlugin_GrowthCycle                   = function(description,priority,pluginFunc) return addPlugin(fmcGrowthControl.pluginsGrowthCycle            ,description,priority,pluginFunc) end;
+
+    soilMod.addDestructibleFoliageId                = fmcModifyFSUtils.addDestructibleFoliageId
+    
+    -- "We call you"
+    local allOK = true
+    for _,mod in pairs(getfenv(0)["modSoilModPlugins"]) do
+        if mod ~= nil and type(mod)=="table" and mod.soilModPluginCallback ~= nil then
+            allOK = mod.soilModPluginCallback(soilMod) and allOK
+        end
+    end
+
+    --
+    local function reorderArray(pluginArray)
+        local keys = {}
+        for k,v in pairs(pluginArray) do
+            if type(v)=="function" then
+                table.insert(keys, tonumber(k))
+            end
+        end
+        table.sort(keys)
+        local newArray = {}
+        for _,k in pairs(keys) do
+            table.insert(newArray, pluginArray[tostring(k)])
+        end
+        return newArray
+    end
+
+    -- Sort by priority
+    Utils.fmcPluginsCutFruitAreaSetup             = reorderArray(Utils.fmcPluginsCutFruitAreaSetup            )
+    Utils.fmcPluginsCutFruitAreaPreFuncs          = reorderArray(Utils.fmcPluginsCutFruitAreaPreFuncs         )
+    Utils.fmcPluginsCutFruitAreaPostFuncs         = reorderArray(Utils.fmcPluginsCutFruitAreaPostFuncs        )
+
+    Utils.fmcPluginsUpdateCultivatorAreaSetup     = reorderArray(Utils.fmcPluginsUpdateCultivatorAreaSetup    )
+    Utils.fmcPluginsUpdateCultivatorAreaPreFuncs  = reorderArray(Utils.fmcPluginsUpdateCultivatorAreaPreFuncs )
+    Utils.fmcPluginsUpdateCultivatorAreaPostFuncs = reorderArray(Utils.fmcPluginsUpdateCultivatorAreaPostFuncs)
+
+    Utils.fmcPluginsUpdatePloughAreaSetup         = reorderArray(Utils.fmcPluginsUpdatePloughAreaSetup        )
+    Utils.fmcPluginsUpdatePloughAreaPreFuncs      = reorderArray(Utils.fmcPluginsUpdatePloughAreaPreFuncs     )
+    Utils.fmcPluginsUpdatePloughAreaPostFuncs     = reorderArray(Utils.fmcPluginsUpdatePloughAreaPostFuncs    )
+
+    Utils.fmcPluginsUpdateSowingAreaSetup         = reorderArray(Utils.fmcPluginsUpdateSowingAreaSetup        )
+    Utils.fmcPluginsUpdateSowingAreaPreFuncs      = reorderArray(Utils.fmcPluginsUpdateSowingAreaPreFuncs     )
+    Utils.fmcPluginsUpdateSowingAreaPostFuncs     = reorderArray(Utils.fmcPluginsUpdateSowingAreaPostFuncs    )
+    
+    fmcGrowthControl.pluginsGrowthCycleFruits     = reorderArray(fmcGrowthControl.pluginsGrowthCycleFruits    )
+    fmcGrowthControl.pluginsGrowthCycle           = reorderArray(fmcGrowthControl.pluginsGrowthCycle          )
+    
+    --
+    return allOK
 end
 
 --

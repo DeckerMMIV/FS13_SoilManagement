@@ -1,13 +1,23 @@
 SoilMod - Change log
 
 ============================
-Post-version 1.1.x
+Post-version 1.1.x (BETA)
 
 Fixes:
 
 - Front tank for spraying can now be used to spray fertilizer and herbicide.
 - If not already set an overlay HUD icon for 'kalk', it will be set by SoilMod.
 - Possibility to overwrite the default fruit's relation to fertilizer/herbicide types.
+
+Enhancements:
+
+- Some settings now stored in the careerSavegame.XML file, so they should be "easier" to change.
+  These are; delayGrowthCycle, reduceWindrows, removeSprayMoisture, disableWithering, fertilizerSynthetic.
+  They are found in the <modSoilManagement> section of the careerSavegame.XML file.
+
+Additions:
+
+- (NOT YET) Plugin support for other mods, so they can "add" their own effects.
 
 
 ============================
