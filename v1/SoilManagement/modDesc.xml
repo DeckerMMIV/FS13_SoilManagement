@@ -8,6 +8,7 @@
         <en>Soil Management and Growth Control</en>
         <de>Soil Management and Growth Control</de>
         <ru>Soil Management and Growth Control</ru>
+        <cz>Soil Management and Growth Control</cz>
     </title>
     <description>
         <en>
@@ -23,11 +24,18 @@ pH-Wert, drei verschiedene Arten von Dünger/Herbizid sowie zeitlich verzögerte
 Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         </de>
         <ru>
-<![CDATA['SoilMod' добавляет пользовательский контроль роста сельскохозяйственных культур и некоторые новые аспекты
+<![CDATA['SoilMod' добавляет пользовательский контроль роста сельскохозяйственных культур и некоторые новые аспекты 
 того, как и когда использовать навоз, суспензии, синтетические удобрения, известь и гербициды. Были добавлены такие 
 функции, как "рН почвы", 3 различных типа удобрений/гербицидов и 'эффект задержки роста'.
 Decker_MMIV - FS-uk.com, forum.farming-simulator.com, modhoster.com]]>
         </ru>
+        <cz>
+<![CDATA['SoilMod' přidává kontrolu růstu plodin a další nové prvky do hry - jako kdy použít hnůj, kejdu,
+umělá hnojiva, vápno nebo herbicidy. Byly přidány funkce jako 'pH půdy', tři odlišné typy hnojiv a herbicidů
+a také spoždění jejich účinků
+Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com
+Překlady: [CZ] KingFrame a Albi,]]>
+        </cz>
     </description>
 
     <iconFilename>store_SoilManagement.dds</iconFilename>
@@ -39,100 +47,119 @@ Decker_MMIV - FS-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <en>SoilMod:Grow NOW!</en>
             <de>SoilMod:JETZT wachsen!</de>
             <ru>SoilMod:Сейчас растет!</ru>
+            <cz>SoilMod:Okamžitý růst!</cz>
         </text>
         <text name="GrowthPct">
             <en>Growth %d%%</en>
             <de>Wachstum %d%%</de>
             <ru>Рост %d%%</ru>
+            <cz>Růst %d%%</cz>
         </text>
         <text name="SelectSprayType">
             <en>Select spray-type</en>
             <de>Düngertyp auswählen</de>
             <ru>Выбрать тип наполнителя</ru>
+            <cz>Vyber typ přípravku</cz>
         </text>
 
         <text name="kalk">
             <en>Lime</en>
             <de>Kalk</de>
             <ru>Известь</ru>
+            <cz>Vápno</cz>
         </text>
         
         <text name="herbicide">
             <en>Herbicide A</en>
             <de>Herbizid A</de>
             <ru>Гербицид А</ru>
+            <cz>Herbicid A</cz>
         </text>
         <text name="herbicide2">
             <en>Herbicide B</en>
             <de>Herbizid B</de>
             <ru>Гербицид B</ru>
+            <cz>Herbicid B</cz>
         </text>
         <text name="herbicide3">
             <en>Herbicide C</en>
             <de>Herbizid C</de>
             <ru>Гербицид C</ru>
+            <cz>Herbicid C</cz>
         </text>
         
         <text name="fertilizer">
             <en>Fertilizer A</en>
             <de>Dünger A</de>
             <ru>Удобрение А</ru>
+            <cz>Hnojivo A</cz>
         </text>
         <text name="fertilizer2">
             <en>Fertilizer B</en>
             <de>Dünger B</de>
             <ru>Удобрение B</ru>
+            <cz>Hnojivo B</cz>
         </text>
         <text name="fertilizer3">
             <en>Fertilizer C</en>
             <de>Dünger C</de>
             <ru>Удобрение C</ru>
+            <cz>Hnojivo C</cz>
         </text>
 
         <text name="phExtremeAcidity">
             <en>Extreme acidity</en>
             <de>Extremer Säuregehalt</de>
             <ru>Повышенная кислотность</ru>
+            <cz>extrémně kyselé</cz>
         </text>
         <text name="phStrongAcidity">
             <en>Strong acidity</en>
             <de>Starker Säuregehalt</de>
             <ru>Сильная кислотность</ru>
+            <cz>silně kyselé</cz>
         </text>
         <text name="phModerateAcidity">
             <en>Moderate acidity</en>
             <de>Mittlerer Säuregehalt</de>
             <ru>Средняя кислотность</ru>
+            <cz>středně kyselé</cz>
         </text>
         <text name="phSlightAcidity">
             <en>Slight acidity</en>
             <de>Leichter Säuregehalt</de>
             <ru>Слабая кислотность</ru>
+            <cz>mírně kyselé</cz>
         </text>
         <text name="phNeutral">
             <en>Neutral</en>
             <de>Neutral</de>
             <ru>Нейтральная</ru>
+            <cz>neutrální</cz>
         </text>
         <text name="phSlightAlkalinity">
             <en>Slight alkalinity</en>
             <de>Leicht basisch</de>
             <ru>Слабая щелочность</ru>
+            <cz>mírně alkalické</cz>
         </text>
         <text name="phModerateAlkalinity">
             <en>Moderate alkalinity</en>
             <de>Mittel-basisch</de>
             <ru>Средняя щелочность</ru>
+            <cz>středně alkalické</cz>
         </text>
         <text name="phStrongAlkalinity">
             <en>Strong alkalinity</en>
             <de>Stark basisch</de>
             <ru>Сильная щелочность</ru>
+            <cz>silně alkalické</cz>
         </text>
         <text name="phExtremeAlkalinity">
             <en>Extreme alkalinity</en>
             <de>Extrem basisch</de>
             <ru>Повышенная щелочность</ru>
+            <cz>extrémně alkalické</cz>
         </text>
     </l10n>
 
