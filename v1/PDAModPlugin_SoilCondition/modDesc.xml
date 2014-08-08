@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="12">
     <author>Freelance Modding Crew</author>
-    <contributors>JakobT, Gonimy_Vetrom, VAHA</contributors>
-    <version>1.1.0</version>
+    <contributors>JakobT, Gonimy_Vetrom, VAHA, KingFrame, Albi</contributors>
+    <version>1.1.1</version>
 
     <title>
         <en>PDA Mod Plugin - Soil Condition</en>
@@ -32,9 +32,8 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         <cz>
 <![CDATA[Vyžaduje 'PDA MOD' - Tento plugin přidává extra obrazovky pro
 Soil Management and Growth Control mód (SoilMod).
-
+(Překlady: [CZ] KingFrame a Albi)
 Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
-Překlady: [CZ] KingFrame a Albi
         </cz>
     </description>
 
