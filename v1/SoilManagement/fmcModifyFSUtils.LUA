@@ -61,8 +61,6 @@ function fmcModifyFSUtils.setup(simplisticMode)
     fmcModifyFSUtils.overwriteUpdateSowingArea()
     fmcModifyFSUtils.overwriteUpdateDestroyCommonArea()
     fmcModifyFSUtils.overwriteUpdateSprayArea()
-    --
-    fmcModifyFSUtils.setSpraySubFuncs()
 end
 
 --
@@ -441,21 +439,24 @@ end
 --#############################################################################
 
 
-
 function fmcModifyFSUtils.overwriteUpdateSprayArea()
 
-  -- Modified to also take extra argument: 'augmentedFillType'
   logInfo("Overwriting Utils.updateSprayArea")
   
+  -- Modified to also take extra argument: 'augmentedFillType'
   Utils.updateSprayArea = function(startWorldX, startWorldZ, widthWorldX, widthWorldZ, heightWorldX, heightWorldZ, augmentedFillType)
 
     local sx,sz,wx,wz,hx,hz = Utils.getXZWidthAndHeight(nil, startWorldX, startWorldZ, widthWorldX, widthWorldZ, heightWorldX, heightWorldZ);
     local moistureValue = 1
-    
-    -- If augmentedFillType has custom update-spray-area function, then call it...
+
+    -- If augmentedFillType has custom update-spray-area plugin(s), then call them...
     -- ..this "should" be faster instead of having huge if-then-elseif-then-elseif-then-etc. code blocks.
     if augmentedFillType ~= nil and Utils.fmcUpdateSprayAreaFillTypeFuncs[augmentedFillType] ~= nil then
-        if not Utils.fmcUpdateSprayAreaFillTypeFuncs[augmentedFillType](sx,sz,wx,wz,hx,hz) then
+        local addMoisture = false
+        for _,callFunc in pairs(Utils.fmcUpdateSprayAreaFillTypeFuncs[augmentedFillType]) do
+            addMoisture = callFunc(sx,sz,wx,wz,hx,hz) or addMoisture
+        end
+        if not addMoisture then
             moistureValue = 0
         end
     end
@@ -466,215 +467,6 @@ function fmcModifyFSUtils.overwriteUpdateSprayArea()
   end
 
 end
-  
 
---#### DECKER_MMIV ############################################################
-function fmcModifyFSUtils.setSpraySubFuncs()
-
-    local function hasFoliageLayer(foliageId)
-        return (foliageId ~= nil and foliageId ~= 0);
-    end
-
-    Utils.fmcUpdateSprayAreaFillTypeFuncs = {}
-
-    if hasFoliageLayer(g_currentMission.fmcFoliageManure) then
-        if Fillable.FILLTYPE_MANURE ~= nil then
-            local foliageId       = g_currentMission.fmcFoliageManure
-            local numChannels     = getTerrainDetailNumChannels(foliageId)
-            local value           = 2^numChannels - 1
-            Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_MANURE] = function(sx,sz,wx,wz,hx,hz)
-                setDensityParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0, numChannels, value);
-                return false -- No moisture!
-            end
-        end
-        if Fillable.FILLTYPE_MANURESOLID ~= nil then
-            local foliageId       = g_currentMission.fmcFoliageManure
-            local numChannels     = getTerrainDetailNumChannels(foliageId)
-            local value           = 2^numChannels - 1
-            Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_MANURESOLID] = function(sx,sz,wx,wz,hx,hz)
-                setDensityParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0, numChannels, value);
-                return false -- No moisture!
-            end
-        end
-        if Fillable.FILLTYPE_SOLIDMANURE ~= nil then
-            local foliageId       = g_currentMission.fmcFoliageManure
-            local numChannels     = getTerrainDetailNumChannels(foliageId)
-            local value           = 2^numChannels - 1
-            Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_SOLIDMANURE] = function(sx,sz,wx,wz,hx,hz)
-                setDensityParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0, numChannels, value);
-                return false -- No moisture!
-            end
-        end
-    end
-
-    if hasFoliageLayer(g_currentMission.fmcFoliageSlurry) then
-        if Fillable.FILLTYPE_LIQUIDMANURE ~= nil then
-            local foliageId       = g_currentMission.fmcFoliageSlurry
-            local numChannels     = getTerrainDetailNumChannels(foliageId)
-            local value           = 1
-            Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_LIQUIDMANURE] = function(sx,sz,wx,wz,hx,hz)
-                setDensityParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0, numChannels, value);
-                return true -- Place moisture!
-            end
-        end
-        if Fillable.FILLTYPE_MANURELIQUID ~= nil then
-            local foliageId       = g_currentMission.fmcFoliageSlurry
-            local numChannels     = getTerrainDetailNumChannels(foliageId)
-            local value           = 1
-            Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_MANURELIQUID] = function(sx,sz,wx,wz,hx,hz)
-                setDensityParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0, numChannels, value);
-                return true -- Place moisture!
-            end
-        end
-    end
-
-    if hasFoliageLayer(g_currentMission.fmcFoliageLime) then
-        if Fillable.FILLTYPE_LIME ~= nil then
-            local foliageId       = g_currentMission.fmcFoliageLime
-            local numChannels     = getTerrainDetailNumChannels(foliageId)
-            local value           = 2^numChannels - 1
-            Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_LIME] = function(sx,sz,wx,wz,hx,hz)
-                setDensityParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0, numChannels, value);
-                return false -- No moisture!
-            end
-        end
-        if Fillable.FILLTYPE_KALK ~= nil then
-            local foliageId       = g_currentMission.fmcFoliageLime
-            local numChannels     = getTerrainDetailNumChannels(foliageId)
-            local value           = 2^numChannels - 1
-            Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_KALK] = function(sx,sz,wx,wz,hx,hz)
-                setDensityParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0, numChannels, value);
-                return false -- No moisture!
-            end
-        end
-    end
-
-    if hasFoliageLayer(g_currentMission.fmcFoliageHerbicide) then
-        if Fillable.FILLTYPE_HERBICIDE ~= nil then
-            local foliageId       = g_currentMission.fmcFoliageHerbicide
-            local numChannels     = getTerrainDetailNumChannels(foliageId)
-            local value           = 1 -- type-A
-            Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_HERBICIDE] = function(sx,sz,wx,wz,hx,hz)
-                setDensityParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0, numChannels, value);
-                return true -- Place moisture!
-            end
-        end
-        if Fillable.FILLTYPE_HERBICIDE2 ~= nil then
-            local foliageId       = g_currentMission.fmcFoliageHerbicide
-            local numChannels     = getTerrainDetailNumChannels(foliageId)
-            local value           = 2 -- type-B
-            Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_HERBICIDE2] = function(sx,sz,wx,wz,hx,hz)
-                setDensityParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0, numChannels, value);
-                return true -- Place moisture!
-            end
-        end
-        if Fillable.FILLTYPE_HERBICIDE3 ~= nil then
-            local foliageId       = g_currentMission.fmcFoliageHerbicide
-            local numChannels     = getTerrainDetailNumChannels(foliageId)
-            local value           = 3 -- type-C
-            Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_HERBICIDE3] = function(sx,sz,wx,wz,hx,hz)
-                setDensityParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0, numChannels, value);
-                return true -- Place moisture!
-            end
-        end
-    end
-
-    if hasFoliageLayer(g_currentMission.fmcFoliageFertilizerSynthetic) then
-        local fruitLayer = g_currentMission.fruits[1]
-        -- TODO - add support for multiple FMLs
-        if fruitLayer ~= nil and fruitLayer.id ~= 0 then
-            if Fillable.FILLTYPE_FERTILIZER ~= nil then
-                local fruitLayerId = g_currentMission.fruits[1].id
-                local foliageId    = g_currentMission.fmcFoliageFertilizerSynthetic
-                local numChannels  = getTerrainDetailNumChannels(foliageId)
-                local value        = 1 -- type-A
-                Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_FERTILIZER] = function(sx,sz,wx,wz,hx,hz)
-                    -- TODO - add support for multiple FMLs
-                    setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
-                    setDensityMaskParams(foliageId, "between", fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-                    setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, value);
-                    setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
-                    setDensityMaskParams(foliageId, "greater", -1)
-                    return true -- Place moisture!
-                end
-                
-                -- Support for URF-seeders, using a special "augmented fill-type" value (i.e. "<fillType> + 128").
-                Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_FERTILIZER + 128] = function(sx,sz,wx,wz,hx,hz)
-                    -- TODO - add support for multiple FMLs
-                    setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
-                    setDensityMaskParams(foliageId, "between", 0, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-                    setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, value);
-                    setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
-                    setDensityMaskParams(foliageId, "greater", -1)
-                    return true -- Place moisture!
-                end
-            end
-            if Fillable.FILLTYPE_FERTILIZER2 ~= nil then
-                local fruitLayerId = g_currentMission.fruits[1].id
-                local foliageId    = g_currentMission.fmcFoliageFertilizerSynthetic
-                local numChannels  = getTerrainDetailNumChannels(foliageId)
-                local value        = 2 -- type-B
-                Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_FERTILIZER2] = function(sx,sz,wx,wz,hx,hz)
-                    -- TODO - add support for multiple FMLs
-                    setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
-                    setDensityMaskParams(foliageId, "between", fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-                    setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, value);
-                    setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
-                    setDensityMaskParams(foliageId, "greater", -1)
-                    return true -- Place moisture!
-                end
-
-                -- Support for URF-seeders, using a special "augmented fill-type" value (i.e. "<fillType> + 128").
-                Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_FERTILIZER2 + 128] = function(sx,sz,wx,wz,hx,hz)
-                    -- TODO - add support for multiple FMLs
-                    setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
-                    setDensityMaskParams(foliageId, "between", 0, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-                    setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, value);
-                    setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
-                    setDensityMaskParams(foliageId, "greater", -1)
-                    return true -- Place moisture!
-                end
-            end
-            if Fillable.FILLTYPE_FERTILIZER3 ~= nil then
-                local fruitLayerId = g_currentMission.fruits[1].id
-                local foliageId    = g_currentMission.fmcFoliageFertilizerSynthetic
-                local numChannels  = getTerrainDetailNumChannels(foliageId)
-                local value        = 3 -- type-C
-                Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_FERTILIZER3] = function(sx,sz,wx,wz,hx,hz)
-                    -- TODO - add support for multiple FMLs
-                    setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
-                    setDensityMaskParams(foliageId, "between", fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-                    setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, value);
-                    setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
-                    setDensityMaskParams(foliageId, "greater", -1)
-                    return true -- Place moisture!
-                end
-                
-                -- Support for URF-seeders, using a special "augmented fill-type" value (i.e. "<fillType> + 128").
-                Utils.fmcUpdateSprayAreaFillTypeFuncs[Fillable.FILLTYPE_FERTILIZER3 + 128] = function(sx,sz,wx,wz,hx,hz)
-                    -- TODO - add support for multiple FMLs
-                    setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
-                    setDensityMaskParams(foliageId, "between", 0, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-                    setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, value);
-                    setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
-                    setDensityMaskParams(foliageId, "greater", -1)
-                    return true -- Place moisture!
-                end                
-            end
-        end
-    end
-
-    --
-    local msg = nil
-    for fillType,func in pairs(Utils.fmcUpdateSprayAreaFillTypeFuncs) do
-        if func ~= nil and Fillable.fillTypeIntToName[fillType] ~= nil then
-            msg = (msg==nil and "" or (msg..", ")) .. Fillable.fillTypeIntToName[fillType]
-        end
-    end
-    if msg ~= nil then
-        logInfo("Additional updateSprayArea sub-functions added for fillTypes: "..msg)
-    end
-end
---#############################################################################
-
+--
 print(string.format("Script loaded: fmcModifyFSUtils.lua (v%s)", fmcModifyFSUtils.version));

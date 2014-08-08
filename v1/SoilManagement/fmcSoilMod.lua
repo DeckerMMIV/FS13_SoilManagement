@@ -258,10 +258,10 @@ function fmcSoilMod.processPlugins()
     Utils.fmcPluginsUpdateSowingAreaPreFuncs        = {["0"]="update-sowing-area(before)"}
     Utils.fmcPluginsUpdateSowingAreaPostFuncs       = {["0"]="update-sowing-area(after)"}
     
-    --Utils.fmcUpdateSprayAreaFillTypeFuncs           = {}
-    
     fmcGrowthControl.pluginsGrowthCycleFruits       = {["0"]="growth-cycle(fruits)"}
     fmcGrowthControl.pluginsGrowthCycle             = {["0"]="growth-cycle"}
+    
+    Utils.fmcUpdateSprayAreaFillTypeFuncs           = {}
     
     --
     local function addPlugin(pluginArray,description,priority,pluginFunc)
@@ -277,6 +277,7 @@ function fmcSoilMod.processPlugins()
         end
         logInfo("Plugin for ", pluginArray["0"], ": (", prioTxt, ") ", description)
         pluginArray[prioTxt] = pluginFunc;
+        return true
     end
 
     -- Build some functions that can register for specific plugin areas
@@ -297,12 +298,17 @@ function fmcSoilMod.processPlugins()
     soilMod.addPlugin_UpdateSowingArea_before       = function(description,priority,pluginFunc) return addPlugin(Utils.fmcPluginsUpdateSowingAreaPreFuncs       ,description,priority,pluginFunc) end;
     soilMod.addPlugin_UpdateSowingArea_after        = function(description,priority,pluginFunc) return addPlugin(Utils.fmcPluginsUpdateSowingAreaPostFuncs      ,description,priority,pluginFunc) end;
     
-    --soilMod.addPlugin_SpraySubFunc_fillType
-    
     soilMod.addPlugin_GrowthCycleFruits             = function(description,priority,pluginFunc) return addPlugin(fmcGrowthControl.pluginsGrowthCycleFruits      ,description,priority,pluginFunc) end;
     soilMod.addPlugin_GrowthCycle                   = function(description,priority,pluginFunc) return addPlugin(fmcGrowthControl.pluginsGrowthCycle            ,description,priority,pluginFunc) end;
 
     soilMod.addDestructibleFoliageId                = fmcModifyFSUtils.addDestructibleFoliageId
+    
+    soilMod.addPlugin_UpdateSprayArea_fillType      = function(description,priority,augmentedFillType,pluginFunc)
+                                                          if Utils.fmcUpdateSprayAreaFillTypeFuncs[augmentedFillType] == nil then
+                                                              Utils.fmcUpdateSprayAreaFillTypeFuncs[augmentedFillType] = { ["0"]=("update-spray-area(filltype=%d)"):format(augmentedFillType) }
+                                                          end
+                                                          return addPlugin(Utils.fmcUpdateSprayAreaFillTypeFuncs[augmentedFillType], description,priority,pluginFunc)
+                                                      end;
     
     -- "We call you"
     local allOK = true
@@ -347,6 +353,10 @@ function fmcSoilMod.processPlugins()
     
     fmcGrowthControl.pluginsGrowthCycleFruits     = reorderArray(fmcGrowthControl.pluginsGrowthCycleFruits    )
     fmcGrowthControl.pluginsGrowthCycle           = reorderArray(fmcGrowthControl.pluginsGrowthCycle          )
+
+    for k,v in pairs(Utils.fmcUpdateSprayAreaFillTypeFuncs) do
+        Utils.fmcUpdateSprayAreaFillTypeFuncs[k] = reorderArray(v)
+    end
     
     --
     return allOK
