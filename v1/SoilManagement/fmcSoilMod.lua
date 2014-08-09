@@ -67,6 +67,7 @@ function logInfo(...)
 end
 
 --
+source(g_currentModDirectory .. 'fmcSettings.lua')
 source(g_currentModDirectory .. 'fmcFilltypes.lua')
 source(g_currentModDirectory .. 'fmcModifyFSUtils.lua')
 source(g_currentModDirectory .. 'fmcModifySprayers.lua')
@@ -79,6 +80,19 @@ function fmcSoilMod.setup_map_new(mapFilltypeOverlaysDirectory)
     fmcSoilMod.enabled = false
     fmcFilltypes.setup(mapFilltypeOverlaysDirectory, fmcSoilMod.simplisticMode)
     fmcFilltypes.setupFruitFertilizerBoostHerbicideAffected()
+    
+    -- Set SoilMod default value-settings.
+    -- These can be changed by the map-author in the SampleModMap.LUA script, or in CareerSavegame.XML by the player
+    -- NOTE! It is only the _server_ that knows the correct values of these.
+    fmcSettings.setKeyValueDesc("updateDelayMs",  math.floor(1000/16),  "milliseconds, delay between update-of-squares during growth-cycle. Lower values=quicker but cause more lag in multiplayer (default=62)")
+    fmcSettings.setKeyValueDesc("reduceWindrows",            true,      "boolean, if windrows/swath should be reduced by 1 height-level during growth-cycle (default=true)")
+    fmcSettings.setKeyValueDesc("removeSprayMoisture",       true,      "boolean, if spray-moisture should be removed (vaporised) during growth-cycle (default=true)")
+    fmcSettings.setKeyValueDesc("disableWithering",          false,     "boolean, if crop withering should be disabled (default=false)")
+    fmcSettings.setKeyValueDesc("delayGrowthCycle#days",     0,         "integer, how many in-game days to skip before activating growth-cycle again (default=0)")
+
+    -- TODO: How to make these available client-side?
+    --fmcSettings.setKeyValueDesc("fertilizerSynthetic#firstGrowthState", 2, "integer, Growth state range is 0-4 (defaults first=2, last=4)")
+    --fmcSettings.setKeyValueDesc("fertilizerSynthetic#lastGrowthState",  4, nil)
 end
 
 --
@@ -131,6 +145,20 @@ function fmcSoilMod.draw()
 end
 
 --
+function fmcSoilMod.setMapProperty(keyName, value)
+    -- Only server is allowed to update the map-properties
+    if g_currentMission == nil or not g_currentMission:getIsServer() then
+        return false
+    end
+    --
+    if not fmcSettings.updateKeyValueDesc(keyName, value) then
+        logInfo("WARNING! Can not set map-property with key-name: '",keyName,"'")
+        return false
+    end
+    logInfo("Map-property '", keyName, "' updated to value '", fmcSettings.getKeyValue(keyName), "'")
+    return true
+end
+
 function fmcSoilMod.setFruit_FertilizerBoost_HerbicideAffected(fruitName, fertilizerName, herbicideName)
     if fmcSoilMod.simplisticMode then
         -- Not used in 'simplistic mode'.

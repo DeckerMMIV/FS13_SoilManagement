@@ -158,4 +158,6 @@ Keep the original download link!
 Credits:
 Script: Decker_MMIV.
 Graphics: KaosKnite, JakobT, GIANTS, Decker_MMIV and others.
-Translations: JakobT, Gonimy_Vetrom, VAHA.
+Translation 'DE': JakobT.
+Translation 'RU': Gonimy_Vetrom, VAHA.
+Translation 'CZ': KingFrame, Albi.

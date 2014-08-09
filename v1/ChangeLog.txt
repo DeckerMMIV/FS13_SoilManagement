@@ -11,13 +11,19 @@ Fixes:
 
 Enhancements:
 
-- Some settings now stored in the careerSavegame.XML file, so they should be "easier" to change.
-  These are; delayGrowthCycle, reduceWindrows, removeSprayMoisture, disableWithering, fertilizerSynthetic.
+- Some settings now stored in the CareerSavegame.XML file, so they should be "easier" to change.
+  These are; delayGrowthCycle, reduceWindrows, removeSprayMoisture & disableWithering.
   They are found in the <modSoilManagement> section of the careerSavegame.XML file.
-
+- SoilMod will provide default values for the above mentioned settings. However it is also
+  possible for map-author to change these. Look for 'setMapProperty' in the supplied
+  'SampleModMap - Additions.LUA' script.
+  
 Additions:
 
-- (NOT YET) Plugin support for other mods, so they can "add" their own effects.
+- Plugin support for other mods, so they can "add" their own effects.
+  Documentation with examples is yet to be provided. For now, mod-authors/scripters should
+  take a look at 'fmcSoilModPlugins.LUA', as SoilMod itself is using its own plugin facility.
+- Czech translation by KingFrame & Albi.
 
 
 ============================
