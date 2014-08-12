@@ -110,18 +110,6 @@ FSCareerMissionInfo.saveToXML = Utils.prependedFunction(FSCareerMissionInfo.save
         --
         fmcSettings.onSaveCareerSavegame(self.xmlFile, self.xmlKey..".modSoilManagement")
 
-        --setXMLInt( self.xmlFile, self.xmlKey..".modSoilManagement.delayGrowthCycle#days"     ,fmcGrowthControl.delayGrowthCycleDays)
-        --setXMLInt( self.xmlFile, self.xmlKey..".modSoilManagement.updateDelayMs#value"       ,fmcGrowthControl.updateDelayMs)
-        --setXMLBool(self.xmlFile, self.xmlKey..".modSoilManagement.reduceWindrows#value"      ,fmcGrowthControl.reduceWindrows)
-        --setXMLBool(self.xmlFile, self.xmlKey..".modSoilManagement.removeSprayMoisture#value" ,fmcGrowthControl.removeSprayMoisture)
-        --setXMLBool(self.xmlFile, self.xmlKey..".modSoilManagement.disableWithering#value"    ,fmcGrowthControl.disableWithering)
-        --
-        --setXMLString(self.xmlFile, self.xmlKey..".modSoilManagement.delayGrowthCycle#description"    ,"integer, how many in-game days to skip before activating growth-cycle again (default=0)")
-        --setXMLString(self.xmlFile, self.xmlKey..".modSoilManagement.updateDelayMs#description"       ,"milliseconds, delay between update-of-squares during growth-cycle. Lower values=quicker but cause more lag in multiplayer (default=62)")
-        --setXMLString(self.xmlFile, self.xmlKey..".modSoilManagement.reduceWindrows#description"      ,"boolean, if windrows/swath/straw should be reduced by 1 during growth-cycle (default=true)")
-        --setXMLString(self.xmlFile, self.xmlKey..".modSoilManagement.removeSprayMoisture#description" ,"boolean, if spray-moisture should be removed (vaporised) during growth-cycle (default=true)")
-        --setXMLString(self.xmlFile, self.xmlKey..".modSoilManagement.disableWithering#description"    ,"boolean, if crop withering should be disabled (default=false)")
-
         --
         setXMLInt(self.xmlFile, self.xmlKey..".modSoilManagement.fertilizerSynthetic#firstGrowthState" ,fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState)
         setXMLInt(self.xmlFile, self.xmlKey..".modSoilManagement.fertilizerSynthetic#lastGrowthState"  ,fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
@@ -231,15 +219,6 @@ function fmcGrowthControl:update(dt)
             fmcGrowthControl.reduceWindrows         = fmcSettings.getKeyValue("reduceWindrows",         fmcGrowthControl.reduceWindrows      )
             fmcGrowthControl.removeSprayMoisture    = fmcSettings.getKeyValue("removeSprayMoisture",    fmcGrowthControl.removeSprayMoisture )
             fmcGrowthControl.disableWithering       = fmcSettings.getKeyValue("disableWithering",       fmcGrowthControl.disableWithering    )
-
-            --fmcGrowthControl.delayGrowthCycleDays = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".modSoilManagement.delayGrowthCycle#days")     ,fmcGrowthControl.delayGrowthCycleDays)
-            --fmcGrowthControl.updateDelayMs        = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".modSoilManagement.updateDelayMs#value")       ,fmcGrowthControl.updateDelayMs)
-            --fmcGrowthControl.reduceWindrows       = Utils.getNoNil(getXMLBool(xmlFile, xmlKey..".modSoilManagement.reduceWindrows#value")      ,fmcGrowthControl.reduceWindrows)
-            --fmcGrowthControl.removeSprayMoisture  = Utils.getNoNil(getXMLBool(xmlFile, xmlKey..".modSoilManagement.removeSprayMoisture#value") ,fmcGrowthControl.removeSprayMoisture)
-            --fmcGrowthControl.disableWithering     = Utils.getNoNil(getXMLBool(xmlFile, xmlKey..".modSoilManagement.disableWithering#value")    ,fmcGrowthControl.disableWithering)
-
-            --fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".modSoilManagement.fertilizerSynthetic#firstGrowthState")   ,fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState)
-            --fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".modSoilManagement.fertilizerSynthetic#lastGrowthState")    ,fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
 
             delete(xmlFile);
 

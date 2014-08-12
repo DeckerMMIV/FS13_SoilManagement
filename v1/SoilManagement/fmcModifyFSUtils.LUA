@@ -33,8 +33,18 @@ end
 
 function fmcModifyFSUtils.addDestructibleFoliageId(foliageId)
     if foliageId ~= nil and foliageId ~= 0 then
-        table.insert(g_currentMission.fmcDynamicFoliageLayers, foliageId)
-        logInfo(("Included foliage-layer for \"destruction\" by plough/cultivator/seeder: '%s', id=%s, numChnls=%s"):format(getName(foliageId), foliageId, getTerrainDetailNumChannels(foliageId)))
+        local found = false
+        for _,v in pairs(g_currentMission.fmcDynamicFoliageLayers) do
+            if v == foliageId then
+                found = true
+                break
+            end
+        end
+        --
+        if not found then
+            table.insert(g_currentMission.fmcDynamicFoliageLayers, foliageId)
+            logInfo(("Included foliage-layer for \"destruction\" by plough/cultivator/seeder: '%s', id=%s, numChnls=%s"):format(getName(foliageId), foliageId, getTerrainDetailNumChannels(foliageId)))
+        end
     end
 end
 
@@ -104,7 +114,7 @@ function fmcModifyFSUtils.overwriteCutFruitArea()
             callFunc(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
         end
         
-        -- Pre-call phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, before the default "cutting" occurs.
+        -- Before phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, before the default "cutting" occurs.
         for _,callFunc in pairs(Utils.fmcPluginsCutFruitAreaPreFuncs) do
             callFunc(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
         end
@@ -118,7 +128,7 @@ function fmcModifyFSUtils.overwriteCutFruitArea()
     
         dataStore.volume = dataStore.numPixels
         
-        -- Post-call phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, after the default "cutting" have been done.
+        -- After phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, after the default "cutting" have been done.
         for _,callFunc in pairs(Utils.fmcPluginsCutFruitAreaPostFuncs) do
             callFunc(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
         end
@@ -148,7 +158,7 @@ function fmcModifyFSUtils.overwriteUpdateCultivatorArea()
             callFunc(sx,sz,wx,wz,hx,hz, dataStore, nil)
         end
         
-        -- Pre-call phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, before the default "cultivating" occurs.
+        -- Before phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, before the default "cultivating" occurs.
         for _,callFunc in pairs(Utils.fmcPluginsUpdateCultivatorAreaPreFuncs) do
             callFunc(sx,sz,wx,wz,hx,hz, dataStore, nil)
         end
@@ -188,7 +198,7 @@ function fmcModifyFSUtils.overwriteUpdateCultivatorArea()
             end
         end
     
-        -- Post-call phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, after the default "cultivating" have been done.
+        -- After phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, after the default "cultivating" have been done.
         for _,callFunc in pairs(Utils.fmcPluginsUpdateCultivatorAreaPostFuncs) do
             callFunc(sx,sz,wx,wz,hx,hz, dataStore, nil)
         end
@@ -217,7 +227,7 @@ function fmcModifyFSUtils.overwriteUpdatePloughArea()
             callFunc(sx,sz,wx,wz,hx,hz, dataStore, nil)
         end
         
-        -- Pre-call phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, before the default "ploughing" occurs.
+        -- Before phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, before the default "ploughing" occurs.
         for _,callFunc in pairs(Utils.fmcPluginsUpdatePloughAreaPreFuncs) do
             callFunc(sx,sz,wx,wz,hx,hz, dataStore, nil)
         end
@@ -257,7 +267,7 @@ function fmcModifyFSUtils.overwriteUpdatePloughArea()
             end
         end
     
-        -- Post-call phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, after the default "ploughing" have been done.
+        -- After phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, after the default "ploughing" have been done.
         for _,callFunc in pairs(Utils.fmcPluginsUpdatePloughAreaPostFuncs) do
             callFunc(sx,sz,wx,wz,hx,hz, dataStore, nil)
         end
@@ -312,7 +322,7 @@ function fmcModifyFSUtils.overwriteUpdateSowingArea()
             callFunc(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
         end
         
-        -- Pre-call phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, before the default "seeding" occurs.
+        -- Before phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, before the default "seeding" occurs.
         for _,callFunc in pairs(Utils.fmcPluginsUpdateSowingAreaPreFuncs) do
             callFunc(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
         end
@@ -337,7 +347,7 @@ function fmcModifyFSUtils.overwriteUpdateSowingArea()
         end
         dataStore.numPixels = dataStore.numPixels1 + dataStore.numPixels2;
     
-        -- Post-call phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, after the default "seeding" have been done.
+        -- After phase - Give plugins the possibility to affect foliage-layer(s) and dataStore, after the default "seeding" have been done.
         for _,callFunc in pairs(Utils.fmcPluginsUpdateSowingAreaPostFuncs) do
             callFunc(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
         end
