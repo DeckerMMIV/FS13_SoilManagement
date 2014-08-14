@@ -6,43 +6,32 @@
 - 5 ссылок к файлам 
 - 5 материалов (прописать)  
 - 1 foliage-multi-layer содержащий несколько foliage-sub-layers
-Эти блоки можно найти в инструкции, части: 2,3,4.
+Блоки которые необходимо вставить можно найти в инструкции, части: 2,3,4.
 
-Тем не менее, так как есть конкретные численно-адресные ссылки на них, ОЧЕНЬ ВАЖНО убедиться, что номера являются правильными. Следующие шаги, надеемся, помогут вам это легче понять, установить и настроить.
+Так как есть конкретные численно-адресные ссылки на них, ОЧЕНЬ ВАЖНО убедиться, что номера являются правильными. Следующие шаги, надеемся, помогут вам это легче понять, установить и настроить.
 
 Как всегда: прежде всего сделайте резервную копию, на случай, если вы позже сделаете ошибку или произойдут некоторые проблемы/ошибки, которые вы не сможете исправить. Таким образом, вы всегда сможете вернуться к вашей предыдущей резервной копии, и, следуя инструкциям, попробовать снова.
 
 
-А. Прежде всего, необходимо найти пять чисел в вашем собственном файле MAP.I3D, которые мы будем использовать позже:
+А. Прежде всего, необходимо найти три числа в вашем собственном файле MAP.I3D, которые мы будем использовать позже:
 
-A-1. Найти наибольшее число "FileID" в разделе <Files> ... </ Files> вашей карты.
-A-2. Найти наибольшее число "materialId" в разделе <Materials> ... </Materials> вашей карты.
-А-3. Найти число "FileID" в вашей карте, которое соответствует файлу "shaders/windrowFoliageShader.xml". 
-A-4. Найти число "FileID" в вашей карте, которое соответствует файлу "shaders/fruitGrowthFoliageShader.xml". 
-A-5. Найдите номер "blockShapeId" в вашей карте, для "wheat_windrow" foliage-sub-layer. 
+А-1. Найти число "FileID" в вашей карте, которое соответствует файлу "shaders/windrowFoliageShader.xml". 
+A-2. Найти число "FileID" в вашей карте, которое соответствует файлу "shaders/fruitGrowthFoliageShader.xml". 
+A-3. Найти номер "blockShapeId" в вашей карте, для "wheat_windrow" foliage-sub-layer. 
 
 
-Б. Возьмите числа, найденные на этапе - A, и в ЭТОМ ФАЙЛЕ вы должны найти/заменять некоторые заполнители, которые я сделал, чтобы сделать проще для вас подготовку и обеспечить правильность численно-ID ссылок между блоками.
+Б. Возьмите числа, найденные на этапе - A, и в ЭТОМ файле вы должны найти/заменять некоторые заполнители, которые я сделал, чтобы сделать для вас подготовку проще и обеспечить правильность численно-ID ссылок между блоками.
 Примечание: При поиске/замене, не забудьте включить "два + два" восклицательных знака, окружающие заполнитель.
-Примечание: Расчет "добавить 10, удалить последнюю введенную цифру" следует понимать так: "если обнаружили наибольшее число '1263', затем добавить 10 (результат '1273') и отбрасываете последнюю цифру (результат '127')". - Теперь используйте полученное число для замены.
 
-B-1a. Возьмите наибольшее число "FileID" которое вы нашли в А-1, добавьте 10, и удалить последнюю цифру. 
-B-1b. Найдите !!FileGrp!! и просто замените на число, которое вы рассчитали в B-1a.
-
-B-2a. Возьмите наибольшее количество "materialId" вы нашли A-2, добавьте 10, удалить последнюю цифру. 
-B-2b. Найдите !!MaterialGrp!! и просто замените на число, которое вы рассчитали в B-2a.
-
-Б-3. Найдите !!WindrowShaderFileId!! и замените на число, которое вы нашли в A-3.
-B-4. Найдите !!FruitShaderFileId!! и замените на число, которое вы нашли в А-4.
-B-5. Найдите !!WINDROWSHAPEID!! и замените на число, которое вы нашли в А-5.
+Б-1. Найдите !!WindrowShaderFileId!! и замените на число, которое вы нашли в пункте A-1.
+B-2. Найдите !!FruitShaderFileId!! и замените на число, которое вы нашли в пункте А-2.
+B-3. Найдите !!WINDROWSHAPEID!! и замените на число, которое вы нашли в пункте А-3.
 
 
 С. Теперь, когда ссылки численно-ID, надеюсь, настроены правильно и не конфликтуют со всеми другими ссылками численно-ID в вашем родном MAP.I3D, переходим к части 2 инструкции.
 
 
 Для справки:
-##     FileGrp             =     !!FILEGRP!!                	(-> Наибольшее значение FileID, добавить 10, удалить последнюю цифру) 			=
-##     MaterialGrp         =     !!MATERIALGRP!!             	(-> Наибольшее значение materialId, добавить 10, удалить последнюю цифру) 		=
 ##     WindrowShaderFileId =     !!WINDROWSHADERFILEID!!     	(-> fileId для "shaders/windrowFoliageShader.xml")								=
 ##     FruitShaderFileId   =     !!FRUITSHADERFILEID!!       	(-> fileId для "shaders/fruitGrowthFoliageShader.xml")							=
 ##     WindrowShapeId      =  	 !!WINDROWSHAPEID!!            	(-> значение blockShapeId для  "wheat_windrow" foliage-sub-layer)				=
@@ -51,14 +40,14 @@ B-5. Найдите !!WINDROWSHAPEID!! и замените на число, ко
 ###### Инструкция часть 2 из 6
 ####################################
 
-Добавить следующие пять <file>-элементов в раздел <files> вашей MAP.I3D.
+Добавить следующие пять <file>-элементов в раздел <Files> вашего MAP.I3D.
 
 <!-- SoilManagement v1.0 - File assets -->
-    <File fileId="!!FILEGRP!!0" filename="fmcSoilManagement/fmcSoilManagement_density.png" relativePath="true"/>
-    <File fileId="!!FILEGRP!!1" filename="fmcSoilManagement/foliages/foliage_manureSolid_windrow_diffuse.dds" relativePath="true"/>
-    <File fileId="!!FILEGRP!!2" filename="fmcSoilManagement/foliages/foliage_manureLiquid_windrow_diffuse.dds" relativePath="true"/>
-    <File fileId="!!FILEGRP!!3" filename="fmcSoilManagement/foliages/foliage_kalkSolid_windrow_diffuse.dds" relativePath="true"/>
-    <File fileId="!!FILEGRP!!4" filename="fmcSoilManagement/foliages/foliage_weed_diffuse_atlasSize_2.dds" relativePath="true"/>
+    <File fileId="100400" filename="fmcSoilManagement/fmcSoilManagement_density.png" relativePath="true"/>
+    <File fileId="100401" filename="fmcSoilManagement/foliages/foliage_manureSolid_windrow_diffuse.dds" relativePath="true"/>
+    <File fileId="100402" filename="fmcSoilManagement/foliages/foliage_manureLiquid_windrow_diffuse.dds" relativePath="true"/>
+    <File fileId="100403" filename="fmcSoilManagement/foliages/foliage_kalkSolid_windrow_diffuse.dds" relativePath="true"/>
+    <File fileId="100404" filename="fmcSoilManagement/foliages/foliage_weed_diffuse_atlasSize_2.dds" relativePath="true"/>
 	
 ####################################	
 ###### Инструкция часть 3 из 6
@@ -67,23 +56,23 @@ B-5. Найдите !!WINDROWSHAPEID!! и замените на число, ко
 Добавить следующие пять <Material>-элементов в раздел <Materials> вашей MAP.I3D.
 
 <!-- SoilManagement v1.0 - Material assets -->
-    <Material name="soilMgmr_empty_mat" materialId="!!MATERIALGRP!!0" diffuseColor="1 1 1 1" ambientColor="1 1 1">
+    <Material name="soilMgmr_empty_mat" materialId="100510" diffuseColor="1 1 1 1" ambientColor="1 1 1">
       <CustomParameter name="dummyStartEnd" value="0 0 0 0"/>
     </Material>
-    <Material name="soilMgmr_foliageManure_mat" materialId="!!MATERIALGRP!!1" ambientColor="1 1 1" customShaderId="!!WINDROWSHADERFILEID!!">
-      <Texture fileId="!!FILEGRP!!1"/>
+    <Material name="soilMgmr_foliageManure_mat" materialId="100511" ambientColor="1 1 1" customShaderId="!!WINDROWSHADERFILEID!!">
+      <Texture fileId="100401"/>
       <CustomParameter name="alphaBlendStartEnd" value="70 75 0 0"/>
     </Material>
-    <Material name="soilMgmr_foliageSlurry_mat" materialId="!!MATERIALGRP!!2" ambientColor="1 1 1" customShaderId="!!WINDROWSHADERFILEID!!">
-      <Texture fileId="!!FILEGRP!!2"/>
+    <Material name="soilMgmr_foliageSlurry_mat" materialId="100512" ambientColor="1 1 1" customShaderId="!!WINDROWSHADERFILEID!!">
+      <Texture fileId="100402"/>
       <CustomParameter name="alphaBlendStartEnd" value="70 75 0 0"/>
     </Material>
-    <Material name="soilMgmr_foliageLime_mat" materialId="!!MATERIALGRP!!3" ambientColor="1 1 1" customShaderId="!!WINDROWSHADERFILEID!!">
-      <Texture fileId="!!FILEGRP!!3"/>
+    <Material name="soilMgmr_foliageLime_mat" materialId="100513" ambientColor="1 1 1" customShaderId="!!WINDROWSHADERFILEID!!">
+      <Texture fileId="100403"/>
       <CustomParameter name="alphaBlendStartEnd" value="70 75 0 0"/>
     </Material>
-    <Material name="soilMgmr_foliageWeed_mat" materialId="!!MATERIALGRP!!4" ambientColor="1 1 1" customShaderId="!!FRUITSHADERFILEID!!">
-      <Texture fileId="!!FILEGRP!!4"/>
+    <Material name="soilMgmr_foliageWeed_mat" materialId="100514" ambientColor="1 1 1" customShaderId="!!FRUITSHADERFILEID!!">
+      <Texture fileId="100404"/>
       <CustomParameter name="alphaBlendStartEnd" value="70 75 0 0"/>
     </Material>
 
@@ -107,11 +96,11 @@ B-5. Найдите !!WINDROWSHAPEID!! и замените на число, ко
 ##        </TerrainTransformGroup>
 
 <!-- SoilManagement v1.0 - Foliage-multi-layer -->
-    <FoliageMultiLayer densityMapId="!!FILEGRP!!0" numChannels="16" numTypeIndexChannels="0">
-        <FoliageSubLayer name="fmc_manure"              materialId="!!MATERIALGRP!!1" blockShapeId="!!WINDROWSHAPEID!!" densityMapChannelOffset="0"  numDensityMapChannels="2" cellSize="8" viewDistance="75" terrainOffset="-0.2"  objectMask="65520" atlasSize="1" numBlocksPerUnit="1" width="1"   widthVariance="0.25" heightVariance="0.25" horizontalPositionVariance="1.5"  height="0.5;0.75;1.0" useShapeNormals="true" alignWithTerrain="true" numStates="3" />
-        <FoliageSubLayer name="fmc_slurry"              materialId="!!MATERIALGRP!!2" blockShapeId="!!WINDROWSHAPEID!!" densityMapChannelOffset="2"  numDensityMapChannels="1" cellSize="8" viewDistance="75" terrainOffset="0.02"  objectMask="65520" atlasSize="1" numBlocksPerUnit="1" width="1.5" widthVariance="0.25" heightVariance="0.1"  horizontalPositionVariance="0.75" height="0.10"         useShapeNormals="true" alignWithTerrain="true"               />
-        <FoliageSubLayer name="fmc_lime"                materialId="!!MATERIALGRP!!3" blockShapeId="!!WINDROWSHAPEID!!" densityMapChannelOffset="3"  numDensityMapChannels="1" cellSize="8" viewDistance="75" terrainOffset="-0.05" objectMask="65520" atlasSize="1" numBlocksPerUnit="1" width="1.5" widthVariance="0.25" heightVariance="0.1"  horizontalPositionVariance="0.5"  height="0.7"          useShapeNormals="true" alignWithTerrain="true"               />
-        <FoliageSubLayer name="fmc_weed"                materialId="!!MATERIALGRP!!4"                                   densityMapChannelOffset="4"  numDensityMapChannels="3" cellSize="8" viewDistance="75" terrainOffset="0.0"   objectMask="65520"
+    <FoliageMultiLayer densityMapId="100400" numChannels="16" numTypeIndexChannels="0">
+        <FoliageSubLayer name="fmc_manure"              materialId="100511" blockShapeId="!!WINDROWSHAPEID!!" densityMapChannelOffset="0"  numDensityMapChannels="2" cellSize="8" viewDistance="75" terrainOffset="-0.2"  objectMask="65520" atlasSize="1" numBlocksPerUnit="1" width="1"   widthVariance="0.25" heightVariance="0.25" horizontalPositionVariance="1.5"  height="0.5;0.75;1.0" useShapeNormals="true" alignWithTerrain="true" numStates="3" />
+        <FoliageSubLayer name="fmc_slurry"              materialId="100512" blockShapeId="!!WINDROWSHAPEID!!" densityMapChannelOffset="2"  numDensityMapChannels="1" cellSize="8" viewDistance="75" terrainOffset="0.02"  objectMask="65520" atlasSize="1" numBlocksPerUnit="1" width="1.5" widthVariance="0.25" heightVariance="0.1"  horizontalPositionVariance="0.75" height="0.10"         useShapeNormals="true" alignWithTerrain="true"               />
+        <FoliageSubLayer name="fmc_lime"                materialId="100513" blockShapeId="!!WINDROWSHAPEID!!" densityMapChannelOffset="3"  numDensityMapChannels="1" cellSize="8" viewDistance="75" terrainOffset="-0.05" objectMask="65520" atlasSize="1" numBlocksPerUnit="1" width="1.5" widthVariance="0.25" heightVariance="0.1"  horizontalPositionVariance="0.5"  height="0.7"          useShapeNormals="true" alignWithTerrain="true"               />
+        <FoliageSubLayer name="fmc_weed"                materialId="100514"                                   densityMapChannelOffset="4"  numDensityMapChannels="3" cellSize="8" viewDistance="75" terrainOffset="0.0"   objectMask="65520"
           numBlocksPerUnit="1"
           width="0.3;0.7;1.0;0.8;1.1;1.3;1.5"
           height="0.3;0.7;1.0;0.2;0.7;1.0;1.4"
@@ -120,10 +109,10 @@ B-5. Найдите !!WINDROWSHAPEID!! и замените на число, ко
           widthVariance="0.2" heightVariance="0.2" horizontalPositionVariance="1.0"
           numStates="7" growthNumStates="0" growthStateTime="0"
         />
-        <FoliageSubLayer name="fmc_fertilizerOrganic"   materialId="!!MATERIALGRP!!0"                                   densityMapChannelOffset="7"  numDensityMapChannels="2" cellSize="8" viewDistance="0"  terrainOffset="0.0"   objectMask="0"     atlasSize="1" numBlocksPerUnit="0" width="0"   widthVariance="0"    heightVariance="0"    horizontalPositionVariance="0"    height="0" />
-        <FoliageSubLayer name="fmc_fertilizerSynthetic" materialId="!!MATERIALGRP!!0"                                   densityMapChannelOffset="9"  numDensityMapChannels="2" cellSize="8" viewDistance="0"  terrainOffset="0.0"   objectMask="0"     atlasSize="1" numBlocksPerUnit="0" width="0"   widthVariance="0"    heightVariance="0"    horizontalPositionVariance="0"    height="0" />
-        <FoliageSubLayer name="fmc_herbicide"           materialId="!!MATERIALGRP!!0"                                   densityMapChannelOffset="11" numDensityMapChannels="2" cellSize="8" viewDistance="0"  terrainOffset="0.0"   objectMask="0"     atlasSize="1" numBlocksPerUnit="0" width="0"   widthVariance="0"    heightVariance="0"    horizontalPositionVariance="0"    height="0" />
-        <FoliageSubLayer name="fmc_soil_pH"             materialId="!!MATERIALGRP!!0"                                   densityMapChannelOffset="13" numDensityMapChannels="3" cellSize="8" viewDistance="0"  terrainOffset="0.0"   objectMask="0"     atlasSize="1" numBlocksPerUnit="0" width="0"   widthVariance="0"    heightVariance="0"    horizontalPositionVariance="0"    height="0" />
+        <FoliageSubLayer name="fmc_fertilizerOrganic"   materialId="100510"                                   densityMapChannelOffset="7"  numDensityMapChannels="2" cellSize="8" viewDistance="0"  terrainOffset="0.0"   objectMask="0"     atlasSize="1" numBlocksPerUnit="0" width="0"   widthVariance="0"    heightVariance="0"    horizontalPositionVariance="0"    height="0" />
+        <FoliageSubLayer name="fmc_fertilizerSynthetic" materialId="100510"                                   densityMapChannelOffset="9"  numDensityMapChannels="2" cellSize="8" viewDistance="0"  terrainOffset="0.0"   objectMask="0"     atlasSize="1" numBlocksPerUnit="0" width="0"   widthVariance="0"    heightVariance="0"    horizontalPositionVariance="0"    height="0" />
+        <FoliageSubLayer name="fmc_herbicide"           materialId="100510"                                   densityMapChannelOffset="11" numDensityMapChannels="2" cellSize="8" viewDistance="0"  terrainOffset="0.0"   objectMask="0"     atlasSize="1" numBlocksPerUnit="0" width="0"   widthVariance="0"    heightVariance="0"    horizontalPositionVariance="0"    height="0" />
+        <FoliageSubLayer name="fmc_soil_pH"             materialId="100510"                                   densityMapChannelOffset="13" numDensityMapChannels="3" cellSize="8" viewDistance="0"  terrainOffset="0.0"   objectMask="0"     atlasSize="1" numBlocksPerUnit="0" width="0"   widthVariance="0"    heightVariance="0"    horizontalPositionVariance="0"    height="0" />
         <!--
             Название                 Номер канала     Возможный уровень
             =====================================================
