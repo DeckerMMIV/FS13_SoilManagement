@@ -214,13 +214,13 @@ function fmcGrowthControl:update(dt)
 
             fmcSettings.onLoadCareerSavegame(xmlFile, xmlKey..".modSoilManagement")
 
+            delete(xmlFile);
+
             fmcGrowthControl.delayGrowthCycleDays   = fmcSettings.getKeyValue("delayGrowthCycle#days",  fmcGrowthControl.delayGrowthCycleDays)
             fmcGrowthControl.updateDelayMs          = fmcSettings.getKeyValue("updateDelayMs",          fmcGrowthControl.updateDelayMs       )
             fmcGrowthControl.reduceWindrows         = fmcSettings.getKeyValue("reduceWindrows",         fmcGrowthControl.reduceWindrows      )
             fmcGrowthControl.removeSprayMoisture    = fmcSettings.getKeyValue("removeSprayMoisture",    fmcGrowthControl.removeSprayMoisture )
             fmcGrowthControl.disableWithering       = fmcSettings.getKeyValue("disableWithering",       fmcGrowthControl.disableWithering    )
-
-            delete(xmlFile);
 
             -- 'Growth cycle' is active, if cell-square-to-update is not zero.
             fmcGrowthControl.active = fmcGrowthControl.cellSquareToUpdate > 0

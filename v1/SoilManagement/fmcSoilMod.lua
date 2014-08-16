@@ -332,6 +332,9 @@ function fmcSoilMod.processPlugins()
     soilMod.addDestructibleFoliageId                = fmcModifyFSUtils.addDestructibleFoliageId
     
     soilMod.addPlugin_UpdateSprayArea_fillType      = function(description,priority,augmentedFillType,pluginFunc)
+                                                          if augmentedFillType == nil or augmentedFillType <= 0 then
+                                                              return false;
+                                                          end
                                                           if Utils.fmcUpdateSprayAreaFillTypeFuncs[augmentedFillType] == nil then
                                                               Utils.fmcUpdateSprayAreaFillTypeFuncs[augmentedFillType] = { ["0"]=("update-spray-area(filltype=%d)"):format(augmentedFillType) }
                                                           end

@@ -18,12 +18,13 @@ Enhancements:
   possible for map-author to change these. Look for 'setMapProperty' in the supplied
   'SampleModMap - Additions.LUA' script.
   
-Additions:
+Additions/updates:
 
 - Plugin support for other mods, so they can "add" their own effects.
-  Documentation with examples is yet to be provided. For now, mod-authors/scripters should
-  take a look at 'fmcSoilModPlugins.LUA', as SoilMod itself is using its own plugin facility.
+  Documentation with sample plugins is a 'Work-In-Progress' and not finalized.
+  For questions and alike, please create an issue at the GitHub repository.
 - Czech translation by KingFrame & Albi.
+- More/updated Russian translations by Gonimy-Vetrom.
 
 
 ============================

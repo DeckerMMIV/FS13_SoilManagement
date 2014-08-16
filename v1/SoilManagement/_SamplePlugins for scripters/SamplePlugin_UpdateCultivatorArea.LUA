@@ -1,5 +1,5 @@
 --
--- SamplePlugin_CutFruitArea.LUA - an example of how to use SoilMod's plugin facility.
+-- SamplePlugin_UpdateCultivatorArea.LUA - an example of how to use SoilMod's plugin facility.
 --
 --
 -- Our sample plugin expects that the map has a foliage-sub-layer with name "FSL_dust".

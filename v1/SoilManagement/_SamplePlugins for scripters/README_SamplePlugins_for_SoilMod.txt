@@ -7,6 +7,8 @@ I will here attempt to show how other scripters can create and add their own mod
 
 One way I will do it, is to create some 'sample plugin' scripts in this folder, to show what script-parts are required, and what to call in correct sequence. Hopefully this should give scripters some idea of how plugins for SoilMod works.
 
+Also take a look at the fmcSoilModPlugins.LUA script-file, which contains SoilMod's own plugins. That should hopefully also give some insight into how to making own plugins.
+
 
 
 
