@@ -66,6 +66,8 @@ function SamplePlugin_UpdateCultivatorArea.soilModPluginCallback(soilMod)
         -- This plugin sample have no need for an 'after phase'
         --soilMod.addPlugin_UpdateCultivatorArea_after()
     end
+
+    return true  -- Tell SoilMod that everything is ok.
 end
 
 

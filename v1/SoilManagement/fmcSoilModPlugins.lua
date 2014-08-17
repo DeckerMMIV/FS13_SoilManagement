@@ -485,7 +485,29 @@ function fmcSoilModPlugins.pluginsForUpdatePloughArea(soilMod)
             end
         )
     end
-        
+
+    -- Attempt at adding stones randomly appearing when ploughing.
+    -- Unfortunately it won't work, for two reasons:
+    -- - Using "math.random" client-side, will produce different results compared to server,
+    --   so it will not be the same areas that gets affected.
+    -- - Even when the equipment/tool is not moving, it will still continuously call
+    --   Utils.updatePloughArea(), thereby causing "flickering" of the terrain.
+    --local stoneFoliageLayerId = getChild(g_currentMission.terrainRootNode, "stones")
+    --if stoneFoliageLayerId ~= nil and stoneFoliageLayerId ~= 0 then
+    --    local numChannels     = getTerrainDetailNumChannels(stoneFoliageLayerId)
+    --    local value           = 2^numChannels - 1
+    --
+    --    soilMod.addPlugin_UpdatePloughArea_before(
+    --        "Ploughing causes stones to randomly appear",
+    --        50,
+    --        function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
+    --            if math.random(0,100) < 2 then
+    --                setDensityParallelogram(stoneFoliageLayerId, sx,sz,wx,wz,hx,hz, 0, numChannels, value)
+    --            end
+    --        end
+    --    )
+    --end
+    
 end
 
 --

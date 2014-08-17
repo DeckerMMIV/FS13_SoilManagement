@@ -67,4 +67,6 @@ function SamplePlugin_UpdateSprayArea.soilModPluginCallback(soilMod)
             end
         )
     end
+
+    return true  -- Tell SoilMod that everything is ok.
 end
