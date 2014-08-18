@@ -171,6 +171,6 @@ Soil Condition - плагин PDA MOD (состояние почвы)
 Работали:
 Script: Decker_MMIV.
 Графика: KaosKnite, JakobT, GIANTS, Decker_MMIV и другие.
-Перевод "DE": JakobT.
+Перевод "DE": JakobT, webalizer.
 Перевод "RU": Gonimy_Vetrom, VAHA.
 Перевод "CZ": KingFrame, Albi.

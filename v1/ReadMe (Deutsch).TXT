@@ -156,9 +156,10 @@ Bitte lade diesen Mod NICHT auf andere Hosting-Seiten - das kann ich selbst, wen
 
 Benutzen Sie den original Download-Link!
 
+
 Credits:
 Script: Decker_MMIV.
 Graphics: KaosKnite, JakobT, GIANTS, Decker_MMIV and others.
-Translation 'DE': JakobT, webalizer
+Translation 'DE': JakobT, webalizer.
 Translation 'RU': Gonimy_Vetrom, VAHA.
 Translation 'CZ': KingFrame, Albi.

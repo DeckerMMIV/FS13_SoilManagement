@@ -23,8 +23,9 @@ Additions/updates:
 - Plugin support for other mods, so they can "add" their own effects.
   Documentation with sample plugins is a 'Work-In-Progress' and not finalized.
   For questions and alike, please create an issue at the GitHub repository.
-- Czech translation by KingFrame & Albi.
+- Czech translations by KingFrame & Albi.
 - More/updated Russian translations by Gonimy-Vetrom.
+- More German translations by webalizer.
 
 
 ============================
