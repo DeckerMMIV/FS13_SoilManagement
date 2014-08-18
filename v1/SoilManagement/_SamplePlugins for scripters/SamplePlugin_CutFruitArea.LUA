@@ -85,6 +85,8 @@ function SamplePlugin_CutFruitArea.soilModPluginCallback(soilMod)
         -- Our actual 'after' plugin function which cutFruitArea will call during the 'after phase'.
         ,SamplePlugin_CutFruitArea.our_sample_cutFruitArea_after
     )
+
+    return true  -- Tell SoilMod that everything is ok.
 end
 
 
