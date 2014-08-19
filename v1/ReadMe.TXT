@@ -1,4 +1,7 @@
-SoilMod - Soil Management & Growth Control (v1.1.0)
+SoilMod - Soil Management & Growth Control (v1.1.x)
+
+Extra mods required:
+- PDAMod v2.0.2 (or newer) - http://fs-uk.com/mods/view/34554
 
 
 Mod description
@@ -15,7 +18,7 @@ PLEASE NOTE! This mod may prehaps not be exactly what you expect or are thinking
 
 How to 'prepare' the map  -- REQUIRED READING! --
 
-(NOTE: You can skip this, if you have already done this for v1.0.0 of SoilMod.)
+(NOTE: You can skip this part, if you have already done it for an earlier version 1.x.x of SoilMod.)
 
 The 'SoilManagement.ZIP' mod will ONLY work on maps that have been prepared for it. There are required additions to be made in a map's .I3D and .LUA files, and these can be found in the download when you unpack it.
 
@@ -27,7 +30,7 @@ The most difficult part is to add the required and correct lines to your own map
 
 Remember BEFORE you start editing your map, to MAKE A BACKUP of it. So if anything goes wrong you can revert to the last known good working version of it, and try again.
 
-Be aware that the normal map size is 'x1' (i.e. have density files of 4096 x 4096 pixels.) Included in the download there are also density files for x.25 (small) and x4 (large) map sizes, where you much explicitly remember to use the correct density file if your map is not normal sized.
+Be aware that the normal map size is 'x1' (i.e. have density files of 4096 x 4096 pixels.) Included in the download there are also density files for x.25 (small) and x4 (large) map sizes, where you much explicitly remember to copy the correct density file if your map is not normal sized.
 
 Preparing your SampleModMap.LUA for SoilMod
 
@@ -158,6 +161,6 @@ Keep the original download link!
 Credits:
 Script: Decker_MMIV.
 Graphics: KaosKnite, JakobT, GIANTS, Decker_MMIV and others.
-Translation 'DE': JakobT, webalizer
+Translation 'DE': JakobT, webalizer.
 Translation 'RU': Gonimy_Vetrom, VAHA.
 Translation 'CZ': KingFrame, Albi.

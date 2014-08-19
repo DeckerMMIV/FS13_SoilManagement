@@ -26,6 +26,8 @@ Additions/updates:
 - Czech translations by KingFrame & Albi.
 - More/updated Russian translations by Gonimy-Vetrom.
 - More German translations by webalizer.
+- Removed two of the "difficult to understand instructions" from the 'map - Instructions.txt'.
+  Now fileId's and materialId's are pre-set to large numbers.
 
 
 ============================

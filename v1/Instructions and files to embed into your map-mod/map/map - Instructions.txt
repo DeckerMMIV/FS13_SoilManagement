@@ -28,7 +28,7 @@
 ##     placeholders I made to make it easier for you, to ensure the numerical-id references between 
 ##     the blocks are correct.
 ##     Note: When you search/replace, remember to include the two+two exclamation marks surrounding 
-##     the placeholder.
+##     the placeholder-text. - Example; search for  !!PLACEHOLDER!!  then replace with  1234
 ##  
 ##      B-1. Search for  !!WINDROWSHADERFILEID!!  and replace with the number you found in A-1.
 ##      B-2. Search for  !!FRUITSHADERFILEID!!    and replace with the number you found in A-2.
@@ -169,6 +169,11 @@
 ##### Instructions part 6 of 6 #####
 ##
 ##  Lastly you have to copy the folder 'fmcSoilManagement' to your own map folder.
+##
+##  Note: If your map is not a normal x1 sized map, i.e. the fruit_density.GRLE file is
+##        not the normal 4096x4096 pixels, then please use and copy one of the other
+##        sized 'fmcSoilManagement_density.png' files, from the '_other map sizes' folder.
+##
 ##  The final result should look something like this, with regards to folders and files:
 ##
 ##  .../MODS/
