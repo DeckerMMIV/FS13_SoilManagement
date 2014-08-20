@@ -37,8 +37,9 @@ function fmcSoilModPlugins.soilModPluginCallback(soilMod)
         fmcSoilModPlugins.pluginsForGrowthCycle(         soilMod)
     end
 
-    -- TODO: Let the ZZZ_ChoppedStraw mod do this itself, once/if it is changed to support SoilMod's plugin feature.
-    fmcSoilModPlugins.extra_SupportForChoppedStrawMod(soilMod)  
+    -- Version 1.2.x of ZZZ_ChoppedStraw now uses SoilMod's plugin facility
+    -- -- TODO: Let the ZZZ_ChoppedStraw mod do this itself, once/if it is changed to support SoilMod's plugin feature.
+    -- fmcSoilModPlugins.extra_SupportForChoppedStrawMod(soilMod)  
     
     return allOK
 end
@@ -88,32 +89,32 @@ function fmcSoilModPlugins.setupFoliageLayers()
     return allOK
 end
 
---
--- TODO: Let the ZZZ_ChoppedStraw mod do this itself, once/if it is changed to support SoilMod's plugin facility
-function fmcSoilModPlugins.extra_SupportForChoppedStrawMod(soilMod)
-    --
-    local function addFruitToDestructiveList(fruitId, layerAttribute)
-        local fruitDesc = g_currentMission.fruits[fruitId]
-        if fruitDesc ~= nil then
-            soilMod.addDestructibleFoliageId(fruitDesc[layerAttribute])
-        end
-    end
-
-    -- Support for "zzz_ChoppedStraw v1.1.02" by Webalizer
-    -- Add the foliage-layer-id's to SoilMod's list of "destructible-foliage-layers by cultivator/plough"
-    addFruitToDestructiveList(FruitUtil.FRUITTYPE_CHOPPEDSTRAW, "preparingOutputId")
-    addFruitToDestructiveList(FruitUtil.FRUITTYPE_CHOPPEDMAIZE, "preparingOutputId")
-    addFruitToDestructiveList(FruitUtil.FRUITTYPE_CHOPPEDRAPE,  "preparingOutputId")
-
-    -- HACK: For having sowing-machines also destroy foliage-layers, in a quick attempt at supporting ZZZ_ChoppedStraw.
-    soilMod.addPlugin_UpdateSowingArea_before(
-        "Destroy dynamic foliage-layers",
-        40,
-        function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
-            Utils.fmcUpdateDestroyDynamicFoliageLayers(sx,sz,wx,wz,hx,hz, true, fmcSoilModPlugins.fmcTYPE_SEEDER)
-        end
-    )
-end
+-- Version 1.2.x of ZZZ_ChoppedStraw now uses SoilMod's plugin facility
+-- -- TODO: Let the ZZZ_ChoppedStraw mod do this itself, once/if it is changed to support SoilMod's plugin facility
+-- function fmcSoilModPlugins.extra_SupportForChoppedStrawMod(soilMod)
+--     --
+--     local function addFruitToDestructiveList(fruitId, layerAttribute)
+--         local fruitDesc = g_currentMission.fruits[fruitId]
+--         if fruitDesc ~= nil then
+--             soilMod.addDestructibleFoliageId(fruitDesc[layerAttribute])
+--         end
+--     end
+-- 
+--     -- Support for "zzz_ChoppedStraw v1.1.02" by Webalizer
+--     -- Add the foliage-layer-id's to SoilMod's list of "destructible-foliage-layers by cultivator/plough"
+--     addFruitToDestructiveList(FruitUtil.FRUITTYPE_CHOPPEDSTRAW, "preparingOutputId")
+--     addFruitToDestructiveList(FruitUtil.FRUITTYPE_CHOPPEDMAIZE, "preparingOutputId")
+--     addFruitToDestructiveList(FruitUtil.FRUITTYPE_CHOPPEDRAPE,  "preparingOutputId")
+-- 
+--     -- HACK: For having sowing-machines also destroy foliage-layers, in a quick attempt at supporting ZZZ_ChoppedStraw.
+--     soilMod.addPlugin_UpdateSowingArea_before(
+--         "Destroy dynamic foliage-layers",
+--         40,
+--         function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)
+--             Utils.fmcUpdateDestroyDynamicFoliageLayers(sx,sz,wx,wz,hx,hz, true, fmcSoilModPlugins.fmcTYPE_SEEDER)
+--         end
+--     )
+-- end
 
 --
 function fmcSoilModPlugins.pluginsForCutFruitArea(soilMod)
