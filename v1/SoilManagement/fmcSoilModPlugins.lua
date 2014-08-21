@@ -392,6 +392,20 @@ function fmcSoilModPlugins.pluginsForCutFruitArea(soilMod)
             end
         )
     end
+    
+    -- Issue #26. MoreRealistic's OverrideCutterAreaEvent.LUA will multiply volume with 1.5
+    -- if not sprayed, where the normal game multiply with 1.0. - However both methods will 
+    -- multiply with 2.0 in case the spraySum is greater than zero. - So to fix this, this 
+    -- plugin for SoilMod will make CutFruitArea return half the volume and have spraySum 
+    -- greater than zero.
+    soilMod.addPlugin_CutFruitArea_after(
+        "Fix for MoreRealistic multiplying volume by 1.5, where SoilMod expects it to be 1.0",
+        9999, -- This plugin MUST be the last one, before 'CutFruitArea' returns!
+        function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)    
+            dataStore.volume = dataStore.volume / 2
+            dataStore.spraySum = 1
+        end
+    )
 end
 
 --
