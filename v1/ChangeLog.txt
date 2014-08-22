@@ -1,13 +1,14 @@
 SoilMod - Change log
 
 ============================
-Post-version 1.1.x (BETA)
+Version 1.2.0
 
 Fixes:
 
 - Front tank for spraying can now be used to spray fertilizer and herbicide.
 - If not already set an overlay HUD icon for 'kalk', it will be set by SoilMod.
 - Possibility to overwrite the default fruit's relation to fertilizer/herbicide types.
+- There was a too high yield when using MoreRealistic equipment.
 
 Enhancements:
 
@@ -20,14 +21,14 @@ Enhancements:
   
 Additions/updates:
 
-- Plugin support for other mods, so they can "add" their own effects.
-  Documentation with sample plugins is a 'Work-In-Progress' and not finalized.
-  For questions and alike, please create an issue at the GitHub repository.
 - Czech translations by KingFrame & Albi.
 - More/updated Russian translations by Gonimy-Vetrom.
 - More German translations by webalizer.
 - Removed two of the "difficult to understand instructions" from the 'map - Instructions.txt'.
   Now fileId's and materialId's are pre-set to large numbers.
+- Plugin support for other mods, so they can "add" their own effects.
+  Documentation with sample plugins is a 'Work-In-Progress' and not finalized.
+  For questions and alike, please create an issue at the GitHub repository.
 
 
 ============================
