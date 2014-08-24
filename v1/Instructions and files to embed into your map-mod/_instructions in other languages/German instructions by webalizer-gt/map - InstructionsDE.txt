@@ -1,40 +1,40 @@
 ﻿
 ####################################
 ##### Anleitung Teil 1 von 6 #####
-##  
+##
 ##  Um eine MAP.I3D für die Verwendung mit SoilMod vorzubereiten, müssen drei zusätzliche Blöcke mit Code eingefügt werden:
 ##      - 5 file-Einträge
 ##      - 5 material-Einträge
 ##      - 1 foliage-multi-layer mit mehreren foliage-sub-layern
 ##  Diese Blöcke findest du in den folgenden Anleitungsteilen 2,3,4.
-##  
+##
 ##  Da es allerdings spezifische numerische Verbindungen zwischen diesen Blöcken gibt, ist es SEHR WICHTIG sicher zu stellen,
 ##  dass diese Nummern richtig sind. Die nächsten Schritte helfen hoffentlich dabei, alles zu finden und richtig einzutragen.
-##  
+##
 ##  Wie immer gilt: zuerst eine Sicherheitskopie erstellen! Falls du einen Fehler machst, oder Probleme auftauchen,
 ##  die du nicht lösen kannst. Dadurch kannst du zu deiner vorherigen Kopie zurück kehren und von vorne beginnen.
-##  
-##      
+##
+##
 ##  A. Zuerst musst du drei benötigte Zahlen in deiner eigenen MAP.I3D suchen:
-##  
+##
 ##      A-1. Suche die 'fileId' von "shaders/windrowFoliageShader.xml".
 ##      A-2. Suche die 'fileId' von "shaders/fruitGrowthFoliageShader.xml".
 ##      A-3. Suche die 'blockShapeId' vom "wheat_windrow" foliage-sub-layer.
-##  
-##      
+##
+##
 ##  B. Mit den in Schritt A gefundenen Zahlen werden nun Platzhalter in DIESER DATEI ersetzt,
 ##     die ich erstellt habe, um die numerischen Abhängigkeiten richtig zu erstellen. (Texteditor: Funktion "Suchen/Ersetzen")
 ##     Hinweis: Wenn du Suchen/Ersetzen verwendest, vergiss nicht die jeweils zwei Ausrufezeichen am Anfang und Ende
-##     der Platzhalter in der Suche einzuschließen.
-##  
+##     der Platzhalter in der Suche einzuschließen. Beispiel: suche nach  !!PLATZHALTER!!  und ersetze mit  1234
+##
 ##      B-1. Suche nach  !!WINDROWSHADERFILEID!!  und ersetze mit der Zahl, die du in A-1 gefunden hast.
 ##      B-2. Suche nach  !!FRUITSHADERFILEID!!    und ersetze mit der Zahl, die du in A-2 gefunden hast.
 ##      B-3. Suche nach  !!WINDROWSHAPEID!!       und ersetze mit der Zahl, die du in A-3 gefunden hast.
 ##
 ##
 ##  C. Wenn nun alle Id´s korrekt eingefügt sind und hoffentlich keine Konflikte mit anderen Id´s in der MAP.I3D bestehen,
-##     kannst du mit Schritt 2 fortfahren.      
-##      
+##     kannst du mit Schritt 2 fortfahren.
+##
 ## Referenz:
 ##     WindrowShaderFileId =  !!WINDROWSHADERFILEID!!        (-> fileId von "shaders/windrowFoliageShader.xml")
 ##     FruitShaderFileId   =  !!FRUITSHADERFILEID!!          (-> fileId von "shaders/fruitGrowthFoliageShader.xml")
@@ -49,7 +49,7 @@
 ##### Anleitung Teil 2 von 6 #####
 ##
 ##  Füge die folgenden fünf <File>-Elemente in deine eigene MAP.I3D im <Files>-Bereich ein.
-## 
+##
 ####################################
 ####################################
 
@@ -66,7 +66,7 @@
 ##### Anleitung Teil 3 von 6 #####
 ##
 ##  Füge die folgenden fünf <Material>-Elemente in deine eigene MAP.I3D im <Materials>-Bereich ein.
-## 
+##
 ####################################
 ####################################
 
@@ -147,8 +147,8 @@
         -->
     </FoliageMultiLayer>
 
-    
-    
+
+
 ####################################
 ##### Anleitung Teil 5 von 6 #####
 ##
@@ -164,6 +164,10 @@
 ##### Anleitung Teil 6 von 6 #####
 ##
 ##  Schließlich musst du noch den Ordner 'fmcSoilManagement' in deinen eigenen Map-Ordner kopieren.
+##
+##  Hinweis: Wenn deine Map nicht Standardgröße x1 hat (fruit_density.GRLE hat eine Größe von 4096x4096 Pixel),
+##           verwende bitte die für deine Map passende 'fmcSoilManagement_density.png' aus dem Verzeichnis '_other map sizes'.
+##
 ##  Das Ergebnis sollte in der Datei-/Verzeichnisstruktur in etwa so aussehen:
 ##
 ##  .../MODS/
