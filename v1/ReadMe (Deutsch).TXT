@@ -165,3 +165,4 @@ Graphics: KaosKnite, JakobT, GIANTS, Decker_MMIV and others.
 Translation 'DE': JakobT, webalizer.
 Translation 'RU': Gonimy_Vetrom, VAHA.
 Translation 'CZ': KingFrame, Albi.
+Translation 'FR': Marxtai, Dural.

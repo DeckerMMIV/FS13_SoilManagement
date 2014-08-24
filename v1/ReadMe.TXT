@@ -1,4 +1,4 @@
-SoilMod - Soil Management & Growth Control (v1.1.x)
+﻿SoilMod - Soil Management & Growth Control (v1.2.0)
 
 Extra mods required:
 - PDAMod v2.0.2 (or newer) - http://fs-uk.com/mods/view/34554
@@ -13,7 +13,7 @@ Mod description
 - automatic weed propagation and usage of herbicide,
 - and a few other effects.
 
-PLEASE NOTE! This mod may prehaps not be exactly what you expect or are thinking it is supposed to do. So please be open minded and give constructive critism and/or suggestions, for how to improve future versions of it.
+PLEASE NOTE! This mod may perhaps not be exactly what you expect or are thinking it is supposed to do. So please be open minded and give constructive criticism and/or suggestions, for how to improve future versions of it.
 
 
 How to 'prepare' the map  -- REQUIRED READING! --
@@ -59,7 +59,7 @@ The first thing you should ensure is working, is the 'Soil Condition' screen in 
 
 When the 'Soil Condition' screen works, it will show some information of the ground within a 10x10 sqm area centered around the player's current position. This is continuously updated every 2nd second.
 
-A sub-page called 'Fruit Effects' is primarly some static information about which crops that gains a yield boost from a particular synthetic fertilizer type, and what herbicide type they are negativly affected by (i.e. grows slower or becomes withered).
+A sub-page called 'Fruit Effects' is primarly some static information about which crops that gains a yield boost from a particular synthetic fertilizer type, and what herbicide type they are negatively affected by (i.e. grows slower or becomes withered).
 
 
 Growth, withering included - happens at midnight every in-game day
@@ -142,11 +142,11 @@ Problems or bugs?
 If you encounter problems or bugs using the 'SoilMod' mod, please use the support-thread at http://fs-uk.com - Find the mod (and correct version) in the mods section, in category 'Other - Game Scripts'.
 
 Known defects/bugs:
-- Only English texts in ModDesc.XML.
 - Spraying a different kind of fertilizer/herbicide on the field, will replace any other type of fertilizer/herbicide there may have already been there.
 - It is possible to spread slurry a day before harvest, and get the organic fertilizer effect.
+- Refilling spreader/sprayer will revert to fertilizer type-A, when using default fertilizer tank.
+-- This is solvable, if the map-maker makes more refill tanks; one per fertilizer, herbicide and lime type.
 - Switching to 'simplistic mode' can only be done by editing fmcSoilMod.LUA script.
-- Modifying growth control parameters can only be done by editing fmcGrowthControl.LUA script.
 
 
 Restrictions
@@ -164,3 +164,4 @@ Graphics: KaosKnite, JakobT, GIANTS, Decker_MMIV and others.
 Translation 'DE': JakobT, webalizer.
 Translation 'RU': Gonimy_Vetrom, VAHA.
 Translation 'CZ': KingFrame, Albi.
+Translation 'FR': Marxtai, Dural.

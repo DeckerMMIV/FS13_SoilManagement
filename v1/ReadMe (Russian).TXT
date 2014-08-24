@@ -1,4 +1,4 @@
-SoilMod - Soil Management & Growth Control (v1.1.0)
+﻿SoilMod - Soil Management & Growth Control (v1.2.0)
 
 ###########################
 Описание мода
@@ -174,3 +174,4 @@ Script: Decker_MMIV.
 Перевод "DE": JakobT, webalizer.
 Перевод "RU": Gonimy_Vetrom, VAHA.
 Перевод "CZ": KingFrame, Albi.
+Перевод "FR": Marxtai, Dural.
