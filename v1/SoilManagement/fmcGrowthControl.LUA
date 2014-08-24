@@ -38,6 +38,7 @@ fmcGrowthControl.removeSprayMoisture    = true;
 fmcGrowthControl.disableWithering       = false;
 fmcGrowthControl.updateDelayMs          = 1000 / 16; -- Maximum number of cells that may be updated per second. Consider network-latency/-updates
 fmcGrowthControl.delayGrowthCycleDays   = 0
+fmcGrowthControl.startGrowthCycleHour   = 0  -- midnight hour
 
 --
 fmcGrowthControl.hudFontSize = 0.025
@@ -53,6 +54,68 @@ fmcGrowthControl.pctCompleted        = 0
 fmcGrowthControl.weedCell            = 0
 
 
+
+--
+function fmcGrowthControl.preSetup()
+    if g_currentMission ~= nil and g_currentMission:getIsServer() then
+        local fileName = g_currentMission.missionInfo.savegameDirectory .. "/careerSavegame.xml"
+
+        local xmlFile = loadXMLFile("xml", fileName);
+        if xmlFile ~= nil then
+            local xmlKey = "careerSavegame"
+            fmcGrowthControl.lastUpdateDay        = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".customGrowthControl#day")    ,0)
+            fmcGrowthControl.cellSquareToUpdate   = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".customGrowthControl#cell")   ,0)
+            fmcGrowthControl.cellSquaresMethod    = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".customGrowthControl#method") ,0)
+            fmcGrowthControl.weedCell             = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".customGrowthControl#cell2")  ,0)
+
+            fmcSettings.onLoadCareerSavegame(xmlFile, xmlKey..".modSoilManagement")
+
+            delete(xmlFile);
+
+            fmcGrowthControl.delayGrowthCycleDays   = fmcSettings.getKeyValue("delayGrowthCycle#days",  fmcGrowthControl.delayGrowthCycleDays)
+            fmcGrowthControl.startGrowthCycleHour   = fmcSettings.getKeyValue("startGrowthCycle#hour",  fmcGrowthControl.startGrowthCycleHour)
+            fmcGrowthControl.updateDelayMs          = fmcSettings.getKeyValue("updateDelayMs",          fmcGrowthControl.updateDelayMs       )
+            fmcGrowthControl.reduceWindrows         = fmcSettings.getKeyValue("reduceWindrows",         fmcGrowthControl.reduceWindrows      )
+            fmcGrowthControl.removeSprayMoisture    = fmcSettings.getKeyValue("removeSprayMoisture",    fmcGrowthControl.removeSprayMoisture )
+            fmcGrowthControl.disableWithering       = fmcSettings.getKeyValue("disableWithering",       fmcGrowthControl.disableWithering    )
+            fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = fmcSettings.getKeyValue("fertilizerSynthetic#firstGrowthState", fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState)
+            fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = fmcSettings.getKeyValue("fertilizerSynthetic#lastGrowthState",  fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
+           
+            
+            -- 'Growth cycle' is active, if cell-square-to-update is not zero.
+            fmcGrowthControl.active = fmcGrowthControl.cellSquareToUpdate > 0
+
+            -- Valid ranges...
+            fmcGrowthControl.updateDelayMs        = math.max(10, fmcGrowthControl.updateDelayMs)
+            fmcGrowthControl.delayGrowthCycleDays = math.max(0,  fmcGrowthControl.delayGrowthCycleDays)
+            fmcGrowthControl.startGrowthCycleHour = math.max(0,  math.min(23, fmcGrowthControl.startGrowthCycleHour))
+
+            -- Growth state ranges allowed: 0-4 (0=nothing, 1=seeded, 4=third growth state)
+            fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = math.max(0, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
+            fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = math.max(0, fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState)
+            fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = math.min(fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState,  4)
+            fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = math.min(fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
+
+            log("fmcGrowthControl -",
+                " lastUpdateDay=",          fmcGrowthControl.lastUpdateDay,
+                ", cellSquareToUpdate=",    fmcGrowthControl.cellSquareToUpdate,
+                ", cellSquaresMethod=",     fmcGrowthControl.cellSquaresMethod,
+                ", weedCell=",              fmcGrowthControl.weedCell,
+                ", active=",                fmcGrowthControl.active
+            )
+            log("fmcGrowthControl -",
+                " updateDelayMs=",          fmcGrowthControl.updateDelayMs,
+                ", reduceWindrows=",        fmcGrowthControl.reduceWindrows,
+                ", removeSprayMoisture=",   fmcGrowthControl.removeSprayMoisture,
+                ", disableWithering=",      fmcGrowthControl.disableWithering,
+                ", delayGrowthCycleDays=",  fmcGrowthControl.delayGrowthCycleDays,
+                ", startGrowthCycleHour=",  fmcGrowthControl.startGrowthCycleHour,
+                ", fertSyntFirst=",         fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState,
+                ", fertSyntLast=",          fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState
+            )
+        end
+    end
+end
 
 --
 function fmcGrowthControl.setup(simplisticMode)
@@ -109,12 +172,6 @@ FSCareerMissionInfo.saveToXML = Utils.prependedFunction(FSCareerMissionInfo.save
 
         --
         fmcSettings.onSaveCareerSavegame(self.xmlFile, self.xmlKey..".modSoilManagement")
-
-        --
-        setXMLInt(self.xmlFile, self.xmlKey..".modSoilManagement.fertilizerSynthetic#firstGrowthState" ,fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState)
-        setXMLInt(self.xmlFile, self.xmlKey..".modSoilManagement.fertilizerSynthetic#lastGrowthState"  ,fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-
-        setXMLString(self.xmlFile, self.xmlKey..".modSoilManagement.fertilizerSynthetic#description"   ,"integer, Growth state range is 0-4 (defaults first=2, last=4)")
     end
 end);
 
@@ -198,72 +255,18 @@ function fmcGrowthControl.setupFoliageGrowthLayers()
 end
 
 function fmcGrowthControl:update(dt)
-    if not fmcGrowthControl.initialized then
-      fmcGrowthControl.initialized = true;
-
-      if g_currentMission:getIsServer() then
-        local fileName = g_currentMission.missionInfo.savegameDirectory .. "/careerSavegame.xml"
-
-        local xmlFile = loadXMLFile("xml", fileName);
-        if xmlFile ~= nil then
-            local xmlKey = "careerSavegame"
-            fmcGrowthControl.lastUpdateDay        = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".customGrowthControl#day")    ,0)
-            fmcGrowthControl.cellSquareToUpdate   = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".customGrowthControl#cell")   ,0)
-            fmcGrowthControl.cellSquaresMethod    = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".customGrowthControl#method") ,0)
-            fmcGrowthControl.weedCell             = Utils.getNoNil(getXMLInt( xmlFile, xmlKey..".customGrowthControl#cell2")  ,0)
-
-            fmcSettings.onLoadCareerSavegame(xmlFile, xmlKey..".modSoilManagement")
-
-            delete(xmlFile);
-
-            fmcGrowthControl.delayGrowthCycleDays   = fmcSettings.getKeyValue("delayGrowthCycle#days",  fmcGrowthControl.delayGrowthCycleDays)
-            fmcGrowthControl.updateDelayMs          = fmcSettings.getKeyValue("updateDelayMs",          fmcGrowthControl.updateDelayMs       )
-            fmcGrowthControl.reduceWindrows         = fmcSettings.getKeyValue("reduceWindrows",         fmcGrowthControl.reduceWindrows      )
-            fmcGrowthControl.removeSprayMoisture    = fmcSettings.getKeyValue("removeSprayMoisture",    fmcGrowthControl.removeSprayMoisture )
-            fmcGrowthControl.disableWithering       = fmcSettings.getKeyValue("disableWithering",       fmcGrowthControl.disableWithering    )
-
-            -- 'Growth cycle' is active, if cell-square-to-update is not zero.
-            fmcGrowthControl.active = fmcGrowthControl.cellSquareToUpdate > 0
-
-            -- Minimums...
-            fmcGrowthControl.updateDelayMs        = math.max(10, fmcGrowthControl.updateDelayMs)
-            fmcGrowthControl.delayGrowthCycleDays = math.max(0,  fmcGrowthControl.delayGrowthCycleDays)
-
-            ---- Growth state ranges allowed: 0-4 (0=nothing, 1=seeded, 4=third growth state)
-            --fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = math.max(0, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-            --fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = math.max(0, fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState)
-            --fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = math.min(fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState,  4)
-            --fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = math.min(fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-
-            log("fmcGrowthControl -",
-                " lastUpdateDay=",          fmcGrowthControl.lastUpdateDay,
-                ", cellSquareToUpdate=",    fmcGrowthControl.cellSquareToUpdate,
-                ", cellSquaresMethod=",     fmcGrowthControl.cellSquaresMethod,
-                ", weedCell=",              fmcGrowthControl.weedCell,
-                ", active=",                fmcGrowthControl.active
-            )
-            log("fmcGrowthControl -",
-                " updateDelayMs=",          fmcGrowthControl.updateDelayMs,
-                ", reduceWindrows=",        fmcGrowthControl.reduceWindrows,
-                ", removeSprayMoisture=",   fmcGrowthControl.removeSprayMoisture,
-                ", disableWithering=",      fmcGrowthControl.disableWithering,
-                ", delayGrowthCycleDays=",  fmcGrowthControl.delayGrowthCycleDays
-                --", fertSyntFirst=",  fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState,
-                --", fertSyntLast=",   fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState
-            )
-        end
-
-        fmcGrowthControl.nextUpdateTime = g_currentMission.time + 0
-        g_currentMission.environment:addHourChangeListener(self);
-
-        if g_currentMission.fmcFoliageWeed ~= nil then
-            g_currentMission.environment:addMinuteChangeListener(self);
-        end
-      end
-    end
-
-    --
     if g_currentMission:getIsServer() then
+      if not fmcGrowthControl.initialized then
+          fmcGrowthControl.initialized = true;
+      
+          fmcGrowthControl.nextUpdateTime = g_currentMission.time + 0
+          g_currentMission.environment:addHourChangeListener(self);
+      
+          if g_currentMission.fmcFoliageWeed ~= nil then
+              g_currentMission.environment:addMinuteChangeListener(self);
+          end
+      end
+    
       if not fmcGrowthControl.active then
         if InputBinding.hasEvent(InputBinding.SOILMOD_GROWNOW) or fmcGrowthControl.canActivate then
           fmcGrowthControl.canActivate = false
@@ -318,15 +321,24 @@ end
 
 --
 function fmcGrowthControl:hourChanged()
+    -- Apparently 'currentDay' is NOT incremented _before_ calling the hourChanged() callbacks
+    -- This should fix the "midnight problem".
+    local currentDay = g_currentMission.environment.currentDay
+    if g_currentMission.environment.currentHour == 0 then
+        currentDay = currentDay + 1 
+    end
+
+    --
     if  not fmcGrowthControl.active -- Must not already be running
-    and g_currentMission.environment.currentHour == 0 -- midnight hour
-    and (g_currentMission.environment.currentDay + 1) ~= fmcGrowthControl.lastUpdateDay -- another day (apparently 'currentDay' is NOT incremented _before_ calling the hourChanged() callbacks)
+    and g_currentMission.environment.currentHour == fmcGrowthControl.startGrowthCycleHour
+    and currentDay ~= fmcGrowthControl.lastUpdateDay -- must be a different day
     then
-        log("Current in-game day/hour: ", (g_currentMission.environment.currentDay + 1), "/", g_currentMission.environment.currentHour,
+        log("Current in-game day/hour: ", currentDay, "/", g_currentMission.environment.currentHour,
             ". Growth-cycle activates after day: ", (fmcGrowthControl.lastUpdateDay + fmcGrowthControl.delayGrowthCycleDays),
-            " (delayGrowthCycleDays=",fmcGrowthControl.delayGrowthCycleDays,")"
+            " (delayGrowthCycleDays=",fmcGrowthControl.delayGrowthCycleDays,")",
+            " at hour: ", fmcGrowthControl.startGrowthCycleHour
         )
-        if (g_currentMission.environment.currentDay + 1) > (fmcGrowthControl.lastUpdateDay + fmcGrowthControl.delayGrowthCycleDays) then
+        if currentDay > (fmcGrowthControl.lastUpdateDay + fmcGrowthControl.delayGrowthCycleDays) then
             fmcGrowthControl.canActivate = true
         end
     end

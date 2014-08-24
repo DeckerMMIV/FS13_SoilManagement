@@ -132,14 +132,13 @@ function SampleModMap:loadMap01Finished(node, arguments)
         --
         if fmcSoilMod.setMapProperty ~= nil then
             -- Some of SoilMod's map-properties can be overwritten by the map-mod itself.
-            -- These properties can, after the first save, also be changed manually by
-            -- editing the file; .../savegame#/CareerSavegame.XML - Look for the section <modSoilManagement>.
         
             -- <<Examples>>
-            -- fmcSoilMod.setMapProperty("reduceWindrows",          true)   -- (boolean) If windrows/swath should be reduced by 1 height-level during growth-cycle
-            -- fmcSoilMod.setMapProperty("removeSprayMoisture",     true)   -- (boolean) If spray-moisture should be removed (vaporised) during growth-cycle
-            -- fmcSoilMod.setMapProperty("disableWithering",        false)  -- (boolean) If crop withering should be disabled
-            -- fmcSoilMod.setMapProperty("delayGrowthCycle#days",   0)      -- (integer) How many in-game days to skip before activating growth-cycle again
+            -- fmcSoilMod.setMapProperty("reduceWindrows",          false) -- (boolean) If windrows/swath should be reduced by 1 height-level during growth-cycle
+            -- fmcSoilMod.setMapProperty("removeSprayMoisture",     true)  -- (boolean) If spray-moisture should be removed (vaporised) during growth-cycle
+            -- fmcSoilMod.setMapProperty("disableWithering",        true)  -- (boolean) If crop withering should be disabled
+            -- fmcSoilMod.setMapProperty("delayGrowthCycle#days",   2)     -- (integer) How many in-game days to skip before activating growth-cycle again
+            -- fmcSoilMod.setMapProperty("startGrowthCycle#hour",   6)     -- (integer) At what hour of the in-game day should the growth-cycle start
         end
         --
         fmcSoilMod.postInit_loadMapFinished()

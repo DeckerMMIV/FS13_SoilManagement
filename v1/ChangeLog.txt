@@ -12,18 +12,19 @@ Fixes:
 
 Enhancements:
 
-- Some settings now stored in the CareerSavegame.XML file, so they should be "easier" to change.
+- Some settings can now be changed by the map-script, if the map-author so chooses.
   These are; delayGrowthCycle, reduceWindrows, removeSprayMoisture & disableWithering.
-  They are found in the <modSoilManagement> section of the careerSavegame.XML file.
-- SoilMod will provide default values for the above mentioned settings. However it is also
-  possible for map-author to change these. Look for 'setMapProperty' in the supplied
-  'SampleModMap - Additions.LUA' script.
+  Look for 'setMapProperty' in the supplied 'SampleModMap - Additions.LUA' script.
+- The above mentioned settings will also be stored in the CareerSavegame.XML file.
+  They can be changed there too, but unfortunately will NOT work correctly for
+  multiplayer sessions, as clients won't be notified of the changes in the savegame.
   
 Additions/updates:
 
 - Czech translations by KingFrame & Albi.
 - More/updated Russian translations by Gonimy-Vetrom.
 - More German translations by webalizer.
+- French 'ReadMe' translation by Marxtai & Dural.
 - Removed two of the "difficult to understand instructions" from the 'map - Instructions.txt'.
   Now fileId's and materialId's are pre-set to large numbers.
 - Plugin support for other mods, so they can "add" their own effects.
@@ -75,7 +76,7 @@ Version 0.6.0
 
   Increased to 5 places where to add calls to fmcSoilMod. Look in the supplied script
   'SampleModMap - Additions.LUA' for what to copy and where.
-  
+
   This was needed, to make sure that the SoilManagement.ZIP mod won't affect any other
   maps which have no support for it.
 
@@ -89,15 +90,15 @@ Version 0.6.0
 ============================
 Version 0.5.x
 
-- Renamed foliage-sub-layers due to avoiding clashing with potential 
-  existing foliage-sub-layers in a mod-map. 
+- Renamed foliage-sub-layers due to avoiding clashing with potential
+  existing foliage-sub-layers in a mod-map.
 
   IMPORTANT!
 
-    If you have a map made with v0.4.x, you MUST DO the following in your 
-    map.i3d file: Rename the following foliage-sub-layer names for SoilMod, 
-    so they are prefixed with "fmc_". 
-    
+    If you have a map made with v0.4.x, you MUST DO the following in your
+    map.i3d file: Rename the following foliage-sub-layer names for SoilMod,
+    so they are prefixed with "fmc_".
+
     Example:
                           \/                --rename to-->                     \\//
     <FoliageSubLayer name="manure"                -->   <FoliageSubLayer name="fmc_manure"
@@ -109,29 +110,29 @@ Version 0.5.x
     <FoliageSubLayer name="herbicide"             -->   <FoliageSubLayer name="fmc_herbicide"
     <FoliageSubLayer name="soil_pH"               -->   <FoliageSubLayer name="fmc_soil_pH"
 
-- Changed requirements in SampleModMap.LUA, so there are now only 3 
-  places which needs to be added. 
+- Changed requirements in SampleModMap.LUA, so there are now only 3
+  places which needs to be added.
 
-- Added possibility to set custom fruit-type's correlation for 
-  'fertilizer' and 'herbicide' when using SoilMod in "Advanced Mode". 
+- Added possibility to set custom fruit-type's correlation for
+  'fertilizer' and 'herbicide' when using SoilMod in "Advanced Mode".
 
-  This must be set up in the SampleModMap.LUA, as illustrated in the 
-  sample script. 
-  
+  This must be set up in the SampleModMap.LUA, as illustrated in the
+  sample script.
+
   Example:
       fmcSoilMod.setFruit_FertilizerBoost_HerbicideAffected("tomato"       , "fertilizer2"    , "herbicide3")
                                                          -- <Name of fruit>, <fertilizer-type>, <herbicide-type>
 
 - Fixed when a fruit-type does not have a corresponding foliage-sub-
-  layer, an error would occur calling getDensityMapFileName() 
+  layer, an error would occur calling getDensityMapFileName()
 
 - Fixed attempt at loading savegame0/careerSavegame.xml, when only
-  being client. 
+  being client.
 
 - Fixed problematic MP event in fmcGrowthControl.LUA being sent/-
-  received before client began to run its update() function. 
+  received before client began to run its update() function.
 
-  
+
 ============================
 Version 0.4.x
 

@@ -46,7 +46,7 @@ fmcSoilMod.logEnabled     = false
 -- For debugging
 function log(...)
     if fmcSoilMod.logEnabled 
---[[
+--
        or true
 --]]
     then
@@ -84,15 +84,16 @@ function fmcSoilMod.setup_map_new(mapFilltypeOverlaysDirectory)
     -- Set SoilMod default value-settings.
     -- These can be changed by the map-author in the SampleModMap.LUA script, or in CareerSavegame.XML by the player
     -- NOTE! It is only the _server_ that knows the correct values of these.
-    fmcSettings.setKeyValueDesc("updateDelayMs",  math.floor(1000/16),  "milliseconds, delay between update-of-squares during growth-cycle. Lower values=quicker but cause more lag in multiplayer (default=62)")
-    fmcSettings.setKeyValueDesc("reduceWindrows",            true,      "boolean, if windrows/swath should be reduced by 1 height-level during growth-cycle (default=true)")
-    fmcSettings.setKeyValueDesc("removeSprayMoisture",       true,      "boolean, if spray-moisture should be removed (vaporised) during growth-cycle (default=true)")
-    fmcSettings.setKeyValueDesc("disableWithering",          false,     "boolean, if crop withering should be disabled (default=false)")
     fmcSettings.setKeyValueDesc("delayGrowthCycle#days",     0,         "integer, how many in-game days to skip before activating growth-cycle again (default=0)")
-
-    -- TODO: How to make these available client-side?
-    --fmcSettings.setKeyValueDesc("fertilizerSynthetic#firstGrowthState", 2, "integer, Growth state range is 0-4 (defaults first=2, last=4)")
-    --fmcSettings.setKeyValueDesc("fertilizerSynthetic#lastGrowthState",  4, nil)
+    fmcSettings.setKeyValueDesc("startGrowthCycle#hour",     0,         "integer, at what hour of the in-game day should the growth-cycle start (default=0)")
+    fmcSettings.setKeyValueDesc("updateDelayMs",  math.floor(1000/16),  "milliseconds, delay between update-of-squares during growth-cycle. Lower values=quicker but cause more lag in multiplayer (default=62)")
+    
+    -- TODO: How to make these available client-side, when read from careerSavegame.xml?
+    fmcSettings.setKeyValueDesc("reduceWindrows",            true,      "boolean, (singleplayer) if windrows/swath should be reduced by 1 height-level during growth-cycle (default=true)")
+    fmcSettings.setKeyValueDesc("removeSprayMoisture",       true,      "boolean, (singleplayer) if spray-moisture should be removed (vaporised) during growth-cycle (default=true)")
+    fmcSettings.setKeyValueDesc("disableWithering",          false,     "boolean, (singleplayer) if crop withering should be disabled (default=false)")
+    fmcSettings.setKeyValueDesc("fertilizerSynthetic#firstGrowthState", 2, "integer, (singleplayer) growth state range is 0-4 (defaults first=2, last=4)")
+    fmcSettings.setKeyValueDesc("fertilizerSynthetic#lastGrowthState",  4, nil)
 end
 
 --
@@ -111,6 +112,7 @@ end
 function fmcSoilMod.postInit_loadMapFinished()
     log("fmcSoilMod - postInit_loadMapFinished()")
     fmcFilltypes.addMoreFillTypeOverlayIcons()
+    fmcGrowthControl.preSetup()
     fmcModifyFSUtils.preSetup()
     if fmcSoilMod.processPlugins() then
         fmcGrowthControl.setup(fmcSoilMod.simplisticMode)
