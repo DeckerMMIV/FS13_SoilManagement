@@ -1,0 +1,196 @@
+
+####################################
+##### Instructions partie 1 de 6 #####
+##  
+##  Pour préparer l'I3D de votre map, trois nouveaux blocs de code doivent être ajoutés:
+##      - 5 éléments <File .../>
+##      - 5 éléments <Material .../>
+##      - 1 'foliage-multi-layer' contenant plusieurs 'foliage-sub-layers'
+##  Vous pouvez voir ces blocs dans les parties 2, 3 et 4 des instructions.
+##  
+##  Toutefois, puisqu'il y a plusieurs références numériques qui sont spécifiques à votre map, il est 
+##  TRÈS IMPORTANT de s'assurer que les valeurs sont correctes. Les étapes qui suivent devraient vous 
+##  aider à trouver vos valeurs spécifiques.
+##  
+##  Comme toujours, FAITES UN BACKUP de vos fichiers avant de commencer les manipulations. Si vous faites 
+##  une erreur et devez recommencer, vous aurez rapidement accès à une copie fonctionnelle de votre map pour
+##  réessayer de nouveau.
+##  
+##      
+##  A. Premièrement, vous devez trouver trois valeurs, qui se trouvent dans l'I3D de votre map
+##  
+##      A-1. Trouver la valeur de 'fileID' dans votre map qui correspond au fichier "shaders/windrowFoliageShader.xml".
+##      A-2. Trouver la valeur de 'fileID' dans votre map qui correspond au fichier "shaders/fruitGrowthFoliageShader.xml".
+##      A-3. Trouver la valeur de 'blockShapeId' dans votre map qui correspond au 'foliage-sub-layer' "wheat_windrow."
+##  
+##      
+##  B. En utilisant les valeurs trouvées en A, vous devez, dans CE FICHIER, trouver et remplacer des
+##     espaces réservées qui ont été placées pour vous faciliter la tâche, afin de s'assurer de l'exactitude  
+##     des références numériques entre les blocs.
+##     Note: Quand vous cherchez pour un espace réservé, n'oubliez pas d'include les points d'exclamations qui 
+##     entourent celui-ci.
+##  
+##      B-1. Cherchez !!WINDROWSHADERFILEID!!  et remplacer les occurences avec la valeur trouvée en A-1.
+##      B-2. Cherchez !!FRUITSHADERFILEID!!  et remplacer les occurences avec la valeur trouvée en A-2.
+##      B-3. Cherchez !!WINDROWSHAPEID!! et remplacer les occurences avec la valeur trouvée en A-3.
+##
+##
+##  C. Maintenant que, esperons le, les références numériques sont correctes, vous pouvez passer à la partie 2.
+##      
+##      
+## À titre de référence: 
+##     WindrowShaderFileId =  !!WINDROWSHADERFILEID!!        (-> fileId pour "shaders/windrowFoliageShader.xml")
+##     FruitShaderFileId   =  !!FRUITSHADERFILEID!!          (-> fileId pour "shaders/fruitGrowthFoliageShader.xml")
+##     WindrowShapeId      =  !!WINDROWSHAPEID!!             (-> blockShapeId du "wheat_windrow" foliage-sub-layer)
+##
+####################################
+####################################
+
+
+
+####################################
+##### Instructions partie 2 de 6 #####
+##
+##  Ajoutez les cinq éléments <File> dans la section <Files> de l'I3D de votre map.
+## 
+####################################
+####################################
+
+    <!-- SoilManagement v1.0 - File assets -->
+    <File fileId="100400" filename="fmcSoilManagement/fmcSoilManagement_density.png" relativePath="true"/>
+    <File fileId="100401" filename="fmcSoilManagement/foliages/foliage_manureSolid_windrow_diffuse.dds" relativePath="true"/>
+    <File fileId="100402" filename="fmcSoilManagement/foliages/foliage_manureLiquid_windrow_diffuse.dds" relativePath="true"/>
+    <File fileId="100403" filename="fmcSoilManagement/foliages/foliage_kalkSolid_windrow_diffuse.dds" relativePath="true"/>
+    <File fileId="100404" filename="fmcSoilManagement/foliages/foliage_weed_diffuse_atlasSize_2.dds" relativePath="true"/>
+
+
+
+####################################
+##### Instructions partie 3 de 6 #####
+##
+##  Ajoutez les cinq éléments <Material> dans la section <Materials> de l'I3D de votre map.
+## 
+####################################
+####################################
+
+    <!-- SoilManagement v1.0 - Material assets -->
+    <Material name="soilMgmr_empty_mat" materialId="100510" diffuseColor="1 1 1 1" ambientColor="1 1 1">
+      <CustomParameter name="dummyStartEnd" value="0 0 0 0"/>
+    </Material>
+    <Material name="soilMgmr_foliageManure_mat" materialId="100511" ambientColor="1 1 1" customShaderId="!!WINDROWSHADERFILEID!!">
+      <Texture fileId="100401"/>
+      <CustomParameter name="alphaBlendStartEnd" value="70 75 0 0"/>
+    </Material>
+    <Material name="soilMgmr_foliageSlurry_mat" materialId="100512" ambientColor="1 1 1" customShaderId="!!WINDROWSHADERFILEID!!">
+      <Texture fileId="100402"/>
+      <CustomParameter name="alphaBlendStartEnd" value="70 75 0 0"/>
+    </Material>
+    <Material name="soilMgmr_foliageLime_mat" materialId="100513" ambientColor="1 1 1" customShaderId="!!WINDROWSHADERFILEID!!">
+      <Texture fileId="100403"/>
+      <CustomParameter name="alphaBlendStartEnd" value="70 75 0 0"/>
+    </Material>
+    <Material name="soilMgmr_foliageWeed_mat" materialId="100514" ambientColor="1 1 1" customShaderId="!!FRUITSHADERFILEID!!">
+      <Texture fileId="100404"/>
+      <CustomParameter name="alphaBlendStartEnd" value="70 75 0 0"/>
+    </Material>
+
+
+
+####################################
+##### Instructions partie 4 de 6 #####
+##
+##  Ajoutez les <FoliageMultiLayer> suivants et ses <FoliageSubLayer> dans l'I3D de votre map,
+##  dans la section <TerrainTransformGroup>, après l'élément <InfoLayer ... />.
+##
+##  Exemple de position dans la hiérarchie:
+##    <Scene>
+##        ...
+##        <TerrainTransformGroup ... />
+##            ...
+##            <Layers>
+##                ...
+##                <InfoLayer ... />
+##              -> Insérer ICI <-
+##                ...
+##            </Layers>
+##        </TerrainTransformGroup>
+##
+####################################
+####################################
+
+    <!-- SoilManagement v1.0 - Foliage-multi-layer -->
+    <FoliageMultiLayer densityMapId="100400" numChannels="16" numTypeIndexChannels="0">
+        <FoliageSubLayer name="fmc_manure"              materialId="100511" blockShapeId="!!WINDROWSHAPEID!!" densityMapChannelOffset="0"  numDensityMapChannels="2" cellSize="8" viewDistance="75" terrainOffset="-0.2"  objectMask="65520" atlasSize="1" numBlocksPerUnit="1" width="1"   widthVariance="0.25" heightVariance="0.25" horizontalPositionVariance="1.5"  height="0.5;0.75;1.0" useShapeNormals="true" alignWithTerrain="true" numStates="3" />
+        <FoliageSubLayer name="fmc_slurry"              materialId="100512" blockShapeId="!!WINDROWSHAPEID!!" densityMapChannelOffset="2"  numDensityMapChannels="1" cellSize="8" viewDistance="75" terrainOffset="0.02"  objectMask="65520" atlasSize="1" numBlocksPerUnit="1" width="1.5" widthVariance="0.25" heightVariance="0.1"  horizontalPositionVariance="0.75" height="0.10"         useShapeNormals="true" alignWithTerrain="true"               />
+        <FoliageSubLayer name="fmc_lime"                materialId="100513" blockShapeId="!!WINDROWSHAPEID!!" densityMapChannelOffset="3"  numDensityMapChannels="1" cellSize="8" viewDistance="75" terrainOffset="-0.05" objectMask="65520" atlasSize="1" numBlocksPerUnit="1" width="1.5" widthVariance="0.25" heightVariance="0.1"  horizontalPositionVariance="0.5"  height="0.7"          useShapeNormals="true" alignWithTerrain="true"               />
+        <FoliageSubLayer name="fmc_weed"                materialId="100514"                                   densityMapChannelOffset="4"  numDensityMapChannels="3" cellSize="8" viewDistance="75" terrainOffset="0.0"   objectMask="65520"
+          numBlocksPerUnit="1"
+          width="0.3;0.7;1.0;0.8;1.1;1.3;1.5"
+          height="0.3;0.7;1.0;0.2;0.7;1.0;1.4"
+          atlasSize="2"
+          texCoords="0.00 0.00 1.00 0.25;0.00 0.00 1.00 0.25;0.00 0.00 1.00 0.25;0.00 0.25 1.00 0.12;0.00 0.37 1.00 0.12;0.00 0.50 1.00 0.25;0.00 0.75 1.00 0.25"
+          widthVariance="0.2" heightVariance="0.2" horizontalPositionVariance="1.0"
+          numStates="7" growthNumStates="0" growthStateTime="0"
+        />
+        <FoliageSubLayer name="fmc_fertilizerOrganic"   materialId="100510"                                   densityMapChannelOffset="7"  numDensityMapChannels="2" cellSize="8" viewDistance="0"  terrainOffset="0.0"   objectMask="0"     atlasSize="1" numBlocksPerUnit="0" width="0"   widthVariance="0"    heightVariance="0"    horizontalPositionVariance="0"    height="0" />
+        <FoliageSubLayer name="fmc_fertilizerSynthetic" materialId="100510"                                   densityMapChannelOffset="9"  numDensityMapChannels="2" cellSize="8" viewDistance="0"  terrainOffset="0.0"   objectMask="0"     atlasSize="1" numBlocksPerUnit="0" width="0"   widthVariance="0"    heightVariance="0"    horizontalPositionVariance="0"    height="0" />
+        <FoliageSubLayer name="fmc_herbicide"           materialId="100510"                                   densityMapChannelOffset="11" numDensityMapChannels="2" cellSize="8" viewDistance="0"  terrainOffset="0.0"   objectMask="0"     atlasSize="1" numBlocksPerUnit="0" width="0"   widthVariance="0"    heightVariance="0"    horizontalPositionVariance="0"    height="0" />
+        <FoliageSubLayer name="fmc_soil_pH"             materialId="100510"                                   densityMapChannelOffset="13" numDensityMapChannels="3" cellSize="8" viewDistance="0"  terrainOffset="0.0"   objectMask="0"     atlasSize="1" numBlocksPerUnit="0" width="0"   widthVariance="0"    heightVariance="0"    horizontalPositionVariance="0"    height="0" />
+        <!--
+            layer-name      num-of-channels     possible-valueset
+            =====================================================
+            fmc_manure                2               0-3 (manure density)
+            fmc_slurry                1               0-1
+            fmc_lime                  1               0-1
+            fmc_weed                  3               0-7 (1-3=withered, 4-7=alive)
+            fmc_fertilizerOrganic     2               0-3 (level)
+            fmc_fertilizerSynthetic   2               0-3 (1=typeA, 2=typeB, 3=typeC)
+            fmc_herbicide             2               0-3 (1=typeA, 2=typeB, 3=typeC)
+            fmc_soil_pH               3               0-7 (calculated into pH range)
+        -->
+    </FoliageMultiLayer>
+
+    
+    
+####################################
+##### Instructions partie 5 de 6 #####
+##
+##  Si votre map contient des 'foliage-layer' provenant d'autres mods qui ajoutent du fumier, lisier, chaux ou 
+##  mauvaises herbes, vous devriez les enlever pour optimiser votre map et réduire la consommation de mémoire
+##  requise pour votre map.
+##
+####################################
+####################################
+
+
+
+####################################
+##### Instructions partie 6 de 6 #####
+##
+##  Finalement, vous devez copier le dossier "fmcSoilManagement" dans le sous-dossier "map" de votre propre map.
+##
+##  Note: Si votre map n'est pas de taille standard (x1) (le fichier fruit_density.GRLE n'est pas de 
+##        taille 4096x4096 pixels), vous devez utiliser un autre fichier 'fmcSoilManagement_density.png',
+##        provenant du dossier '_other map sizes'.
+##
+##  Le résultat final devrait ressembler à ceci, par rapport aux autres dossiers et fichiers:
+##
+##  .../MODS/
+##          votreMap/
+##              ModDesc.XML
+##              SampleModMap.LUA
+##              map/
+##                  map01.i3d
+##                  map01.i3d.shapes
+##                  fmcSoilManagement/
+##                      fmcSoilManagement_density.png
+##                      filltypeOverlays/
+##                          ..some .DDS files..
+##                      foliages/
+##                          ..some .DDS files..
+##                  map01/
+##                  models/
+##                  ..etc..
+##
+####################################
+####################################

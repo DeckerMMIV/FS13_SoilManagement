@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="12">
     <author>Freelance Modding Crew</author>
-    <contributors>JakobT, Gonimy_Vetrom, VAHA, KingFrame, Albi</contributors>
+    <contributors>JakobT, Gonimy_Vetrom, VAHA, KingFrame, Albi, Marxtai</contributors>
     <version>1.2.0</version>
 
     <title>
@@ -9,6 +9,7 @@
         <de>PDA Mod Plugin - Soil Condition</de>
         <ru>PDA Mod Plugin - Soil Condition</ru>
         <cz>PDA Mod Plugin - Stav půdy</cz>
+        <fr>PDA Mod Plugin - Soil Condition</fr>
     </title>
     <description>
         <en>
@@ -24,7 +25,7 @@ den Soil Management und Growth Control mod (SoilMod) hinzu.
 Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         </de>
         <ru>
-<![CDATA[Требуется 'PDA MOD' - Этот плагин добавляет дополнительный экран 
+<![CDATA[Требуется 'PDA MOD' - Этот плагин добавляет дополнительный экран
 для мода управления почвами и роста контроля (SoilMod).
 
 Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
@@ -35,6 +36,12 @@ Soil Management and Growth Control mód (SoilMod).
 (Překlady: [CZ] KingFrame a Albi)
 Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         </cz>
+        <fr>
+<![CDATA[Requiert le 'PDA MOD' - Ce plugin ajoute une page supplémentaire au PDA
+pour le mod 'Soil Management and Growth Control' (SoilMod).
+
+Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
+        </fr>
     </description>
 
     <iconFilename>store_SoilCondition.dds</iconFilename>
@@ -47,6 +54,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <de>Bodenzustand</de>
             <ru>Состояние почвы</ru>
             <cz>Stav půdy</cz>
+            <fr>Condition du sol</fr>
         </text>
 
         <text name="ScrollDivider">
@@ -54,13 +62,15 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <de>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</de>
             <ru>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</ru>
             <cz>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</cz>
+            <fr>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</fr>
         </text>
-        
+
         <text name="CurrentLocationScanSize">
             <en>Map coordinate: %.0f,%.0f - Scan size: %dx%d</en>
             <de>Map-Koordinaten: %.0f,%.0f - Scangröße: %dx%d</de>
             <ru>Мое положение: %.0f,%.0f - Площадь: %dx%d</ru>
             <cz>Souřadnice GPS: %.0f,%.0f - Rozloha: %dx%d</cz>
+            <fr>Coordonnées GPS: %.0f,%.0f - Zone scannée: %dx%d </fr>
         </text>
 
         <text name="SoilpH">
@@ -68,36 +78,42 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <de>Boden-pH-Wert: %s</de>
             <ru>Уровень pH: %s</ru>
             <cz>Půdní pH: %s</cz>
+            <fr>pH du sol: %s</fr>
         </text>
         <text name="FertilizerOrganic">
             <en>Fertilizer (organic): %s</en>
             <de>Dünger (organisch): %s</de>
             <ru>Удобрения органические: %s</ru>
             <cz>Hnojivo (organické): %s</cz>
+            <fr>Engrais (organique): %s</fr>
         </text>
         <text name="FertilizerSynthetic">
             <en>Fertilizer (synthetic): %s</en>
             <de>Dünger (synthetisch): %s</de>
             <ru>Удобрения синтетические: %s</ru>
             <cz>Hnojivo (syntetické): %s</cz>
+            <fr>Engrais (synthétique): %s</fr>
         </text>
         <text name="Herbicide">
             <en>Herbicide: %s</en>
             <de>Herbizide: %s</de>
             <ru>Гербициды: %s</ru>
             <cz>Herbicid: %s</cz>
+            <fr>Herbicide: %s</fr>
         </text>
         <text name="WeedInfestation">
             <en>Weed infestation: %s</en>
             <de>Unkrautbefall: %s</de>
             <ru>Засоренность: %s</ru>
             <cz>Zaplevelení: %s</cz>
+            <fr>Mauvaises herbes: %s</fr>
         </text>
         <text name="CropsInArea">
             <en>Crops in area: %s</en>
             <de>Frucht im Bereich: %s</de>
             <ru>Посеяно на площади: %s</ru>
             <cz>Rostliny v oblasti: %s</cz>
+            <fr>Fruits dans la zone: %s</fr>
         </text>
 
         <text name="SoilpH_value_denomination">
@@ -105,36 +121,42 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <de>%.1f (%s)</de>
             <ru>%.1f (%s)</ru>
             <cz>%.1f (%s)</cz>
+            <fr>%.1f (%s)</fr>
         </text>
         <text name="NoCalculation">
             <en>no calculation</en>
             <de>Keine Berechnung</de>
             <ru>не расчитано</ru>
             <cz>bez výpočtu</cz>
+            <fr>Aucun calcul</fr>
         </text>
         <text name="FertilizerOrganic_Level">
             <en>%.1f level(s)</en>
             <de>%.1f Level(s)</de>
             <ru>%.1f уровень</ru>
             <cz>%.1f úroveň</cz>
+            <fr>%.1f niveau(x)</fr>
         </text>
         <text name="FertilizerSynthetic_Type_pct">
             <en>type %s, %d%%</en>
             <de>Typ %s, %d%%</de>
             <ru>тип %s, %d%%</ru>
             <cz>typ %s, %d%%</cz>
+            <fr>type %s, %d%%</fr>
         </text>
         <text name="Herbicide_Type_pct">
             <en>type %s, %d%%</en>
             <de>Typ %s, %d%%</de>
             <ru>тип %s, %d%%</ru>
             <cz>typ %s, %d%%</cz>
+            <fr>type %s, %d%%</fr>
         </text>
         <text name="WeedInfestation_pct">
             <en>%d%%</en>
             <de>%d%%</de>
             <ru>%d%%</ru>
             <cz>%d%%</cz>
+            <fr>%d%%</fr>
         </text>
 
         <text name="FruitEffects">
@@ -142,6 +164,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <de>Fruchtauswirkungen</de>
             <ru>Таблица воздействий</ru>
             <cz>Efekt na plodiny</cz>
+            <fr>Effets sur les fruits</fr>
         </text>
         <text name="FruitEffectsHeader">
             <!-- Text must be delimited by   |   to get 3 columns in PDA screen -->
@@ -149,6 +172,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <de>'Frucht'|'mag'|'mag nicht'</de> <!-- DE: sounds kinda weird in German, but there's no real translation other than the direct one -->
             <ru>'Культура'|'Подходит'|'Не подходит'</ru>
             <cz>'Plodina'|'Použít'|'Nepoužívat'</cz>
+            <fr>'Fruit'|'Aime'|'N'aime pas'</fr>
         </text>
     </l10n>
 

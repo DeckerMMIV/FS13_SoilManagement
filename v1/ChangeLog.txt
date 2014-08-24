@@ -24,7 +24,7 @@ Additions/updates:
 - Czech translations by KingFrame & Albi.
 - More/updated Russian translations by Gonimy-Vetrom.
 - More German translations by webalizer.
-- French 'ReadMe' translation by Marxtai & Dural.
+- French translations by Marxtai & Dural.
 - Removed two of the "difficult to understand instructions" from the 'map - Instructions.txt'.
   Now fileId's and materialId's are pre-set to large numbers.
 - Plugin support for other mods, so they can "add" their own effects.
