@@ -154,11 +154,6 @@ end
 
 --
 function fmcSoilMod.setMapProperty(keyName, value)
-    -- Only server is allowed to update the map-properties
-    if g_currentMission == nil or not g_currentMission:getIsServer() then
-        return false
-    end
-    --
     if not fmcSettings.updateKeyValueDesc(keyName, value) then
         logInfo("WARNING! Can not set map-property with key-name: '",keyName,"'")
         return false

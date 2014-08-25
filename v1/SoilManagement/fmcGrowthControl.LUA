@@ -72,29 +72,8 @@ function fmcGrowthControl.preSetup()
 
             delete(xmlFile);
 
-            fmcGrowthControl.delayGrowthCycleDays   = fmcSettings.getKeyValue("delayGrowthCycle#days",  fmcGrowthControl.delayGrowthCycleDays)
-            fmcGrowthControl.startGrowthCycleHour   = fmcSettings.getKeyValue("startGrowthCycle#hour",  fmcGrowthControl.startGrowthCycleHour)
-            fmcGrowthControl.updateDelayMs          = fmcSettings.getKeyValue("updateDelayMs",          fmcGrowthControl.updateDelayMs       )
-            fmcGrowthControl.reduceWindrows         = fmcSettings.getKeyValue("reduceWindrows",         fmcGrowthControl.reduceWindrows      )
-            fmcGrowthControl.removeSprayMoisture    = fmcSettings.getKeyValue("removeSprayMoisture",    fmcGrowthControl.removeSprayMoisture )
-            fmcGrowthControl.disableWithering       = fmcSettings.getKeyValue("disableWithering",       fmcGrowthControl.disableWithering    )
-            fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = fmcSettings.getKeyValue("fertilizerSynthetic#firstGrowthState", fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState)
-            fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = fmcSettings.getKeyValue("fertilizerSynthetic#lastGrowthState",  fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-           
-            
             -- 'Growth cycle' is active, if cell-square-to-update is not zero.
             fmcGrowthControl.active = fmcGrowthControl.cellSquareToUpdate > 0
-
-            -- Valid ranges...
-            fmcGrowthControl.updateDelayMs        = math.max(10, fmcGrowthControl.updateDelayMs)
-            fmcGrowthControl.delayGrowthCycleDays = math.max(0,  fmcGrowthControl.delayGrowthCycleDays)
-            fmcGrowthControl.startGrowthCycleHour = math.max(0,  math.min(23, fmcGrowthControl.startGrowthCycleHour))
-
-            -- Growth state ranges allowed: 0-4 (0=nothing, 1=seeded, 4=third growth state)
-            fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = math.max(0, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-            fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = math.max(0, fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState)
-            fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = math.min(fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState,  4)
-            fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = math.min(fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
 
             log("fmcGrowthControl -",
                 " lastUpdateDay=",          fmcGrowthControl.lastUpdateDay,
@@ -103,18 +82,39 @@ function fmcGrowthControl.preSetup()
                 ", weedCell=",              fmcGrowthControl.weedCell,
                 ", active=",                fmcGrowthControl.active
             )
-            log("fmcGrowthControl -",
-                " updateDelayMs=",          fmcGrowthControl.updateDelayMs,
-                ", reduceWindrows=",        fmcGrowthControl.reduceWindrows,
-                ", removeSprayMoisture=",   fmcGrowthControl.removeSprayMoisture,
-                ", disableWithering=",      fmcGrowthControl.disableWithering,
-                ", delayGrowthCycleDays=",  fmcGrowthControl.delayGrowthCycleDays,
-                ", startGrowthCycleHour=",  fmcGrowthControl.startGrowthCycleHour,
-                ", fertSyntFirst=",         fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState,
-                ", fertSyntLast=",          fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState
-            )
         end
     end
+
+    fmcGrowthControl.delayGrowthCycleDays   = fmcSettings.getKeyValue("delayGrowthCycle#days",  fmcGrowthControl.delayGrowthCycleDays)
+    fmcGrowthControl.startGrowthCycleHour   = fmcSettings.getKeyValue("startGrowthCycle#hour",  fmcGrowthControl.startGrowthCycleHour)
+    fmcGrowthControl.updateDelayMs          = fmcSettings.getKeyValue("updateDelayMs",          fmcGrowthControl.updateDelayMs       )
+    fmcGrowthControl.reduceWindrows         = fmcSettings.getKeyValue("reduceWindrows",         fmcGrowthControl.reduceWindrows      )
+    fmcGrowthControl.removeSprayMoisture    = fmcSettings.getKeyValue("removeSprayMoisture",    fmcGrowthControl.removeSprayMoisture )
+    fmcGrowthControl.disableWithering       = fmcSettings.getKeyValue("disableWithering",       fmcGrowthControl.disableWithering    )
+    fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = fmcSettings.getKeyValue("fertilizerSynthetic#firstGrowthState", fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState)
+    fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = fmcSettings.getKeyValue("fertilizerSynthetic#lastGrowthState",  fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
+    
+    -- Valid ranges...
+    fmcGrowthControl.updateDelayMs        = math.max(10, fmcGrowthControl.updateDelayMs)
+    fmcGrowthControl.delayGrowthCycleDays = math.max(0,  fmcGrowthControl.delayGrowthCycleDays)
+    fmcGrowthControl.startGrowthCycleHour = math.max(0,  math.min(23, fmcGrowthControl.startGrowthCycleHour))
+
+    -- Growth state ranges allowed: 0-4 (0=nothing, 1=seeded, 4=third growth state)
+    fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = math.max(0, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
+    fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = math.max(0, fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState)
+    fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState  = math.min(fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState,  4)
+    fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState = math.min(fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
+
+    log("fmcGrowthControl -",
+        " updateDelayMs=",          fmcGrowthControl.updateDelayMs,
+        ", reduceWindrows=",        fmcGrowthControl.reduceWindrows,
+        ", removeSprayMoisture=",   fmcGrowthControl.removeSprayMoisture,
+        ", disableWithering=",      fmcGrowthControl.disableWithering,
+        ", delayGrowthCycleDays=",  fmcGrowthControl.delayGrowthCycleDays,
+        ", startGrowthCycleHour=",  fmcGrowthControl.startGrowthCycleHour,
+        ", fertSyntFirst=",         fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState,
+        ", fertSyntLast=",          fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState
+    )
 end
 
 --

@@ -404,6 +404,10 @@ function fmcSoilModPlugins.pluginsForCutFruitArea(soilMod)
         function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)    
             dataStore.volume = dataStore.volume / 2
             dataStore.spraySum = 1
+            -- Fix for multiplayer, to ensure that event will be sent to clients, if there was something to cut.
+            if (dataStore.numPixels > 0) or (dataStore.weeds ~= nil and dataStore.weeds.numPixels > 0) then
+                dataStore.volume = dataStore.volume + 0.0000001
+            end
         end
     )
 end
