@@ -70,7 +70,7 @@ As it is now, growth for all crops will start every day at midnight in-game time
 
 A progress indicator shows how much have been processed, as the growth update stage affects a predetermined sized square of the map, which is needed to reduce potential 'game freeze' and network-latency (lag) issues.
 
-Withering is activated! ... and there is currently no "easy way" to deactivate it, other than finding and changing the hardcoded setting in the SoilMod scripts.
+Withering is activated! ... but can be disabled by setting a map-property in the SampleModMap.LUA. Take a look in 'SampleModMap - Additions.LUA'.
 
 During the growth cycle, the following things happen:
 - Crops grow one stage, unless affected by a particular herbicide type which would either pause the growth or make the crop go withered.
