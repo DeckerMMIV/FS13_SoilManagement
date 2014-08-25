@@ -316,7 +316,11 @@ end;
 
 --
 function fmcGrowthControl:minuteChanged()
-    fmcGrowthControl.weedPropagation = true
+    fmcGrowthControl.weedCounter = Utils.getNoNil(fmcGrowthControl.weedCounter,0) + 1
+    -- Set speed of weed propagation relative to how often 'growth cycle' occurs.
+    if (0 == (fmcGrowthControl.weedCounter % (fmcGrowthControl.delayGrowthCycleDays + 1))) then
+        fmcGrowthControl.weedPropagation = true
+    end
 end
 
 --
@@ -376,8 +380,26 @@ end
 
 --
 function fmcGrowthControl:createWeedFoliage(centerX,centerZ,radius, noEventSend)
-    local sx,sz,  wx,wz,  hx,hz = centerX-radius,centerZ-radius,  radius*2,0,  0,radius*2
+    --local sx,sz,  wx,wz,  hx,hz = centerX-radius,centerZ-radius,  radius*2,0,  0,radius*2
+ 
+    local function rotXZ(offX,offZ,x,z,angle)
+        x = x * math.cos(angle) - z * math.sin(angle)
+        z = x * math.sin(angle) + z * math.cos(angle)
+        return offX + x, offZ + z
+    end
 
+    -- Attempt making a more "round" look
+    local parallelograms = {}
+    for _,angle in pairs({0,30,60}) do
+        angle = Utils.degToRad(angle)
+        local p = {}
+        p.sx,p.sz = rotXZ(centerX,centerZ, -radius,-radius, angle)
+        p.wx,p.wz = rotXZ(0,0,             radius*2,0,      angle)
+        p.hx,p.hz = rotXZ(0,0,             0,radius*2,      angle)
+        table.insert(parallelograms, p)
+        --log("weed ", angle, ":", p.sx,"/",p.sz, ",", p.wx,"/",p.wz, ",", p.hx,"/",p.hz)
+    end
+ 
     local includeMask   = 2^g_currentMission.sowingChannel
                         + 2^g_currentMission.sowingWidthChannel
                         + 2^g_currentMission.cultivatorChannel
@@ -385,14 +407,21 @@ function fmcGrowthControl:createWeedFoliage(centerX,centerZ,radius, noEventSend)
 
     setDensityCompareParams(g_currentMission.fmcFoliageWeed, "equal", 0)
     setDensityMaskParams(g_currentMission.fmcFoliageWeed, "greater", -1,-1, includeMask, 0)
-    local oldSum,pixelsMatch,newDelta =
-    setDensityMaskedParallelogram(
-        g_currentMission.fmcFoliageWeed,
-        sx,sz,wx,wz,hx,hz,
-        0, 3,
-        g_currentMission.terrainDetailId, g_currentMission.terrainDetailTypeFirstChannel, g_currentMission.terrainDetailTypeNumChannels, -- mask
-        4 -- set
-    )
+    local pixelsMatch = 0
+    for _,p in pairs(parallelograms) do
+        --log("weed place ", p.sx,"/",p.sz, ",", p.wx,"/",p.wz, ",", p.hx,"/",p.hz)
+        local _, pixMatch, _ = setDensityMaskedParallelogram(
+            g_currentMission.fmcFoliageWeed,
+            p.sx,p.sz,p.wx,p.wz,p.hx,p.hz,
+            0, 3,
+            g_currentMission.terrainDetailId, g_currentMission.terrainDetailTypeFirstChannel, g_currentMission.terrainDetailTypeNumChannels, -- mask
+            4 -- set
+        )
+        pixelsMatch = pixelsMatch + pixMatch
+        if pixelsMatch <= 0 then
+            break
+        end
+    end
     setDensityMaskParams(g_currentMission.fmcFoliageWeed, "greater", -1)
     setDensityCompareParams(g_currentMission.fmcFoliageWeed, "greater", -1)
 
