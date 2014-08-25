@@ -63,7 +63,7 @@ function fmcSettings.onLoadCareerSavegame(xmlFile, rootXmlKey)
             if type(value)=="boolean" then
                 value = Utils.getNoNil(getXMLBool(xmlFile, xmlKeyName), value)
             elseif type(value)=="number" then
-                value = Utils.getNoNil(getXMLInt(xmlFile, xmlKeyName), value)
+                value = Utils.getNoNil(getXMLFloat(xmlFile, xmlKeyName), value)
             else
                 value = Utils.getNoNil(getXMLString(xmlFile, xmlKeyName), value)
             end
@@ -91,7 +91,11 @@ function fmcSettings.onSaveCareerSavegame(xmlFile, rootXmlKey)
                 if type(value)=="boolean" then
                     setXMLBool(xmlFile, xmlKeyName, value)
                 elseif type(value)=="number" then
-                    setXMLInt(xmlFile, xmlKeyName, value)
+                    if math.floor(value) == value then
+                        setXMLInt(xmlFile, xmlKeyName, value)
+                    else
+                        setXMLFloat(xmlFile, xmlKeyName, value)
+                    end
                 else
                     setXMLString(xmlFile, xmlKeyName, tostring(value))
                 end

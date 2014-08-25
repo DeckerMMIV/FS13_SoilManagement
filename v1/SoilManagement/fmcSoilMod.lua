@@ -42,6 +42,7 @@ fmcSoilMod.modDir = g_currentModDirectory;
 --
 fmcSoilMod.simplisticMode = false
 fmcSoilMod.logEnabled     = false
+fmcSoilMod.pHScaleModifier = 0.3
 
 -- For debugging
 function log(...)
@@ -94,6 +95,7 @@ function fmcSoilMod.setup_map_new(mapFilltypeOverlaysDirectory)
     fmcSettings.setKeyValueDesc("disableWithering",          false,     "boolean, (singleplayer) if crop withering should be disabled (default=false)")
     fmcSettings.setKeyValueDesc("fertilizerSynthetic#firstGrowthState", 2, "integer, (singleplayer) growth state range is 0-4 (defaults first=2, last=4)")
     fmcSettings.setKeyValueDesc("fertilizerSynthetic#lastGrowthState",  4, nil)
+    fmcSettings.setKeyValueDesc("pHScaleModifier",  fmcSoilMod.pHScaleModifier, "float, (singleplayer) the scale-modifier to use for calculating pH-level from foliage-layer value (default=0.3)")
 end
 
 --
@@ -120,6 +122,10 @@ function fmcSoilMod.postInit_loadMapFinished()
         fmcModifySprayers.setup()    
         fmcFilltypes.updateFillTypeOverlays()
         fmcSoilMod.copy_l10n_texts_to_global()
+
+        fmcSoilMod.pHScaleModifier = fmcSettings.getKeyValue("pHScaleModifier",  fmcSoilMod.pHScaleModifier)
+        fmcSoilMod.pHScaleModifier = math.min(0.5, math.max(0.0001, fmcSoilMod.pHScaleModifier))
+
         fmcSoilMod.enabled = true
     else
         print("")
@@ -214,7 +220,7 @@ end
 
 function fmcSoilMod.offsetPct_to_pH(offsetPct)
     -- 'offsetPct' should be between -1.0 and +1.0
-    local phValue = 7.0 + (3 * math.sin(offsetPct * (math.pi * 0.3)))
+    local phValue = 7.0 + (3 * math.sin(offsetPct * (math.pi * fmcSoilMod.pHScaleModifier)))
     return math.floor(phValue * 10) / 10; -- Return with only one decimal-digit.
 end
 
