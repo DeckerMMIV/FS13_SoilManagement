@@ -47,7 +47,7 @@ fmcSoilMod.pHScaleModifier = 0.3
 -- For debugging
 function log(...)
     if fmcSoilMod.logEnabled 
---
+--[[
        or true
 --]]
     then
