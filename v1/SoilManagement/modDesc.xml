@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="12">
     <author>Freelance Modding Crew</author>
-    <contributors>JakobT, Gonimy_Vetrom, VAHA, KingFrame, Albi, webalizer, Marxtai</contributors>
-    <version>1.2.0</version>
+    <contributors>JakobT, Gonimy_Vetrom, VAHA, KingFrame, Albi, webalizer, Marxtai, DD ModPassion</contributors>
+    <version>1.2.1</version>
 
     <title>
         <en>Soil Management and Growth Control</en>
@@ -10,6 +10,7 @@
         <ru>Soil Management and Growth Control</ru>
         <cz>Soil Management and Growth Control</cz>
         <fr>Soil Management and Growth Control</fr>
+        <it>Soil Management and Growth Control</it>
     </title>
     <description>
         <en>
@@ -42,6 +43,12 @@ comme l'utilisation de fumier, lisier, engrais synthétique, chaux et herbicide.
 types d'engrais synthétique/herbicide' et les 'effets à long terme' ont été ajoutés.
 Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         </fr>
+        <it>
+<![CDATA[ 'SoilMod' aggiunge il controllo personalizzato di crescita delle colture e alcuni nuovi aspetti
+di come e quando utilizzare letame, liquami, fertilizzanti sintetici, calce e diserbante. Funzioni come 
+'terreno pH', '3 diversi tipi di fertilizzante/diserbante' ed 'effetti ritardati' sono stati aggiunti.
+Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
+        </it>
     </description>
 
     <iconFilename>store_SoilManagement.dds</iconFilename>
@@ -55,6 +62,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>SoilMod:Сейчас растет!</ru>
             <cz>SoilMod:Okamžitý růst!</cz>
             <fr>SoilMod:Pousser MAINTENANT!</fr>
+            <it>SoilMod:Crescita ORA!</it>
         </text>
         <text name="GrowthPct">
             <en>Growth %d%%</en>
@@ -62,6 +70,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Рост %d%%</ru>
             <cz>Růst %d%%</cz>
             <fr>Croissance %d%%</fr>
+            <it>Crescita %d%%</it>
         </text>
         <text name="SelectSprayType">
             <en>Select spray-type</en>
@@ -69,6 +78,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Выбрать тип наполнителя</ru>
             <cz>Vyber typ přípravku</cz>
             <fr>Choisissez type de pulvérization</fr>
+            <it>Seleziona tipologia spruzzo</it>
         </text>
 
         <text name="kalk">
@@ -77,6 +87,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Известь</ru>
             <cz>Vápno</cz>
             <fr>Chaux</fr>
+            <it>Calce</it>
         </text>
 
         <text name="herbicide">
@@ -85,6 +96,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Гербицид А</ru>
             <cz>Herbicid A</cz>
             <fr>Herbicide A</fr>
+            <it>Erbicida A</it>
         </text>
         <text name="herbicide2">
             <en>Herbicide B</en>
@@ -92,6 +104,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Гербицид B</ru>
             <cz>Herbicid B</cz>
             <fr>Herbicide B</fr>
+            <it>Erbicida B</it>
         </text>
         <text name="herbicide3">
             <en>Herbicide C</en>
@@ -99,6 +112,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Гербицид C</ru>
             <cz>Herbicid C</cz>
             <fr>Herbicide C</fr>
+            <it>Erbicida C</it>
         </text>
 
         <text name="fertilizer">
@@ -107,6 +121,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Удобрение А</ru>
             <cz>Hnojivo A</cz>
             <fr>Engrais synthétique A</fr>
+            <it>Fertilizzante A</it>
         </text>
         <text name="fertilizer2">
             <en>Fertilizer B</en>
@@ -114,6 +129,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Удобрение B</ru>
             <cz>Hnojivo B</cz>
             <fr>Engrais synthétique B</fr>
+            <it>Fertilizzante B</it>
         </text>
         <text name="fertilizer3">
             <en>Fertilizer C</en>
@@ -121,6 +137,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Удобрение C</ru>
             <cz>Hnojivo C</cz>
             <fr>Engrais synthétique C</fr>
+            <it>Fertilizzante C</it>
         </text>
 
         <text name="phExtremeAcidity">
@@ -129,6 +146,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Повышенная кислотность</ru>
             <cz>extrémně kyselé</cz>
             <fr>Acidité extrême</fr>
+            <it>Acidità estrema</it>
         </text>
         <text name="phStrongAcidity">
             <en>Strong acidity</en>
@@ -136,6 +154,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Сильная кислотность</ru>
             <cz>silně kyselé</cz>
             <fr>Forte acidité</fr>
+            <it>Acidità alta</it>
         </text>
         <text name="phModerateAcidity">
             <en>Moderate acidity</en>
@@ -143,6 +162,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Средняя кислотность</ru>
             <cz>středně kyselé</cz>
             <fr>Acidité modérée</fr>
+            <it>Acidità moderata</it>
         </text>
         <text name="phSlightAcidity">
             <en>Slight acidity</en>
@@ -150,6 +170,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Слабая кислотность</ru>
             <cz>mírně kyselé</cz>
             <fr>Légère acidité</fr>
+            <it>Acidità lieve</it>
         </text>
         <text name="phNeutral">
             <en>Neutral</en>
@@ -157,6 +178,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Нейтральная</ru>
             <cz>neutrální</cz>
             <fr>Neutre</fr>
+            <it>Neutrale</it>
         </text>
         <text name="phSlightAlkalinity">
             <en>Slight alkalinity</en>
@@ -164,6 +186,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Слабая щелочность</ru>
             <cz>mírně alkalické</cz>
             <fr>Légère alcanilité</fr>
+            <it>Alcalinità lieve</it>
         </text>
         <text name="phModerateAlkalinity">
             <en>Moderate alkalinity</en>
@@ -171,6 +194,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Средняя щелочность</ru>
             <cz>středně alkalické</cz>
             <fr>Alcanilité modérée</fr>
+            <it>Alcalinità moderata</it>
         </text>
         <text name="phStrongAlkalinity">
             <en>Strong alkalinity</en>
@@ -178,6 +202,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Сильная щелочность</ru>
             <cz>silně alkalické</cz>
             <fr>Forte alcanilité</fr>
+            <it>Alcalinità alta</it>
         </text>
         <text name="phExtremeAlkalinity">
             <en>Extreme alkalinity</en>
@@ -185,6 +210,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Повышенная щелочность</ru>
             <cz>extrémně alkalické</cz>
             <fr>Alcanilité extrême</fr>
+            <it>Alcalinità estrema</it>
         </text>
     </l10n>
 

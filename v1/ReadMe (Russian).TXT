@@ -175,3 +175,4 @@ Script: Decker_MMIV.
 Перевод "RU": Gonimy_Vetrom, VAHA.
 Перевод "CZ": KingFrame, Albi.
 Перевод "FR": Marxtai, Dural.
+Перевод "IT": DD ModPassion.

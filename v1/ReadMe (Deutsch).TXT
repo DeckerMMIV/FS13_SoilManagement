@@ -166,3 +166,4 @@ Translation 'DE': JakobT, webalizer.
 Translation 'RU': Gonimy_Vetrom, VAHA.
 Translation 'CZ': KingFrame, Albi.
 Translation 'FR': Marxtai, Dural.
+Translation 'IT': DD ModPassion.

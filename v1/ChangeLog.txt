@@ -1,6 +1,21 @@
 SoilMod - Change log
 
 ============================
+Post-version 1.2.x
+
+Fixes:
+
+- Removed "force send CutterAreaEvent", as it was causing other problems.
+
+Enhancements:
+
+  
+Additions/updates:
+
+- Italian translations by DD ModPassion
+
+
+============================
 Version 1.2.0
 
 Fixes:

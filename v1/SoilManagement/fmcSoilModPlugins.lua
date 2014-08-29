@@ -404,10 +404,16 @@ function fmcSoilModPlugins.pluginsForCutFruitArea(soilMod)
         function(sx,sz,wx,wz,hx,hz, dataStore, fruitDesc)    
             dataStore.volume = dataStore.volume / 2
             dataStore.spraySum = 1
-            -- Fix for multiplayer, to ensure that event will be sent to clients, if there was something to cut.
-            if (dataStore.numPixels > 0) or (dataStore.weeds ~= nil and dataStore.weeds.numPixels > 0) then
-                dataStore.volume = dataStore.volume + 0.0000001
-            end
+            
+          -- Below didn't work correctly. Causes problem when graintank less than 5% and there's weed plants.
+          -- -- Fix for multiplayer, to ensure that event will be sent to clients, if there was something to cut.
+          -- if (dataStore.numPixels > 0) or (dataStore.weeds ~= nil and dataStore.weeds.numPixels > 0) then
+          --     dataStore.volume = dataStore.volume + 0.0000001
+          -- end
+          
+          -- Thinking of a different approach, to send "cut"-event to clients when volume == 0 and (numPixels > 0 or weed > 0),
+          -- where a "global variable" will be set, and then afterwards elsewhere it is tested to see if an event should be sent,
+          -- but it requires appending extra functionality to Combine.update() and similar vanilla methods, which may cause even other problems.
         end
     )
 end

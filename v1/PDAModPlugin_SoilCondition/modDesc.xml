@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="12">
     <author>Freelance Modding Crew</author>
-    <contributors>JakobT, Gonimy_Vetrom, VAHA, KingFrame, Albi, webalizer, Marxtai</contributors>
-    <version>1.2.0</version>
+    <contributors>JakobT, Gonimy_Vetrom, VAHA, KingFrame, Albi, webalizer, Marxtai, DD ModPassion</contributors>
+    <version>1.2.1</version>
 
     <title>
         <en>PDA Mod Plugin - Soil Condition</en>
@@ -10,6 +10,7 @@
         <ru>PDA Mod Plugin - Soil Condition</ru>
         <cz>PDA Mod Plugin - Stav půdy</cz>
         <fr>PDA Mod Plugin - Soil Condition</fr>
+        <it>PDA Mod Plugin - Soil Condition</it>
     </title>
     <description>
         <en>
@@ -42,6 +43,12 @@ pour le mod 'Soil Management and Growth Control' (SoilMod).
 
 Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         </fr>
+        <it>
+<![CDATA[Richiede 'PDA MOD.' - questo plugin aggiunge uno schermo aggiuntivo per la
+gestione del suolo ed il controllo di crescita mod (SoilMod).
+
+Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
+        </it>
     </description>
 
     <iconFilename>store_SoilCondition.dds</iconFilename>
@@ -55,6 +62,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Состояние почвы</ru>
             <cz>Stav půdy</cz>
             <fr>Condition du sol</fr>
+            <it>Condizioni del suolo</it>
         </text>
 
         <text name="ScrollDivider">
@@ -63,6 +71,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</ru>
             <cz>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</cz>
             <fr>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</fr>
+            <it>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</it>
         </text>
 
         <text name="CurrentLocationScanSize">
@@ -70,7 +79,8 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <de>Map-Koordinaten: %.0f,%.0f - Scangröße: %dx%d</de>
             <ru>Мое положение: %.0f,%.0f - Площадь: %dx%d</ru>
             <cz>Souřadnice GPS: %.0f,%.0f - Rozloha: %dx%d</cz>
-            <fr>Coordonnées GPS: %.0f,%.0f - Zone scannée: %dx%d </fr>
+            <fr>Coordonnées GPS: %.0f,%.0f - Zone scannée: %dx%d</fr>
+            <it>Coordinate mappa: %.0f,%.0f - Area scansionata: %dx%d</it>
         </text>
 
         <text name="SoilpH">
@@ -79,6 +89,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Уровень pH: %s</ru>
             <cz>Půdní pH: %s</cz>
             <fr>pH du sol: %s</fr>
+            <it>pH terreno: %s</it>
         </text>
         <text name="FertilizerOrganic">
             <en>Fertilizer (organic): %s</en>
@@ -86,6 +97,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Удобрения органические: %s</ru>
             <cz>Hnojivo (organické): %s</cz>
             <fr>Engrais (organique): %s</fr>
+            <it>Fertilizzante (organico): %s</it>
         </text>
         <text name="FertilizerSynthetic">
             <en>Fertilizer (synthetic): %s</en>
@@ -93,6 +105,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Удобрения синтетические: %s</ru>
             <cz>Hnojivo (syntetické): %s</cz>
             <fr>Engrais (synthétique): %s</fr>
+            <it>Fertilizzante (sintetico): %s</it>
         </text>
         <text name="Herbicide">
             <en>Herbicide: %s</en>
@@ -100,6 +113,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Гербициды: %s</ru>
             <cz>Herbicid: %s</cz>
             <fr>Herbicide: %s</fr>
+            <it>Erbicida: %s</it>
         </text>
         <text name="WeedInfestation">
             <en>Weed infestation: %s</en>
@@ -107,6 +121,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Засоренность: %s</ru>
             <cz>Zaplevelení: %s</cz>
             <fr>Mauvaises herbes: %s</fr>
+            <it>Infestazione erbaccia: %s</it>
         </text>
         <text name="CropsInArea">
             <en>Crops in area: %s</en>
@@ -114,6 +129,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Посеяно на площади: %s</ru>
             <cz>Rostliny v oblasti: %s</cz>
             <fr>Fruits dans la zone: %s</fr>
+            <it>Colture nell'area: %s</it>
         </text>
 
         <text name="SoilpH_value_denomination">
@@ -122,6 +138,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>%.1f (%s)</ru>
             <cz>%.1f (%s)</cz>
             <fr>%.1f (%s)</fr>
+            <it>%.1f (%s)</it>
         </text>
         <text name="NoCalculation">
             <en>no calculation</en>
@@ -129,6 +146,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>не расчитано</ru>
             <cz>bez výpočtu</cz>
             <fr>Aucun calcul</fr>
+            <it>nessun calcolo</it>
         </text>
         <text name="FertilizerOrganic_Level">
             <en>%.1f level(s)</en>
@@ -136,6 +154,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>%.1f уровень</ru>
             <cz>%.1f úroveň</cz>
             <fr>%.1f niveau(x)</fr>
+            <it>%.1f livello</it>
         </text>
         <text name="FertilizerSynthetic_Type_pct">
             <en>type %s, %d%%</en>
@@ -143,6 +162,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>тип %s, %d%%</ru>
             <cz>typ %s, %d%%</cz>
             <fr>type %s, %d%%</fr>
+            <it>tipo %s, %d%%</it>
         </text>
         <text name="Herbicide_Type_pct">
             <en>type %s, %d%%</en>
@@ -150,6 +170,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>тип %s, %d%%</ru>
             <cz>typ %s, %d%%</cz>
             <fr>type %s, %d%%</fr>
+            <it>tipo %s, %d%%</it>
         </text>
         <text name="WeedInfestation_pct">
             <en>%d%%</en>
@@ -157,6 +178,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>%d%%</ru>
             <cz>%d%%</cz>
             <fr>%d%%</fr>
+            <it>%d%%</it>
         </text>
 
         <text name="FruitEffects">
@@ -165,6 +187,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>Таблица воздействий</ru>
             <cz>Efekt na plodiny</cz>
             <fr>Effets sur les fruits</fr>
+            <it>Effetti coltura</it>
         </text>
         <text name="FruitEffectsHeader">
             <!-- Text must be delimited by   |   to get 3 columns in PDA screen -->
@@ -173,6 +196,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <ru>'Культура'|'Подходит'|'Не подходит'</ru>
             <cz>'Plodina'|'Použít'|'Nepoužívat'</cz>
             <fr>'Fruit'|'Aime'|'N'aime pas'</fr>
+            <it>'Colture'|'Consigliato'|'Non consigliato'</it>
         </text>
     </l10n>
 
