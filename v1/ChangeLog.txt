@@ -13,6 +13,8 @@ Enhancements:
 Additions/updates:
 
 - Italian translations by DD ModPassion
+- Added a "hidden" 3rd page for the PDA, which can be used for private/custom static text or help.
+  The PDAModPlugin_SoilCondition.ZIP's ModDesc.XML file has to be edited, to activate the 3rd page.
 
 
 ============================

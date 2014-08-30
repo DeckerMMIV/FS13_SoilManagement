@@ -2,7 +2,7 @@
 <modDesc descVersion="12">
     <author>Freelance Modding Crew</author>
     <contributors>JakobT, Gonimy_Vetrom, VAHA, KingFrame, Albi, webalizer, Marxtai, DD ModPassion</contributors>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 
     <title>
         <en>PDA Mod Plugin - Soil Condition</en>
@@ -56,15 +56,6 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
     <multiplayer supported="true"/>
 
     <l10n>
-        <text name="SoilCondition">
-            <en>Soil Condition</en>
-            <de>Bodenzustand</de>
-            <ru>Состояние почвы</ru>
-            <cz>Stav půdy</cz>
-            <fr>Condition du sol</fr>
-            <it>Condizioni del suolo</it>
-        </text>
-
         <text name="ScrollDivider">
             <en>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</en>
             <de>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</de>
@@ -72,6 +63,16 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <cz>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</cz>
             <fr>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</fr>
             <it>----- ----- ----- ----- ----- ----- ----- ----- ----- -----</it>
+        </text>
+
+  <!-- PDA page 1 -->
+        <text name="SoilCondition">
+            <en>Soil Condition</en>
+            <de>Bodenzustand</de>
+            <ru>Состояние почвы</ru>
+            <cz>Stav půdy</cz>
+            <fr>Condition du sol</fr>
+            <it>Condizioni del suolo</it>
         </text>
 
         <text name="CurrentLocationScanSize">
@@ -181,6 +182,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <it>%d%%</it>
         </text>
 
+  <!-- PDA page 2 -->
         <text name="FruitEffects">
             <en>Fruit Effects</en>
             <de>Fruchtauswirkungen</de>
@@ -198,6 +200,48 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
             <fr>'Fruit'|'Aime'|'N'aime pas'</fr>
             <it>'Colture'|'Consigliato'|'Non consigliato'</it>
         </text>
+        
+
+  <!-- PDA page 3 -->
+        <text name="SoilHelpTitle">
+            <en>Soil tips &amp; hints</en>
+            <de>Soil tips &amp; hints</de>
+            <ru>Soil tips &amp; hints</ru>
+            <cz>Soil tips &amp; hints</cz>
+            <fr>Soil tips &amp; hints</fr>
+            <it>Soil tips &amp; hints</it>
+        </text>
+        
+<!-- REMOVE THIS LINE (of 2) TO ACTIVATE THE 3rd PAGE
+
+        <text name="SoilHelpText">
+<en><![CDATA[
+..Put your custom English text here..
+..Take a note of how newlines,
+will be presented in the PDA in-game..
+..So it could be more useful, just to make really long lines, and let the script deal with the text-wrapping..
+
+    There   may  be     some things      that   does not work     as     intended.
+]]></en>
+<de><![CDATA[
+..Put your custom German text here..
+]]></de>
+<ru><![CDATA[
+..Put your custom Russian text here..
+]]></ru>
+<cz><![CDATA[
+..Put your custom Czech text here..
+]]></cz>
+<fr><![CDATA[
+..Put your custom French text here..
+]]></fr>
+<it><![CDATA[
+..Put your custom Italian text here..
+]]></it>
+        </text>
+        
+REMOVE THIS LINE (too) TO ACTIVATE THE 3rd PAGE -->
+
     </l10n>
 
     <extraSourceFiles>

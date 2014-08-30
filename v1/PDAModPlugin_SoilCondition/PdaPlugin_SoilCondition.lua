@@ -57,8 +57,51 @@ function PdaPlugin_SoilCondition.initialize(self, initStep)
             PdaPlugin_SoilCondition.subPage2Draw,    g_currentMission.missionPDA, nil,
             nil, nil, nil
         );
+        --
+        if g_i18n:hasText("SoilHelpText") and g_i18n:getText("SoilHelpText") ~= "" then
+          modPDAMOD.registerPage(
+              "soilCondition", nil, 
+              PdaPlugin_SoilCondition.subPage3Draw,    g_currentMission.missionPDA, nil,
+              nil, nil, nil
+          );
+        end
     end
 end;
+
+--
+function PdaPlugin_SoilCondition.subPage3Draw(self, parm, origMissionPdaDrawFunc)
+    -- Note: 'self' is in context of the g_currentMission.missionPDA object.
+    --
+    if PdaPlugin_SoilCondition.page3Text == nil then
+        local helpLines = Utils.splitString("\n", g_i18n:getText("SoilHelpText"))
+        PdaPlugin_SoilCondition.page3Text = PdaPlugin_SoilCondition.makeScrollText(helpLines, self.pdaFontSize, self.pdaWidth)
+    end
+    --
+    self.hudPDABackgroundOverlay:render()
+    --
+    if PdaPlugin_SoilCondition.page3Text ~= nil then
+        setTextAlignment(RenderText.ALIGN_LEFT);
+        setTextColor(1,1,1,1);
+        setTextBold(false);
+
+        local row = g_currentMission.time
+        local posY = self.pdaHeadRow - (0 * self.pdaFontSize) + ((row % 1000) / 1000 * self.pdaFontSize)
+        
+        row = math.floor(row / 1000)
+        local maxRows = table.getn(PdaPlugin_SoilCondition.page3Text)
+        
+        row = (row % maxRows) + 1
+        while posY > self.pdaMapPosY do
+            renderText(self.pdaX, posY, self.pdaFontSize, PdaPlugin_SoilCondition.page3Text[row]);
+            posY = posY - self.pdaFontSize
+            row = (row % maxRows) + 1
+        end
+    end
+    --
+    self.hudPDAFrameOverlay:render()
+    --
+    modPDAMOD.drawTitle(g_i18n:getText("SoilHelpTitle"));
+end
 
 --
 function PdaPlugin_SoilCondition.subPageDraw(self, parm, origMissionPdaDrawFunc)
