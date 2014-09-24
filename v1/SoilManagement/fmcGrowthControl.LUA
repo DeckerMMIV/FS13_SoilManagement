@@ -488,6 +488,18 @@ function fmcGrowthControl:draw()
         setTextAlignment(RenderText.ALIGN_LEFT);
         setTextColor(1,1,1,1)
     end
+
+--[[
+    -- Code for showing days countdown to growth cycle.
+    local growthCycleDaysCountdown = (fmcGrowthControl.lastUpdateDay + fmcGrowthControl.delayGrowthCycleDays) - g_currentMission.environment.currentDay
+    self:renderTextShaded(  -- Custom renderText() method
+      0.002, 0.002,  -- Screen X,Y position (Percentage of screen width/height. Range 0.000 - 1.000)
+      0.02,  -- Font size (percentage of screen height)
+      tostring(growthCycleDaysCountdown),  -- Text to render
+      {1.0, 1.0, 1.0, 0.8}, -- Foreground color (R,G,B,A. Range 0.0 - 1.0)
+      {0.0, 0.0, 0.0, 0.8}  -- Background/shade color (R,G,B,A. Range 0.0 - 1.0)
+    )
+--]]
 end;
 
 -------

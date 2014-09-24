@@ -204,24 +204,23 @@ function fmcModifySprayers.overwriteSprayer1()
             local addFillTypes = {}
             -- Simple check, if tool has <turnedOnRotationNodes> then it is most likely a 'solid spreader'.
             if hasXMLProperty(xmlFile, "vehicle.turnedOnRotationNodes") then
-                logInfo("Adding more filltypes (solid spreader)")
+                logInfo("Adding more filltypes (solid spreader - turnedOnRotationNodes)")
                 addFillTypes = {
                      Fillable.FILLTYPE_FERTILIZER2
                     ,Fillable.FILLTYPE_FERTILIZER3
                     ,Fillable.FILLTYPE_KALK
                 }
-			--#### Calamarain-FSUK ############################################################
-			-- Some 'solid spreaders' may use a <spinners> section
+            --#### Calamarain-FSUK ############################################################
+            -- Some 'solid spreaders' may use a <spinners> section
             elseif  hasXMLProperty(xmlFile, "vehicle.spinners") then
-			logInfo("Adding more filltypes (solid spreader)")
+                logInfo("Adding more filltypes (solid spreader - spinners)")
                 addFillTypes = {
                      Fillable.FILLTYPE_FERTILIZER2
                     ,Fillable.FILLTYPE_FERTILIZER3
                     ,Fillable.FILLTYPE_KALK
                 }
-			--#################################################################################
-
-			else
+            --#################################################################################
+            else
                 logInfo("Adding more filltypes (liquid sprayer)")
                 addFillTypes = {
                      Fillable.FILLTYPE_FERTILIZER2
