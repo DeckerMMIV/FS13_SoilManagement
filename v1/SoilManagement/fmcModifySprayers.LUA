@@ -210,7 +210,18 @@ function fmcModifySprayers.overwriteSprayer1()
                     ,Fillable.FILLTYPE_FERTILIZER3
                     ,Fillable.FILLTYPE_KALK
                 }
-            else
+			--#### Calamarain-FSUK ############################################################
+			-- Some 'solid spreaders' may use a <spinners> section
+            elseif  hasXMLProperty(xmlFile, "vehicle.spinners") then
+			logInfo("Adding more filltypes (solid spreader)")
+                addFillTypes = {
+                     Fillable.FILLTYPE_FERTILIZER2
+                    ,Fillable.FILLTYPE_FERTILIZER3
+                    ,Fillable.FILLTYPE_KALK
+                }
+			--#################################################################################
+
+			else
                 logInfo("Adding more filltypes (liquid sprayer)")
                 addFillTypes = {
                      Fillable.FILLTYPE_FERTILIZER2
