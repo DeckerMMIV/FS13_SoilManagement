@@ -206,7 +206,7 @@ Decker_MMIV - fs-uk.com, forum.farming-simulator.com, modhoster.com]]>
         <text name="SoilHelpTitle">
             <en>Soil tips &amp; hints</en>
             <de>Soil tips &amp; hints</de>
-            <ru>Soil tips &amp; hints</ru>
+            <ru>Почва. Подсказки и советы</ru>
             <cz>Soil tips &amp; hints</cz>
             <fr>Soil tips &amp; hints</fr>
             <it>Soil tips &amp; hints</it>
@@ -227,7 +227,12 @@ will be presented in the PDA in-game..
 ..Put your custom German text here..
 ]]></de>
 <ru><![CDATA[
-..Put your custom Russian text here..
+..Вставьте здесь ваш пользовательский текст..
+..Впишите новые строки, в таком виде
+в каком будут представлены на PDA в игре..
+..Такое написание может быть применимо, только убедитесь, что скрипт действительно выполняет перенос длинных строк..
+
+    Так   могут  быть     написаны      строк   которые могут     не     работать должным    образом.
 ]]></ru>
 <cz><![CDATA[
 ..Put your custom Czech text here..
