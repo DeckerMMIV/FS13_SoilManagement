@@ -16,6 +16,8 @@ Additions/updates:
 - Czech translation of ReadMe by Albi.
 - Added a "hidden" 3rd page for the PDA, which can be used for private/custom static text or help.
   The PDAModPlugin_SoilCondition.ZIP's ModDesc.XML file has to be edited, to activate the 3rd page.
+- Detect solid spreaders using 'spinners' by Calamarain.
+- More/updated Russian translations by Gonimy-Vetrom.
 
 
 ============================
