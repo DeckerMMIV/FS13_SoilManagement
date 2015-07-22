@@ -699,10 +699,10 @@ function fmcSoilModPlugins.pluginsForUpdateSprayArea(soilMod)
     end
 
     if hasFoliageLayer(g_currentMission.fmcFoliageFertilizerSynthetic) then
-        local fruitLayer = g_currentMission.fruits[1]
-        -- TODO - add support for multiple FMLs
-        if fruitLayer ~= nil and hasFoliageLayer(fruitLayer.id) then
-            local fruitLayerId = fruitLayer.id
+        --local fruitLayer = g_currentMission.fruits[1]
+        ---- TODO - add support for multiple FMLs
+        --if fruitLayer ~= nil and hasFoliageLayer(fruitLayer.id) then
+        --    local fruitLayerId = fruitLayer.id
             local foliageId    = g_currentMission.fmcFoliageFertilizerSynthetic
             local numChannels  = getTerrainDetailNumChannels(foliageId)
         
@@ -712,11 +712,13 @@ function fmcSoilModPlugins.pluginsForUpdateSprayArea(soilMod)
                     10,
                     Fillable.FILLTYPE_FERTILIZER,
                     function(sx,sz,wx,wz,hx,hz)
-                        -- TODO - add support for multiple FMLs
-                        setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
                         setDensityMaskParams(foliageId, "between", fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-                        setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, 1) -- type-A
-                        setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
+                        -- Support for multiple FMLs
+                        for _,fruitLayerId in pairs(g_currentMission.fmcUniqueFoliageMultiLayers) do
+                            setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
+                            setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, 1) -- type-A
+                            setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
+                        end
                         setDensityMaskParams(foliageId, "greater", -1)
                         return true -- Place moisture!
                     end
@@ -727,11 +729,13 @@ function fmcSoilModPlugins.pluginsForUpdateSprayArea(soilMod)
                     10,
                     Fillable.FILLTYPE_FERTILIZER + 128,
                     function(sx,sz,wx,wz,hx,hz)
-                        -- TODO - add support for multiple FMLs
-                        setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
                         setDensityMaskParams(foliageId, "between", 0, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-                        setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, 1) -- type-A
-                        setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
+                        -- Support for multiple FMLs
+                        for _,fruitLayerId in pairs(g_currentMission.fmcUniqueFoliageMultiLayers) do
+                            setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
+                            setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, 1) -- type-A
+                            setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
+                        end
                         setDensityMaskParams(foliageId, "greater", -1)
                         return true -- Place moisture!
                     end
@@ -743,11 +747,13 @@ function fmcSoilModPlugins.pluginsForUpdateSprayArea(soilMod)
                     10,
                     Fillable.FILLTYPE_FERTILIZER2,
                     function(sx,sz,wx,wz,hx,hz)
-                        -- TODO - add support for multiple FMLs
-                        setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
                         setDensityMaskParams(foliageId, "between", fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-                        setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, 2) -- type-B
-                        setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
+                        -- Support for multiple FMLs
+                        for _,fruitLayerId in pairs(g_currentMission.fmcUniqueFoliageMultiLayers) do
+                            setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
+                            setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, 2) -- type-B
+                            setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
+                        end
                         setDensityMaskParams(foliageId, "greater", -1)
                         return true -- Place moisture!
                     end
@@ -758,11 +764,13 @@ function fmcSoilModPlugins.pluginsForUpdateSprayArea(soilMod)
                     10,
                     Fillable.FILLTYPE_FERTILIZER2 + 128,
                     function(sx,sz,wx,wz,hx,hz)
-                        -- TODO - add support for multiple FMLs
-                        setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
                         setDensityMaskParams(foliageId, "between", 0, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-                        setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, 2) -- type-B
-                        setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
+                        -- Support for multiple FMLs
+                        for _,fruitLayerId in pairs(g_currentMission.fmcUniqueFoliageMultiLayers) do
+                            setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
+                            setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, 2) -- type-B
+                            setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
+                        end
                         setDensityMaskParams(foliageId, "greater", -1)
                         return true -- Place moisture!
                     end
@@ -774,11 +782,13 @@ function fmcSoilModPlugins.pluginsForUpdateSprayArea(soilMod)
                     10,
                     Fillable.FILLTYPE_FERTILIZER3,
                     function(sx,sz,wx,wz,hx,hz)
-                        -- TODO - add support for multiple FMLs
-                        setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
                         setDensityMaskParams(foliageId, "between", fmcModifyFSUtils.fertilizerSynthetic_spray_firstGrowthState, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-                        setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, 3) -- type-C
-                        setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
+                        -- Support for multiple FMLs
+                        for _,fruitLayerId in pairs(g_currentMission.fmcUniqueFoliageMultiLayers) do
+                            setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
+                            setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, 3) -- type-C
+                            setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
+                        end
                         setDensityMaskParams(foliageId, "greater", -1)
                         return true -- Place moisture!
                     end
@@ -789,17 +799,19 @@ function fmcSoilModPlugins.pluginsForUpdateSprayArea(soilMod)
                     10,
                     Fillable.FILLTYPE_FERTILIZER3 + 128,
                     function(sx,sz,wx,wz,hx,hz)
-                        -- TODO - add support for multiple FMLs
-                        setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
                         setDensityMaskParams(foliageId, "between", 0, fmcModifyFSUtils.fertilizerSynthetic_spray_lastGrowthState)
-                        setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, 3) -- type-C
-                        setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
+                        -- Support for multiple FMLs
+                        for _,fruitLayerId in pairs(g_currentMission.fmcUniqueFoliageMultiLayers) do
+                            setDensityTypeIndexCompareMode(fruitLayerId, 2) -- COMPARE_NONE
+                            setDensityMaskedParallelogram(foliageId, sx,sz,wx,wz,hx,hz, 0,numChannels, fruitLayerId,0,g_currentMission.numFruitStateChannels, 3) -- type-C
+                            setDensityTypeIndexCompareMode(fruitLayerId, 0) -- COMPARE_EQUAL
+                        end
                         setDensityMaskParams(foliageId, "greater", -1)
                         return true -- Place moisture!
                     end                
                 )
             end
-        end
+        --end
     end
 end
 

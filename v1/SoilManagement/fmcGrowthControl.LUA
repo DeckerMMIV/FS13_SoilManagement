@@ -180,6 +180,7 @@ function fmcGrowthControl.setupFoliageGrowthLayers()
     log("fmcGrowthControl.setupFoliageGrowthLayers()")
 
     g_currentMission.fmcFoliageGrowthLayers = {}
+    g_currentMission.fmcUniqueFoliageMultiLayers = {}
     for i = 1, FruitUtil.NUM_FRUITTYPES do
       local fruitDesc = FruitUtil.fruitIndexToDesc[i]
       local fruitLayer = g_currentMission.fruits[fruitDesc.index];
@@ -224,6 +225,8 @@ function fmcGrowthControl.setupFoliageGrowthLayers()
           end
         end
 
+        local grleFileName = getDensityMapFileName(entry.fruitId)
+        
         log(fruitDesc.name,"=", i,
             ",id=", entry.fruitId,
             ",windrowId=", entry.windrowId,
@@ -232,10 +235,16 @@ function fmcGrowthControl.setupFoliageGrowthLayers()
             ",maxMatureValue=", entry.maxMatureValue,
             ",cutState=", fruitDesc.cutState,
             ",witheredValue=", entry.witheredValue,
-            ",herbicideAvoidance=", entry.herbicideAvoidance
+            ",herbicideAvoidance=", entry.herbicideAvoidance,
+            ",grleFile=", grleFileName
         )
 
         table.insert(g_currentMission.fmcFoliageGrowthLayers, entry);
+
+        -- Support for multiple FMLs
+        if g_currentMission.fmcUniqueFoliageMultiLayers[grleFileName] == nil then
+            g_currentMission.fmcUniqueFoliageMultiLayers[grleFileName] = fruitLayer.id;
+        end
       end
     end
 
